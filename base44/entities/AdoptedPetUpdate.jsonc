@@ -1,0 +1,63 @@
+{
+  "name": "AdoptedPetUpdate",
+  "type": "object",
+  "properties": {
+    "adopted_pet_id": {
+      "type": "string",
+      "description": "ID of the AdoptablePet that was adopted"
+    },
+    "adopter_email": {
+      "type": "string",
+      "description": "Email of the person who adopted"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "Name of the adopted pet"
+    },
+    "update_type": {
+      "type": "string",
+      "enum": [
+        "milestone",
+        "health",
+        "behavior",
+        "story",
+        "photo"
+      ],
+      "description": "Type of update"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the update"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the update"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Photo URL for the update"
+    },
+    "share_with_rescue": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to share this update with the rescue"
+    },
+    "public": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this update is public on the rescue profile"
+    }
+  },
+  "required": [
+    "adopted_pet_id",
+    "adopter_email",
+    "rescue_email",
+    "pet_name",
+    "update_type",
+    "title"
+  ]
+}

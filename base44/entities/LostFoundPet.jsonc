@@ -1,0 +1,122 @@
+{
+  "name": "LostFoundPet",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Pet's name (if known)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "lost",
+        "found"
+      ],
+      "description": "Whether this pet is lost or found"
+    },
+    "species": {
+      "type": "string",
+      "description": "Dog, Cat, Bird, Rabbit, etc."
+    },
+    "breed": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string",
+      "description": "Color or markings"
+    },
+    "age": {
+      "type": "string",
+      "description": "Approximate age"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "unknown"
+      ]
+    },
+    "size": {
+      "type": "string",
+      "enum": [
+        "small",
+        "medium",
+        "large"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the pet"
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Photos of the pet"
+    },
+    "last_seen_location": {
+      "type": "string",
+      "description": "Location where the pet was last seen"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "last_seen_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the pet was last seen"
+    },
+    "reporter_name": {
+      "type": "string",
+      "description": "Name of the person reporting"
+    },
+    "reporter_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "reporter_phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "special_characteristics": {
+      "type": "string",
+      "description": "Unique identifying features (collar, microchip, tattoo, etc.)"
+    },
+    "reward_offered": {
+      "type": "boolean",
+      "default": false
+    },
+    "reward_amount": {
+      "type": "number",
+      "description": "Reward amount if offered"
+    },
+    "is_resolved": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the pet has been reunited or case closed"
+    },
+    "resolution_notes": {
+      "type": "string",
+      "description": "Notes on how the case was resolved"
+    },
+    "social_media_graphic": {
+      "type": "string",
+      "description": "Generated social media graphic URL"
+    },
+    "social_media_caption": {
+      "type": "string",
+      "description": "AI-generated social media caption"
+    }
+  },
+  "required": [
+    "status",
+    "species",
+    "reporter_name",
+    "reporter_email"
+  ]
+}

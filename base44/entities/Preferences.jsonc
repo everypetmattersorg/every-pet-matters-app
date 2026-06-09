@@ -1,0 +1,111 @@
+{
+  "name": "Preferences",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "preferred_pet_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "enum": [
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "other"
+      ],
+      "description": "Preferred pet types"
+    },
+    "preferred_energy_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Preferred pet energy level"
+    },
+    "living_situation": {
+      "type": "string",
+      "enum": [
+        "apartment",
+        "house",
+        "farm_rural"
+      ],
+      "description": "Type of living situation"
+    },
+    "has_kids": {
+      "type": "boolean",
+      "description": "Does adopter have children"
+    },
+    "has_other_dogs": {
+      "type": "boolean",
+      "description": "Does adopter have other dogs"
+    },
+    "has_other_cats": {
+      "type": "boolean",
+      "description": "Does adopter have other cats"
+    },
+    "willing_special_needs": {
+      "type": "boolean",
+      "default": false,
+      "description": "Open to special needs pets"
+    },
+    "experience_level": {
+      "type": "string",
+      "enum": [
+        "first_time",
+        "moderate",
+        "experienced"
+      ],
+      "description": "Pet ownership experience"
+    },
+    "budget": {
+      "type": "number",
+      "description": "Maximum adoption fee budget"
+    },
+    "pet_preferences": {
+      "type": "object",
+      "description": "Nested object containing all preferences",
+      "properties": {
+        "preferred_pet_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "preferred_energy_level": {
+          "type": "string"
+        },
+        "living_situation": {
+          "type": "string"
+        },
+        "has_kids": {
+          "type": "boolean"
+        },
+        "has_other_dogs": {
+          "type": "boolean"
+        },
+        "has_other_cats": {
+          "type": "boolean"
+        },
+        "willing_special_needs": {
+          "type": "boolean"
+        },
+        "experience_level": {
+          "type": "string"
+        },
+        "budget": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "VolunteerPageContent",
+  "type": "object",
+  "properties": {
+    "hero_badge_text": {
+      "type": "string",
+      "description": "Small badge text in the hero e.g. 'Make a Difference'"
+    },
+    "hero_headline": {
+      "type": "string",
+      "description": "Main hero headline e.g. 'Volunteer Opportunities'"
+    },
+    "hero_subtext": {
+      "type": "string",
+      "description": "Hero paragraph below the headline"
+    },
+    "empty_state_title": {
+      "type": "string",
+      "description": "Message shown when no opportunities are found e.g. 'No volunteer opportunities found.'"
+    },
+    "empty_state_subtitle": {
+      "type": "string",
+      "description": "Secondary message for empty state e.g. 'Try adjusting your search or filters.'"
+    }
+  },
+  "required": []
+}

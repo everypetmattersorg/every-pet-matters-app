@@ -1,0 +1,70 @@
+{
+  "name": "AdoptionFollowUp",
+  "type": "object",
+  "properties": {
+    "adoption_application_id": {
+      "type": "string",
+      "description": "ID of the related adoption application"
+    },
+    "adopter_email": {
+      "type": "string",
+      "description": "Email of the adopter"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "Name of the adopted pet"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue/shelter"
+    },
+    "adoption_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the adoption was finalized"
+    },
+    "task_type": {
+      "type": "string",
+      "enum": [
+        "check_in_call",
+        "post_adoption_survey",
+        "wellness_check",
+        "follow_up_email"
+      ],
+      "description": "Type of follow-up task"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the task should be completed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Status of the follow-up task"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes from the follow-up interaction"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the task was completed"
+    }
+  },
+  "required": [
+    "adoption_application_id",
+    "adopter_email",
+    "pet_name",
+    "rescue_email",
+    "adoption_date",
+    "task_type",
+    "scheduled_date"
+  ]
+}

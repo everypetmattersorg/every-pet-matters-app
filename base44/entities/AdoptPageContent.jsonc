@@ -1,0 +1,23 @@
+{
+  "name": "AdoptPageContent",
+  "type": "object",
+  "properties": {
+    "hero_badge_text": {
+      "type": "string",
+      "description": "Small badge text in the hero e.g. 'Find Your New Best Friend'"
+    },
+    "hero_headline": {
+      "type": "string",
+      "description": "Main hero headline e.g. 'Adoptable Pets'"
+    },
+    "hero_subtext": {
+      "type": "string",
+      "description": "Hero paragraph below the headline"
+    },
+    "empty_state_title": {
+      "type": "string",
+      "description": "Message shown when no pets match the search e.g. 'No pets found matching your search.'"
+    }
+  },
+  "required": []
+}

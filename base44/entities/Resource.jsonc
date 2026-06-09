@@ -1,0 +1,147 @@
+{
+  "name": "Resource",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "article",
+        "organization",
+        "social_group"
+      ],
+      "description": "Whether this is a blog/article post, a local organization listing, or a social media group"
+    },
+    "content": {
+      "type": "string",
+      "description": "Article body (markdown supported)"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short summary or tagline"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "e.g. low-cost vet, housing, food assistance"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "enum": [
+        "everywhere",
+        "local"
+      ],
+      "default": "everywhere",
+      "description": "Whether this resource is local or available everywhere"
+    },
+    "local_city": {
+      "type": "string",
+      "description": "City for local resources"
+    },
+    "local_state": {
+      "type": "string",
+      "description": "State for local resources"
+    },
+    "org_name": {
+      "type": "string",
+      "description": "Organization name (for org listings)"
+    },
+    "org_address": {
+      "type": "string"
+    },
+    "org_city": {
+      "type": "string"
+    },
+    "org_state": {
+      "type": "string"
+    },
+    "org_phone": {
+      "type": "string"
+    },
+    "org_website": {
+      "type": "string"
+    },
+    "org_services": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Types of help offered"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "group_platform": {
+      "type": "string",
+      "enum": [
+        "facebook",
+        "nextdoor",
+        "reddit",
+        "discord",
+        "slack",
+        "other"
+      ],
+      "description": "Platform the social group is on"
+    },
+    "group_url": {
+      "type": "string",
+      "description": "Link to the social media group"
+    },
+    "group_member_count": {
+      "type": "number",
+      "description": "Approximate number of members"
+    },
+    "is_published": {
+      "type": "boolean",
+      "default": true
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "denied"
+      ],
+      "default": "pending",
+      "description": "Approval status of the resource"
+    },
+    "submitted_by_email": {
+      "type": "string",
+      "description": "Email of the user who submitted the resource"
+    },
+    "submitted_by_name": {
+      "type": "string",
+      "description": "Name of the user who submitted the resource"
+    },
+    "denial_reason": {
+      "type": "string",
+      "description": "Reason for denial (if denied)"
+    },
+    "approved_by_email": {
+      "type": "string",
+      "description": "Email of admin who approved/denied"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of approval/denial"
+    }
+  },
+  "required": [
+    "title",
+    "category"
+  ]
+}

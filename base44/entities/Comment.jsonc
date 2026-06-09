@@ -1,0 +1,37 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID of the post this comment belongs to"
+    },
+    "parent_comment_id": {
+      "type": "string",
+      "description": "Optional: ID of parent comment if this is a reply"
+    },
+    "author_email": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "mentioned_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Emails of mentioned users"
+    }
+  },
+  "required": [
+    "post_id",
+    "author_email",
+    "author_name",
+    "content"
+  ]
+}

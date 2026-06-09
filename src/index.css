@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;0,9..40,900;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 30 50% 96%;
+    --foreground: 0 0% 0%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+    --primary: 21 71% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 15 75% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 25 75% 60%;
+    --muted-foreground: 0 0% 0%;
+    --accent: 15 75% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 135 48% 20%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 25 75% 80%;
+    --input: 25 75% 85%;
+    --ring: 15 65% 20%;
+    --chart-1: 15 65% 20%;
+    --chart-2: 15 75% 35%;
+    --chart-3: 25 75% 60%;
+    --chart-4: 35 75% 75%;
+    --chart-5: 135 48% 20%;
+    --radius: 0.5rem;
+    --sidebar-background: 35 75% 75%;
+    --sidebar-foreground: 0 0% 0%;
+    --sidebar-primary: 15 65% 20%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 25 75% 60%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 25 75% 70%;
+    --sidebar-ring: 15 75% 35%;
+  }
+
+  .dark {
+    --background: 30 50% 96%;
+    --foreground: 0 0% 100%;
+    --card: 15 65% 15%;
+    --card-foreground: 0 0% 100%;
+    --popover: 15 65% 15%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 21 71% 40%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 15 75% 45%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 15 65% 25%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 15 75% 35%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 135 48% 20%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 15 65% 25%;
+    --input: 15 65% 25%;
+    --ring: 25 75% 60%;
+    --chart-1: 15 65% 20%;
+    --chart-2: 15 75% 35%;
+    --chart-3: 25 75% 60%;
+    --chart-4: 35 75% 75%;
+    --chart-5: 135 48% 20%;
+    --sidebar-background: 15 65% 15%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 25 75% 60%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 35 75% 75%;
+    --sidebar-accent-foreground: 0 0% 0%;
+    --sidebar-border: 15 65% 25%;
+    --sidebar-ring: 25 75% 60%;
+  }
+}
+
+
+
+@layer base {
+  button, a, span, p, h1, h2, h3, h4, h5, h6, div, label,
+  input, textarea, select, option, th, td, li, dt, dd, caption, figcaption, legend, summary, img {
+    @apply border-border outline-ring/50;
+  }
+  
+  button, a, span, p, h1, h2, h3, h4, h5, h6, div, label,
+  input, textarea, select, option, th, td, li, dt, dd, caption, figcaption, legend, summary {
+    text-transform: lowercase;
+  }
+
+  img {
+    text-transform: none !important;
+    filter: none !important;
+  }
+
+  .preserve-case {
+    text-transform: none !important;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  * {
+    font-family: 'DM Sans', sans-serif;
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Invite",
+  "type": "object",
+  "properties": {
+    "inviter_email": {
+      "type": "string",
+      "description": "Email of the person who sent the invite"
+    },
+    "invitee_email": {
+      "type": "string",
+      "description": "Email of the person being invited"
+    },
+    "invitee_name": {
+      "type": "string",
+      "description": "Name provided by inviter (optional)"
+    },
+    "signup_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted"
+      ],
+      "default": "pending",
+      "description": "Whether the invitee has signed up"
+    },
+    "signup_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the invitee signed up"
+    }
+  },
+  "required": [
+    "inviter_email",
+    "invitee_email"
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "name": "RescueAPIIntegration",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "api_provider": {
+      "type": "string",
+      "enum": [
+        "petfinder"
+      ],
+      "description": "API provider (e.g., petfinder)"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "API key for authentication"
+    },
+    "api_secret": {
+      "type": "string",
+      "description": "API secret for authentication (encrypted)"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this integration is active"
+    },
+    "sync_frequency": {
+      "type": "string",
+      "enum": [
+        "on_demand",
+        "hourly",
+        "daily"
+      ],
+      "default": "on_demand",
+      "description": "How often to sync data"
+    },
+    "last_sync": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last successful sync"
+    },
+    "last_sync_error": {
+      "type": "string",
+      "description": "Last sync error message, if any"
+    },
+    "petfinder_organization_id": {
+      "type": "string",
+      "description": "Petfinder organization ID for this rescue"
+    },
+    "sync_pets": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to sync pets from external API"
+    },
+    "sync_applications": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to sync application statuses back to external API"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "api_provider",
+    "api_key",
+    "api_secret"
+  ]
+}

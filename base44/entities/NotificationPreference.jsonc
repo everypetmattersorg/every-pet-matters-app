@@ -1,0 +1,61 @@
+{
+  "name": "NotificationPreference",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user"
+    },
+    "email_on_applications": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send email for new adoption applications"
+    },
+    "email_on_appointments": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send email for upcoming appointments"
+    },
+    "email_on_medication": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send email for medication/vaccination reminders"
+    },
+    "email_on_events": {
+      "type": "boolean",
+      "default": true,
+      "description": "Send email for upcoming events"
+    },
+    "in_app_notifications": {
+      "type": "boolean",
+      "default": true,
+      "description": "Show in-app notifications"
+    },
+    "notification_frequency": {
+      "type": "string",
+      "enum": [
+        "immediate",
+        "daily",
+        "weekly"
+      ],
+      "default": "immediate",
+      "description": "How often to send notifications"
+    },
+    "quiet_hours_enabled": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enable quiet hours"
+    },
+    "quiet_hours_start": {
+      "type": "string",
+      "description": "Quiet hours start time (HH:MM)"
+    },
+    "quiet_hours_end": {
+      "type": "string",
+      "description": "Quiet hours end time (HH:MM)"
+    }
+  },
+  "required": [
+    "user_email"
+  ]
+}

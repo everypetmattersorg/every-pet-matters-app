@@ -1,0 +1,46 @@
+{
+  "name": "DonationGoal",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "title": {
+      "type": "string",
+      "description": "Goal title (e.g., 'Help Us Build a New Shelter')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the goal and how funds will be used"
+    },
+    "target_amount": {
+      "type": "number",
+      "description": "Target donation amount in dollars"
+    },
+    "current_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Current amount raised"
+    },
+    "deadline": {
+      "type": "string",
+      "format": "date",
+      "description": "Target deadline for the goal"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether this goal is currently active"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Image URL for the donation goal"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "title",
+    "target_amount"
+  ]
+}

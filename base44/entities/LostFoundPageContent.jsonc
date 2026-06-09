@@ -1,0 +1,43 @@
+{
+  "name": "LostFoundPageContent",
+  "type": "object",
+  "properties": {
+    "hero_badge_text": {
+      "type": "string",
+      "description": "Small badge text in the hero e.g. 'Help reunite lost and found pets with their families'"
+    },
+    "hero_headline": {
+      "type": "string",
+      "description": "Main hero headline e.g. 'Lost & Found Pets'"
+    },
+    "hero_subtext": {
+      "type": "string",
+      "description": "Hero paragraph below the headline"
+    },
+    "report_lost_button_text": {
+      "type": "string",
+      "description": "Label for the Report Lost Pet button"
+    },
+    "report_found_button_text": {
+      "type": "string",
+      "description": "Label for the Report Found Pet button"
+    },
+    "photo_match_upload_title": {
+      "type": "string",
+      "description": "Title above the photo upload area e.g. 'Upload Pet Photo'"
+    },
+    "photo_match_upload_hint": {
+      "type": "string",
+      "description": "Hint text inside the upload dropzone e.g. 'Click to upload a photo'"
+    },
+    "photo_match_no_results_text": {
+      "type": "string",
+      "description": "Message shown when photo match finds no results"
+    },
+    "alert_cta_text": {
+      "type": "string",
+      "description": "Text prompting users to create an alert e.g. 'Get notified if a matching pet is reported'"
+    }
+  },
+  "required": []
+}

@@ -1,0 +1,108 @@
+{
+  "name": "AboutPageContent",
+  "type": "object",
+  "properties": {
+    "hero_badge_text": {
+      "type": "string",
+      "description": "Small badge text in the hero e.g. 'about us'"
+    },
+    "hero_subtext": {
+      "type": "string",
+      "description": "Paragraph below the hero headline"
+    },
+    "mission_paragraph_1": {
+      "type": "string",
+      "description": "First paragraph of the Mission section"
+    },
+    "mission_paragraph_2": {
+      "type": "string",
+      "description": "Second paragraph of the Mission section"
+    },
+    "mission_pillars": {
+      "type": "array",
+      "description": "Three mission pillars shown as cards",
+      "items": {
+        "type": "object",
+        "properties": {
+          "icon": {
+            "type": "string",
+            "description": "Emoji icon"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "icon",
+          "title",
+          "description"
+        ]
+      }
+    },
+    "team_members": {
+      "type": "array",
+      "description": "Team members displayed in the Meet the Team section",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string",
+            "description": "Emoji avatar e.g. \ud83d\udc3e"
+          },
+          "photo_url": {
+            "type": "string",
+            "description": "Optional photo URL"
+          }
+        },
+        "required": [
+          "name",
+          "role"
+        ]
+      }
+    },
+    "values": {
+      "type": "array",
+      "description": "Core values shown in the 'What We Stand For' section",
+      "items": {
+        "type": "object",
+        "properties": {
+          "emoji": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "emoji",
+          "label"
+        ]
+      }
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "General contact email e.g. hello@fetchandfound.com"
+    },
+    "partner_email": {
+      "type": "string",
+      "description": "Rescue/partner contact email e.g. rescues@fetchandfound.com"
+    },
+    "location": {
+      "type": "string",
+      "description": "Physical location e.g. Phoenix, Arizona, USA"
+    }
+  },
+  "required": []
+}

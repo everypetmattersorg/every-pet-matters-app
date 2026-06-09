@@ -1,0 +1,126 @@
+{
+  "name": "FosterApplication",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue receiving the application"
+    },
+    "rescue_name": {
+      "type": "string"
+    },
+    "pet_id": {
+      "type": "string",
+      "description": "Optional: specific pet the applicant wants to foster"
+    },
+    "pet_name": {
+      "type": "string"
+    },
+    "applicant_email": {
+      "type": "string"
+    },
+    "applicant_name": {
+      "type": "string"
+    },
+    "applicant_phone": {
+      "type": "string"
+    },
+    "home_type": {
+      "type": "string",
+      "enum": [
+        "house",
+        "apartment",
+        "condo",
+        "other"
+      ]
+    },
+    "has_yard": {
+      "type": "boolean",
+      "default": false
+    },
+    "has_other_pets": {
+      "type": "boolean",
+      "default": false
+    },
+    "other_pets_description": {
+      "type": "string"
+    },
+    "has_children": {
+      "type": "boolean",
+      "default": false
+    },
+    "children_ages": {
+      "type": "string"
+    },
+    "experience_level": {
+      "type": "string",
+      "enum": [
+        "none",
+        "some",
+        "experienced"
+      ],
+      "description": "Foster/pet care experience level"
+    },
+    "can_foster_special_needs": {
+      "type": "boolean",
+      "default": false
+    },
+    "preferred_pet_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "availability_start": {
+      "type": "string",
+      "format": "date"
+    },
+    "max_duration_weeks": {
+      "type": "number"
+    },
+    "motivation": {
+      "type": "string",
+      "description": "Why do you want to foster?"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewing",
+        "approved",
+        "declined"
+      ],
+      "default": "pending"
+    },
+    "rescue_notes": {
+      "type": "string",
+      "description": "Internal notes from the rescue"
+    },
+    "messages": {
+      "type": "array",
+      "description": "Thread of messages between rescue and applicant",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sender_email": {
+            "type": "string"
+          },
+          "sender_name": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "rescue_email",
+    "applicant_email",
+    "applicant_name"
+  ]
+}

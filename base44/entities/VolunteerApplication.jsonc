@@ -1,0 +1,80 @@
+{
+  "name": "VolunteerApplication",
+  "type": "object",
+  "properties": {
+    "opportunity_id": {
+      "type": "string",
+      "description": "ID of the volunteer opportunity"
+    },
+    "volunteer_email": {
+      "type": "string",
+      "description": "Email of the volunteer applying"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "description": "Name of the volunteer"
+    },
+    "volunteer_phone": {
+      "type": "string",
+      "description": "Phone number of the volunteer"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "opportunity_title": {
+      "type": "string",
+      "description": "Title of the opportunity applied for"
+    },
+    "cover_letter": {
+      "type": "string",
+      "description": "Volunteer's message or cover letter"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "withdrawn",
+        "completed"
+      ],
+      "default": "pending",
+      "description": "Status of the application"
+    },
+    "availability": {
+      "type": "string",
+      "description": "Volunteer's availability"
+    },
+    "response_message": {
+      "type": "string",
+      "description": "Rescue's response message to the volunteer"
+    },
+    "responded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the rescue responded"
+    },
+    "hours_completed": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of hours volunteered"
+    },
+    "date_completed": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the volunteer completed the work"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the volunteer work completed"
+    }
+  },
+  "required": [
+    "opportunity_id",
+    "volunteer_email",
+    "volunteer_name",
+    "rescue_email",
+    "opportunity_title"
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "name": "PartnershipNotification",
+  "type": "object",
+  "properties": {
+    "partnership_id": {
+      "type": "string",
+      "description": "ID of the related partnership"
+    },
+    "recipient_email": {
+      "type": "string",
+      "description": "Email of the notification recipient"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Name of the sender/initiator"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of event",
+      "enum": [
+        "request_sent",
+        "request_accepted",
+        "request_declined",
+        "partnership_active",
+        "animals_transferred",
+        "partnership_completed"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification message content"
+    },
+    "read": {
+      "type": "boolean",
+      "description": "Whether the notification has been read",
+      "default": false
+    }
+  },
+  "required": [
+    "partnership_id",
+    "recipient_email",
+    "sender_name",
+    "event_type",
+    "message"
+  ]
+}

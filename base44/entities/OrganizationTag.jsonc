@@ -1,0 +1,69 @@
+{
+  "name": "OrganizationTag",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID of the tagged post or event"
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "post",
+        "event"
+      ],
+      "description": "Whether this tags a Post or RescueEvent"
+    },
+    "tagged_by_email": {
+      "type": "string",
+      "description": "Email of the user who tagged the organization"
+    },
+    "tagged_by_name": {
+      "type": "string",
+      "description": "Name of the user who tagged the organization"
+    },
+    "organization_email": {
+      "type": "string",
+      "description": "Email of the organization being tagged (rescue, shelter, or service)"
+    },
+    "organization_name": {
+      "type": "string",
+      "description": "Name of the organization"
+    },
+    "organization_type": {
+      "type": "string",
+      "enum": [
+        "rescue",
+        "shelter",
+        "service"
+      ],
+      "description": "Type of organization"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Approval status of the tag"
+    },
+    "approved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when approved"
+    },
+    "approved_by_email": {
+      "type": "string",
+      "description": "Email of the person who approved the tag"
+    }
+  },
+  "required": [
+    "post_id",
+    "content_type",
+    "tagged_by_email",
+    "organization_email",
+    "organization_type"
+  ]
+}

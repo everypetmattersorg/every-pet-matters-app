@@ -1,0 +1,100 @@
+{
+  "name": "VolunteerOpportunity",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization posting the opportunity"
+    },
+    "rescue_name": {
+      "type": "string",
+      "description": "Name of the rescue organization"
+    },
+    "title": {
+      "type": "string",
+      "description": "Title of the volunteer opportunity"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed description of the role and responsibilities"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "animal_care",
+        "event_planning",
+        "fundraising",
+        "social_media",
+        "administrative",
+        "transportation",
+        "foster_care",
+        "training",
+        "other"
+      ],
+      "description": "Category of volunteer work"
+    },
+    "location": {
+      "type": "string",
+      "description": "Location where volunteering takes place"
+    },
+    "time_commitment": {
+      "type": "string",
+      "enum": [
+        "flexible",
+        "part_time",
+        "full_time",
+        "one_time_event"
+      ],
+      "description": "Time commitment required"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the opportunity starts"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "When the opportunity ends (optional)"
+    },
+    "skills_required": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Skills or experience preferred"
+    },
+    "spots_available": {
+      "type": "number",
+      "description": "Number of volunteer spots available"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "filled",
+        "closed"
+      ],
+      "default": "open",
+      "description": "Status of the opportunity"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Email for volunteers to contact"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Phone number for volunteers to contact"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "rescue_name",
+    "title",
+    "description",
+    "category",
+    "location",
+    "time_commitment",
+    "start_date"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "RescueEvent",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue hosting the event"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "event_time": {
+      "type": "string",
+      "description": "Time in HH:MM format"
+    },
+    "location": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "adoption_event",
+        "volunteer_day",
+        "fundraiser",
+        "education",
+        "other"
+      ]
+    },
+    "tagged_organizations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "IDs of approved OrganizationTag records"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "title",
+    "event_date"
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "name": "AdoptablePet",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "other"
+      ]
+    },
+    "breed": {
+      "type": "string"
+    },
+    "age_years": {
+      "type": "number"
+    },
+    "age_months": {
+      "type": "number"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "unknown"
+      ]
+    },
+    "weight_lbs": {
+      "type": "number",
+      "description": "Weight of the pet in pounds"
+    },
+    "color": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "Pet personality and background"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "extra_photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rescue_name": {
+      "type": "string"
+    },
+    "rescue_email": {
+      "type": "string"
+    },
+    "rescue_phone": {
+      "type": "string"
+    },
+    "rescue_website": {
+      "type": "string"
+    },
+    "rescue_city": {
+      "type": "string",
+      "description": "City where the rescue/shelter is located"
+    },
+    "rescue_state": {
+      "type": "string",
+      "description": "State where the rescue/shelter is located"
+    },
+    "foster_url": {
+      "type": "string",
+      "description": "URL to foster application portal"
+    },
+    "good_with_kids": {
+      "type": "boolean"
+    },
+    "good_with_dogs": {
+      "type": "boolean"
+    },
+    "good_with_cats": {
+      "type": "boolean"
+    },
+    "energy_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "special_needs": {
+      "type": "boolean",
+      "default": false
+    },
+    "special_needs_description": {
+      "type": "string"
+    },
+    "adoption_fee": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "available",
+        "pending",
+        "adopted"
+      ],
+      "default": "available"
+    },
+    "is_urgent": {
+      "type": "boolean",
+      "default": false,
+      "description": "Mark as urgent need for fostering or adoption"
+    },
+    "urgency_reason": {
+      "type": "string",
+      "description": "Reason for urgent listing (e.g., shelter euthanasia deadline)"
+    },
+    "e_list_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Euthanasia list date \u2014 the deadline by which this pet must be rescued"
+    }
+  },
+  "required": [
+    "name",
+    "pet_type",
+    "rescue_name",
+    "rescue_email"
+  ]
+}

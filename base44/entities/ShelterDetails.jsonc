@@ -1,0 +1,53 @@
+{
+  "name": "ShelterDetails",
+  "type": "object",
+  "properties": {
+    "shelter_name": {
+      "type": "string",
+      "description": "Shelter or rescue organization name"
+    },
+    "website": {
+      "type": "string",
+      "description": "Shelter website URL"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "address": {
+      "type": "string",
+      "description": "Physical address"
+    },
+    "mission": {
+      "type": "string",
+      "description": "Mission statement"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed shelter description"
+    },
+    "hours": {
+      "type": "string",
+      "description": "Hours of operation"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "Shelter logo image URL"
+    },
+    "banner_url": {
+      "type": "string",
+      "description": "Shelter banner image URL"
+    },
+    "animals_accepted": {
+      "type": "string",
+      "description": "Types of animals the shelter/rescue accepts (e.g. dogs, cats, rabbits, birds, reptiles, small animals, farm animals, etc.)"
+    }
+  },
+  "required": [
+    "shelter_name"
+  ]
+}

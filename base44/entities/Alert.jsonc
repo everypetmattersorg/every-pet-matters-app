@@ -1,0 +1,75 @@
+{
+  "name": "Alert",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "A friendly name for this alert"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address to send notifications to"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "any",
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "other"
+      ],
+      "default": "any"
+    },
+    "status_filter": {
+      "type": "string",
+      "enum": [
+        "lost",
+        "found_no_issues",
+        "found_injured",
+        "trapping_help"
+      ],
+      "default": "lost",
+      "description": "Alert type"
+    },
+    "breed": {
+      "type": "string",
+      "description": "Specific breed to watch for (optional)"
+    },
+    "location_name": {
+      "type": "string",
+      "description": "Human-readable location label"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "radius_miles": {
+      "type": "number",
+      "default": 25,
+      "description": "Search radius in miles"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "maxItems": 3,
+      "description": "Up to 3 reference photos of the pet type/characteristics to alert for"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "pet_type",
+    "status_filter",
+    "radius_miles"
+  ]
+}

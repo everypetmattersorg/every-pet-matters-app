@@ -1,0 +1,106 @@
+{
+  "name": "Donation",
+  "type": "object",
+  "properties": {
+    "donor_name": {
+      "type": "string",
+      "description": "Name of the donor"
+    },
+    "donor_email": {
+      "type": "string",
+      "description": "Email of the donor"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue receiving the donation (null for general fund)"
+    },
+    "donation_goal_id": {
+      "type": "string",
+      "description": "ID of the specific donation goal (optional)"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Donation amount in dollars"
+    },
+    "donation_type": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "monthly",
+        "annual"
+      ],
+      "default": "one_time",
+      "description": "Type of donation"
+    },
+    "donation_target": {
+      "type": "string",
+      "enum": [
+        "general_fund",
+        "specific_campaign"
+      ],
+      "default": "general_fund",
+      "description": "Whether donating to general fund or specific campaign"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Donation status"
+    },
+    "stripe_payment_id": {
+      "type": "string",
+      "description": "Stripe payment intent ID"
+    },
+    "stripe_subscription_id": {
+      "type": "string",
+      "description": "Stripe subscription ID for recurring donations"
+    },
+    "message": {
+      "type": "string",
+      "description": "Optional message from the donor"
+    },
+    "is_anonymous": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the donation is anonymous"
+    },
+    "dedication_type": {
+      "type": "string",
+      "enum": [
+        "none",
+        "in_honor_of",
+        "in_memory_of"
+      ],
+      "default": "none",
+      "description": "Type of dedication"
+    },
+    "dedication_name": {
+      "type": "string",
+      "description": "Name of the person being honored or remembered"
+    },
+    "dedication_message": {
+      "type": "string",
+      "description": "Optional message for the dedication"
+    },
+    "recipient_email": {
+      "type": "string",
+      "description": "Email to notify about the dedication"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the donation was completed"
+    }
+  },
+  "required": [
+    "donor_name",
+    "donor_email",
+    "amount",
+    "donation_type"
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "EventRSVP",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "ID of the RescueEvent"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user RSVPing"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "attending",
+        "interested",
+        "not_attending"
+      ],
+      "default": "interested",
+      "description": "RSVP status"
+    },
+    "guests": {
+      "type": "number",
+      "default": 1,
+      "description": "Number of guests attending"
+    }
+  },
+  "required": [
+    "event_id",
+    "user_email"
+  ]
+}

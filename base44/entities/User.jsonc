@@ -1,0 +1,21 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "user"
+      ]
+    },
+    "terms_accepted": {
+      "type": "boolean",
+      "description": "Whether the user has accepted the Terms & Conditions"
+    }
+  },
+  "required": [
+    "role",
+    "terms_accepted"
+  ]
+}

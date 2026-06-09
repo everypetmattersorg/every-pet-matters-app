@@ -1,0 +1,60 @@
+{
+  "name": "SyncLog",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "api_provider": {
+      "type": "string",
+      "description": "API provider used"
+    },
+    "sync_type": {
+      "type": "string",
+      "enum": [
+        "pets",
+        "applications",
+        "bidirectional"
+      ],
+      "description": "Type of sync performed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "success",
+        "error",
+        "partial"
+      ],
+      "description": "Status of the sync"
+    },
+    "pets_synced": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of pets synced"
+    },
+    "applications_synced": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of applications synced"
+    },
+    "error_message": {
+      "type": "string",
+      "description": "Error message if sync failed"
+    },
+    "duration_seconds": {
+      "type": "number",
+      "description": "How long the sync took"
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional sync details"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "api_provider",
+    "sync_type",
+    "status"
+  ]
+}

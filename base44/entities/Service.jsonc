@@ -1,0 +1,73 @@
+{
+  "name": "Service",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "veterinarian",
+        "groomer",
+        "trainer",
+        "pet_sitter",
+        "pet_store",
+        "pet_friendly_business",
+        "other"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "state": {
+      "type": "string"
+    },
+    "zip": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "hours": {
+      "type": "string",
+      "description": "e.g. Mon-Fri 9am-5pm"
+    },
+    "accepts_bookings": {
+      "type": "boolean",
+      "default": false
+    },
+    "booking_url": {
+      "type": "string"
+    },
+    "pet_types_served": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "added_by_email": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "address"
+  ]
+}

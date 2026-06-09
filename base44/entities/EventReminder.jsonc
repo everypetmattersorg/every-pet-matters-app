@@ -1,0 +1,28 @@
+{
+  "name": "EventReminder",
+  "type": "object",
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "ID of the RescueEvent"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user setting reminder"
+    },
+    "reminder_type": {
+      "type": "string",
+      "enum": [
+        "day_before",
+        "hour_before",
+        "at_time"
+      ],
+      "default": "day_before",
+      "description": "When to send the reminder"
+    }
+  },
+  "required": [
+    "event_id",
+    "user_email"
+  ]
+}

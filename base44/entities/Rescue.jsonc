@@ -1,0 +1,147 @@
+{
+  "name": "Rescue",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Email address of the rescue/shelter"
+    },
+    "org_type": {
+      "type": "string",
+      "enum": [
+        "rescue",
+        "shelter"
+      ],
+      "default": "rescue",
+      "description": "Whether this organization is a rescue or a shelter"
+    },
+    "name": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "website": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string",
+      "description": "URL to rescue logo image"
+    },
+    "banner_url": {
+      "type": "string",
+      "description": "URL to rescue banner image"
+    },
+    "about": {
+      "type": "string",
+      "description": "Detailed mission statement or about section"
+    },
+    "mission_statement": {
+      "type": "string",
+      "description": "Concise mission statement for the rescue"
+    },
+    "services_offered": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Services offered by the rescue"
+    },
+    "gallery_photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Photo URLs for the rescue gallery"
+    },
+    "gallery_videos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Video URLs for the rescue gallery"
+    },
+    "facebook_url": {
+      "type": "string"
+    },
+    "instagram_url": {
+      "type": "string"
+    },
+    "twitter_url": {
+      "type": "string"
+    },
+    "youtube_url": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "address": {
+      "type": "string"
+    },
+    "accepts_volunteers": {
+      "type": "boolean",
+      "default": false
+    },
+    "volunteer_info": {
+      "type": "string"
+    },
+    "fosters_needed": {
+      "type": "boolean",
+      "default": false
+    },
+    "sponsors": {
+      "type": "array",
+      "description": "List of sponsors with name, optional logo photo, and link",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "photo_url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "foster_network_size": {
+      "type": "number",
+      "description": "Rescue only: approximate number of active foster homes"
+    },
+    "transport_available": {
+      "type": "boolean",
+      "default": false,
+      "description": "Rescue only: whether transport is available for pets"
+    },
+    "shelter_capacity": {
+      "type": "number",
+      "description": "Shelter only: total animal capacity"
+    },
+    "current_occupancy": {
+      "type": "number",
+      "description": "Shelter only: current number of animals housed"
+    },
+    "intake_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Shelter only: types of intake accepted (e.g. stray, owner surrender, transfer)"
+    },
+    "open_hours": {
+      "type": "string",
+      "description": "Shelter only: public visiting/adoption hours"
+    }
+  },
+  "required": [
+    "email",
+    "name"
+  ]
+}

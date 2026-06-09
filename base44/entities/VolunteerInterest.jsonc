@@ -1,0 +1,25 @@
+{
+  "name": "VolunteerInterest",
+  "type": "object",
+  "properties": {
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue receiving the volunteer inquiry"
+    },
+    "volunteer_name": {
+      "type": "string"
+    },
+    "volunteer_email": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string",
+      "description": "Optional message from the volunteer"
+    }
+  },
+  "required": [
+    "rescue_email",
+    "volunteer_name",
+    "volunteer_email"
+  ]
+}

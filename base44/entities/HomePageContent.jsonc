@@ -1,0 +1,67 @@
+{
+  "name": "HomePageContent",
+  "type": "object",
+  "properties": {
+    "hero_badge_text": {
+      "type": "string",
+      "description": "Small badge text above the hero headline e.g. 'Find pets. Help animals. Connect community.'"
+    },
+    "hero_headline_line1": {
+      "type": "string",
+      "description": "First line of the hero headline e.g. 'Your pet,'"
+    },
+    "hero_headline_line2": {
+      "type": "string",
+      "description": "Second (highlighted) line of the hero headline e.g. 'our priority'"
+    },
+    "hero_subtext": {
+      "type": "string",
+      "description": "Hero paragraph below the headline"
+    },
+    "hero_primary_button_text": {
+      "type": "string",
+      "description": "Label for the primary CTA button e.g. 'Find a Pet'"
+    },
+    "hero_secondary_button_text": {
+      "type": "string",
+      "description": "Label for the secondary CTA button e.g. 'Get Involved'"
+    },
+    "hero_image_url": {
+      "type": "string",
+      "description": "URL of the hero section image"
+    },
+    "adoption_section_title": {
+      "type": "string",
+      "description": "Heading for the adoption section e.g. 'Find Your Perfect Pet'"
+    },
+    "adoption_section_subtitle": {
+      "type": "string",
+      "description": "Subtitle for the adoption section"
+    },
+    "lost_found_section_title": {
+      "type": "string",
+      "description": "Heading for the Lost & Found section"
+    },
+    "lost_found_section_subtitle": {
+      "type": "string",
+      "description": "Subtitle for the Lost & Found section"
+    },
+    "community_section_title": {
+      "type": "string",
+      "description": "Heading for the community section"
+    },
+    "community_section_subtitle": {
+      "type": "string",
+      "description": "Subtitle for the community section"
+    },
+    "services_section_title": {
+      "type": "string",
+      "description": "Heading for the services section"
+    },
+    "services_section_subtitle": {
+      "type": "string",
+      "description": "Subtitle for the services section"
+    }
+  },
+  "required": []
+}

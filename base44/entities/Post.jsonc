@@ -1,0 +1,85 @@
+{
+  "name": "Post",
+  "type": "object",
+  "properties": {
+    "author_email": {
+      "type": "string"
+    },
+    "author_name": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "post_type": {
+      "type": "string",
+      "enum": [
+        "story",
+        "photo",
+        "event"
+      ],
+      "default": "story"
+    },
+    "event_title": {
+      "type": "string"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "event_time": {
+      "type": "string"
+    },
+    "event_location": {
+      "type": "string"
+    },
+    "rsvp_emails": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "likes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "pet_name": {
+      "type": "string"
+    },
+    "pet_profile_id": {
+      "type": "string",
+      "description": "ID of a linked OwnedPet profile"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "other",
+        ""
+      ]
+    },
+    "tagged_organizations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "IDs of approved OrganizationTag records"
+    }
+  },
+  "required": [
+    "author_email",
+    "author_name",
+    "content"
+  ]
+}

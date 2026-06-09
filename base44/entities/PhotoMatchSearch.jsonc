@@ -1,0 +1,31 @@
+{
+  "name": "PhotoMatchSearch",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "pet_description": {
+      "type": "string"
+    },
+    "species": {
+      "type": "string"
+    },
+    "breed_guess": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "match_count": {
+      "type": "number"
+    }
+  },
+  "required": [
+    "user_email",
+    "photo_url"
+  ]
+}

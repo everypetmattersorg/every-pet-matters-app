@@ -1,0 +1,206 @@
+{
+  "name": "Pet",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Pet's name"
+    },
+    "species": {
+      "type": "string",
+      "description": "Dog, Cat, etc."
+    },
+    "breed": {
+      "type": "string"
+    },
+    "age": {
+      "type": "string"
+    },
+    "gender": {
+      "type": "string"
+    },
+    "size": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "number",
+      "description": "Weight in pounds"
+    },
+    "bio": {
+      "type": "string",
+      "description": "A short personal bio or story about the pet"
+    },
+    "description": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Primary photo URL (legacy)"
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "All photo URLs for this pet"
+    },
+    "photo_focal_points": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Focal points per photo as 'x% y%' CSS object-position values"
+    },
+    "location": {
+      "type": "string"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Contact person name"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email address"
+    },
+    "contact": {
+      "type": "string",
+      "description": "General contact information (legacy)"
+    },
+    "source": {
+      "type": "string",
+      "description": "Petfinder, Adopt-a-Pet, etc."
+    },
+    "source_id": {
+      "type": "string",
+      "description": "Unique ID from source to prevent duplicates"
+    },
+    "url": {
+      "type": "string",
+      "description": "Link to the pet listing"
+    },
+    "outreach_status": {
+      "type": "string",
+      "description": "Status of outreach to shelter"
+    },
+    "adoption_status": {
+      "type": "string",
+      "description": "Adoption status: Available, Adopted, Transferred",
+      "enum": [
+        "Available",
+        "Adopted",
+        "Transferred"
+      ]
+    },
+    "_lat": {
+      "type": "number",
+      "description": "Latitude for distance calculations"
+    },
+    "_lng": {
+      "type": "number",
+      "description": "Longitude for distance calculations"
+    },
+    "vaccinated": {
+      "type": "boolean",
+      "description": "Whether the pet is vaccinated"
+    },
+    "spayed_neutered": {
+      "type": "boolean",
+      "description": "Whether the pet is spayed/neutered"
+    },
+    "dewormed": {
+      "type": "boolean",
+      "description": "Whether the pet is dewormed"
+    },
+    "transfer_needed": {
+      "type": "boolean",
+      "description": "Whether the pet needs a transfer"
+    },
+    "rescue_needed": {
+      "type": "boolean",
+      "description": "Whether the pet needs rescue"
+    },
+    "urgent": {
+      "type": "boolean",
+      "description": "Whether the pet is urgent"
+    },
+    "stipend_available": {
+      "type": "boolean",
+      "description": "Whether a transport or adoption stipend is available for this pet"
+    },
+    "hidden_from_public": {
+      "type": "boolean",
+      "description": "If true, hides the pet from the public dashboard and map"
+    },
+    "kid_friendly": {
+      "type": "string",
+      "description": "Whether the pet is friendly with kids",
+      "enum": [
+        "yes",
+        "no",
+        "unsure"
+      ]
+    },
+    "dog_friendly": {
+      "type": "string",
+      "description": "Whether the pet is friendly with dogs",
+      "enum": [
+        "yes",
+        "no",
+        "unsure"
+      ]
+    },
+    "cat_friendly": {
+      "type": "string",
+      "description": "Whether the pet is friendly with cats",
+      "enum": [
+        "yes",
+        "no",
+        "unsure"
+      ]
+    },
+    "pet_type": {
+      "type": "string",
+      "description": "Pet type for tagging"
+    },
+    "energy_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "Energy level of the pet"
+    },
+    "special_needs": {
+      "type": "boolean",
+      "description": "Whether the pet has special needs"
+    },
+    "rescue_name": {
+      "type": "string",
+      "description": "Name of the rescue organization"
+    },
+    "social_media_graphics": {
+      "type": "object",
+      "description": "Generated social media graphics",
+      "properties": {
+        "instagram": {
+          "type": "string",
+          "description": "Instagram graphic URL (1080x1350)"
+        },
+        "facebook": {
+          "type": "string",
+          "description": "Facebook graphic URL (1200x628)"
+        }
+      }
+    }
+  },
+  "required": [
+    "name",
+    "source",
+    "source_id"
+  ]
+}

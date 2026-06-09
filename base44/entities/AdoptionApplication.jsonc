@@ -1,0 +1,154 @@
+{
+  "name": "AdoptionApplication",
+  "type": "object",
+  "properties": {
+    "pet_id": {
+      "type": "string",
+      "description": "ID of the adoptable pet"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "Name of the pet being adopted"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "applicant_name": {
+      "type": "string",
+      "description": "Full name of the applicant"
+    },
+    "applicant_email": {
+      "type": "string",
+      "description": "Email of the applicant"
+    },
+    "applicant_phone": {
+      "type": "string",
+      "description": "Phone number of the applicant"
+    },
+    "living_situation": {
+      "type": "string",
+      "enum": [
+        "apartment",
+        "house",
+        "farm_rural"
+      ],
+      "description": "Type of living situation"
+    },
+    "address": {
+      "type": "string",
+      "description": "Home address"
+    },
+    "own_or_rent": {
+      "type": "string",
+      "enum": [
+        "own",
+        "rent"
+      ],
+      "description": "Whether applicant owns or rents"
+    },
+    "landlord_allows_pets": {
+      "type": "boolean",
+      "description": "If renting, whether landlord allows pets"
+    },
+    "other_pets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "age": {
+            "type": "string"
+          },
+          "temperament": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "List of other pets in household"
+    },
+    "children_ages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ages of children in household"
+    },
+    "work_schedule": {
+      "type": "string",
+      "description": "Description of work schedule and pet care plans"
+    },
+    "pet_experience": {
+      "type": "string",
+      "description": "Previous pet ownership experience"
+    },
+    "vet_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Previous veterinarian references"
+    },
+    "personal_references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Personal references"
+    },
+    "adoption_expectations": {
+      "type": "string",
+      "description": "What applicant expects from pet adoption"
+    },
+    "commitment": {
+      "type": "string",
+      "description": "Applicant's commitment statement"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected",
+        "withdrawn"
+      ],
+      "default": "pending",
+      "description": "Application status"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes from rescue"
+    }
+  },
+  "required": [
+    "pet_id",
+    "pet_name",
+    "rescue_email",
+    "applicant_name",
+    "applicant_email",
+    "applicant_phone",
+    "living_situation",
+    "address"
+  ]
+}

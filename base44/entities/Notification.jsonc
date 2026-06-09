@@ -1,0 +1,62 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user receiving the notification"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "application",
+        "appointment",
+        "vaccination",
+        "medication",
+        "event",
+        "system"
+      ],
+      "description": "Type of notification"
+    },
+    "title": {
+      "type": "string",
+      "description": "Notification title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Notification message"
+    },
+    "related_entity_type": {
+      "type": "string",
+      "description": "Type of related entity (e.g., AdoptionApplication, OwnedPet, RescueEvent)"
+    },
+    "related_entity_id": {
+      "type": "string",
+      "description": "ID of related entity"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "action_url": {
+      "type": "string",
+      "description": "URL to navigate to when clicked"
+    },
+    "scheduled_for": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the notification should be sent"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the notification was sent"
+    }
+  },
+  "required": [
+    "user_email",
+    "type",
+    "title",
+    "message"
+  ]
+}

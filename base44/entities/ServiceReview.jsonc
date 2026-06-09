@@ -1,0 +1,33 @@
+{
+  "name": "ServiceReview",
+  "type": "object",
+  "properties": {
+    "service_id": {
+      "type": "string"
+    },
+    "reviewer_email": {
+      "type": "string"
+    },
+    "reviewer_name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "comment": {
+      "type": "string"
+    },
+    "would_recommend": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "service_id",
+    "reviewer_email",
+    "reviewer_name",
+    "rating"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "Favorite",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who favorited"
+    },
+    "pet_id": {
+      "type": "string",
+      "description": "ID of the favorited pet"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "lost_found",
+        "adoptable"
+      ],
+      "description": "Whether it's a lost/found pet or adoptable pet"
+    }
+  },
+  "required": [
+    "user_email",
+    "pet_id",
+    "pet_type"
+  ]
+}

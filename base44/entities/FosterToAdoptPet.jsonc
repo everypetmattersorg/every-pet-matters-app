@@ -1,0 +1,63 @@
+{
+  "name": "FosterToAdoptPet",
+  "type": "object",
+  "properties": {
+    "pet_id": {
+      "type": "string",
+      "description": "ID of the adoptable pet in foster-to-adopt program"
+    },
+    "pet_name": {
+      "type": "string",
+      "description": "Name of the pet"
+    },
+    "rescue_email": {
+      "type": "string",
+      "description": "Email of the rescue organization"
+    },
+    "foster_email": {
+      "type": "string",
+      "description": "Email of the current foster parent"
+    },
+    "foster_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date the foster period started"
+    },
+    "foster_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Expected date for adoption decision"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "fostering",
+        "ready_for_adoption",
+        "adopted",
+        "returned"
+      ],
+      "default": "fostering",
+      "description": "Current status in the foster-to-adopt pipeline"
+    },
+    "adoption_application_id": {
+      "type": "string",
+      "description": "ID of the adoption application if moving forward"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Notes about the foster experience and pet's behavior"
+    },
+    "is_emergency_foster": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this is an emergency foster situation"
+    }
+  },
+  "required": [
+    "pet_id",
+    "pet_name",
+    "rescue_email",
+    "foster_email",
+    "foster_start_date"
+  ]
+}

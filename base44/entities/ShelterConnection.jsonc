@@ -1,0 +1,117 @@
+{
+  "name": "ShelterConnection",
+  "type": "object",
+  "properties": {
+    "shelter_name": {
+      "type": "string",
+      "description": "Name of the shelter or rescue organization"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Primary contact person"
+    },
+    "contact_email": {
+      "type": "string",
+      "description": "Contact email"
+    },
+    "contact_phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "software_platform": {
+      "type": "string",
+      "description": "Shelter management software (Petfinder, ShelterLuv, RescueGroups, etc.)"
+    },
+    "api_key": {
+      "type": "string",
+      "description": "API key or access token for the platform",
+      "rls": {
+        "read": {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
+    "api_secret": {
+      "type": "string",
+      "description": "API secret if required",
+      "rls": {
+        "read": {
+          "user_condition": {
+            "role": "admin"
+          }
+        },
+        "write": {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      }
+    },
+    "organization_id": {
+      "type": "string",
+      "description": "Organization or shelter ID on the platform"
+    },
+    "status": {
+      "type": "string",
+      "description": "Connection status: pending, active, error, disconnected"
+    },
+    "last_sync": {
+      "type": "string",
+      "description": "ISO date of last successful sync"
+    },
+    "pets_synced": {
+      "type": "number",
+      "description": "Number of pets synced from this shelter"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes"
+    },
+    "shelterluv_adoptable_statuses": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ShelterLuv statuses to include (adoption available, stray in foster, available foster)",
+      "default": [
+        "adoption available",
+        "stray in foster",
+        "available foster"
+      ]
+    }
+  },
+  "required": [
+    "shelter_name",
+    "software_platform",
+    "contact_email"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

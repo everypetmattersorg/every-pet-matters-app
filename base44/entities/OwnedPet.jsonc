@@ -1,0 +1,145 @@
+{
+  "name": "OwnedPet",
+  "type": "object",
+  "properties": {
+    "owner_email": {
+      "type": "string",
+      "description": "Email of the owning user"
+    },
+    "name": {
+      "type": "string"
+    },
+    "pet_type": {
+      "type": "string",
+      "enum": [
+        "dog",
+        "cat",
+        "bird",
+        "rabbit",
+        "other"
+      ]
+    },
+    "breed": {
+      "type": "string"
+    },
+    "age_years": {
+      "type": "number"
+    },
+    "age_months": {
+      "type": "number"
+    },
+    "gender": {
+      "type": "string",
+      "enum": [
+        "male",
+        "female",
+        "unknown"
+      ]
+    },
+    "color": {
+      "type": "string"
+    },
+    "weight_lbs": {
+      "type": "number"
+    },
+    "bio": {
+      "type": "string",
+      "description": "A short personal bio or story about the pet"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "extra_photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional photo URLs"
+    },
+    "medical_history": {
+      "type": "string",
+      "description": "Vet visits, conditions, surgeries, etc."
+    },
+    "vaccinations": {
+      "type": "string",
+      "description": "Vaccination records summary"
+    },
+    "is_microchipped": {
+      "type": "boolean"
+    },
+    "microchip_id": {
+      "type": "string"
+    },
+    "spayed_neutered": {
+      "type": "boolean"
+    },
+    "allergies": {
+      "type": "string"
+    },
+    "medications": {
+      "type": "string"
+    },
+    "behavioral_notes": {
+      "type": "string",
+      "description": "Temperament, quirks, fears, triggers"
+    },
+    "good_with_kids": {
+      "type": "boolean"
+    },
+    "good_with_dogs": {
+      "type": "boolean"
+    },
+    "good_with_cats": {
+      "type": "boolean"
+    },
+    "energy_level": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "favorite_toys": {
+      "type": "string",
+      "description": "e.g. tennis ball, rope toy"
+    },
+    "favorite_activities": {
+      "type": "string",
+      "description": "e.g. hiking, fetch, swimming"
+    },
+    "feeding_schedule": {
+      "type": "string"
+    },
+    "food_brand": {
+      "type": "string"
+    },
+    "looking_for_sitter": {
+      "type": "boolean",
+      "default": false
+    },
+    "looking_for_trainer": {
+      "type": "boolean",
+      "default": false
+    },
+    "share_profile": {
+      "type": "boolean",
+      "default": false,
+      "description": "Make profile publicly shareable"
+    },
+    "vet_name": {
+      "type": "string"
+    },
+    "vet_phone": {
+      "type": "string"
+    },
+    "emergency_contact": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name",
+    "pet_type",
+    "owner_email"
+  ]
+}
