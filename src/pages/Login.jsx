@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,17 @@ export default function Login() {
   const [error, setError] = useState(null);
 
   const returnUrl = sessionStorage.getItem('login_return_url') || '/';
+
+  // After OAuth redirect, Supabase sets the session — detect it and forward the user.
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        sessionStorage.removeItem('login_return_url');
+        window.location.href = returnUrl;
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [returnUrl]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
