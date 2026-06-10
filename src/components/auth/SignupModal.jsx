@@ -4,16 +4,18 @@ import { supabase } from "@/api/supabaseClient";
 
 export default function SignupModal({ onClose }) {
   const handleGoogle = async () => {
+    sessionStorage.setItem('login_return_url', window.location.href);
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.href },
+      options: { redirectTo: `${window.location.origin}/Login` },
     });
   };
 
   const handleFacebook = async () => {
+    sessionStorage.setItem('login_return_url', window.location.href);
     await supabase.auth.signInWithOAuth({
       provider: 'facebook',
-      options: { redirectTo: window.location.href },
+      options: { redirectTo: `${window.location.origin}/Login` },
     });
   };
 
