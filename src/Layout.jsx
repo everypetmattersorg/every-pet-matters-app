@@ -35,6 +35,11 @@ export default function Layout({ children, currentPageName }) {
       }
     };
     fetchUser();
+
+    // Re-fetch user whenever profile is saved so banner updates immediately
+    const handleProfileUpdate = () => fetchUser();
+    window.addEventListener('profile-updated', handleProfileUpdate);
+    return () => window.removeEventListener('profile-updated', handleProfileUpdate);
   }, []);
 
   useEffect(() => {

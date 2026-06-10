@@ -80,6 +80,7 @@ export default function Profile() {
         }
       }
 
+      window.dispatchEvent(new Event('profile-updated'));
       toast.success('Profile saved!');
       setStep('details');
     } catch (err) {

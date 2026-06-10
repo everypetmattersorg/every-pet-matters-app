@@ -112,7 +112,8 @@ export default function UserProfile() {
       const myPets = await base44.entities.Pet.filter({ created_by: user.email });
       await Promise.all(myPets.map(pet => base44.entities.Pet.update(pet.id, { source: newOrg })));
     }
-    setUser(u => ({ ...u, affiliated_organization: newOrg }));
+    setUser(u => ({ ...u, affiliated_organization: newOrg, profile_complete: true }));
+    window.dispatchEvent(new Event('profile-updated'));
     toast.success('Profile updated successfully!');
     setSaving(false);
   };
