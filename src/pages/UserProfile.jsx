@@ -106,6 +106,7 @@ export default function UserProfile() {
       affiliated_organization: newOrg,
       organization_address: form.organization_address,
       bio: form.bio,
+      profile_complete: true,
     });
     if (newOrg && newOrg !== prevOrg) {
       const myPets = await base44.entities.Pet.filter({ created_by: user.email });
