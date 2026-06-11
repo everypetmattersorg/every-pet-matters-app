@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       gender: a.Sex || '',
       description: a.Description || '',
       photo_url: a.Photos?.[0]?.large || a.Photos?.[0]?.medium || '',
-      adoption_status: 'available',
+      adoption_status: 'adoptable',
       source: shelter_name || '',
       source_id: `shelterluv_${a.ID}`,
       url: a.AdoptionUrl || '',
