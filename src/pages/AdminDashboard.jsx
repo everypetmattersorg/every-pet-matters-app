@@ -268,11 +268,17 @@ function ConnectionsTab() {
     setSyncing(conn.id); setSyncStartTime(Date.now()); setElapsedTime(0);
     try {
       if (conn.software_platform === 'ShelterLuv') {
-        await base44.functions.invoke('syncShelterLuvAnimals', { connection_id: conn.id }, { timeout: 20 * 60 * 1000 });
+        const res = await fetch('/api/sync-shelterluv', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ connection_id: conn.id }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Sync failed');
+        toast.success(`Synced ${data.animals_synced ?? 0} animals for ${conn.shelter_name}!`);
       } else {
-        await base44.functions.invoke('syncAllPetPhotos', {});
+        toast.info(`Sync for ${conn.software_platform} is not yet supported.`);
       }
-      toast.success(`Sync triggered for ${conn.shelter_name}!`);
       queryClient.invalidateQueries({ queryKey: ['shelter-connections'] });
       queryClient.invalidateQueries({ queryKey: ['pets-sync-dashboard'] });
     } catch (err) {
