@@ -276,12 +276,7 @@ function ConnectionsTab() {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            connection_id: conn.id,
-            api_key: conn.api_key,
-            organization_id: conn.organization_id,
-            shelter_name: conn.shelter_name,
-          }),
+          body: JSON.stringify({ connection_id: conn.id }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Sync failed');
