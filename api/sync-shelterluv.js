@@ -10,20 +10,6 @@ async function supabaseGet(table, filter) {
   return res.json();
 }
 
-async function supabaseUpsert(table, rows, onConflict) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?on_conflict=${onConflict}`, {
-    method: 'POST',
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-      'Content-Type': 'application/json',
-      Prefer: 'resolution=merge-duplicates,return=minimal',
-    },
-    body: JSON.stringify(rows),
-  });
-  if (!res.ok) throw new Error(`Supabase upsert ${table} failed: ${res.status} ${await res.text()}`);
-}
-
 async function supabasePatch(table, id, data) {
   await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
     method: 'PATCH',
@@ -35,6 +21,16 @@ async function supabasePatch(table, id, data) {
     },
     body: JSON.stringify(data),
   });
+}
+
+async function fetchShelterLuvPage(api_key, offset, limit) {
+  const res = await fetch(
+    `https://www.shelterluv.com/api/v1/animals?offset=${offset}&limit=${limit}&status_type=publishable`,
+    { headers: { 'X-Api-Key': api_key } }
+  );
+  if (!res.ok) throw new Error(`ShelterLuv API ${res.status}: ${await res.text().then(t => t.slice(0, 200))}`);
+  const data = await res.json();
+  return { animals: data.animals || [], total: data.total_count || 0 };
 }
 
 export default async function handler(req, res) {
@@ -51,22 +47,17 @@ export default async function handler(req, res) {
     const { api_key, shelter_name } = conn;
     if (!api_key) return res.status(400).json({ error: 'No API key on connection' });
 
-    let offset = 0;
+    // Fetch first page to get total count
     const limit = 100;
-    let allAnimals = [];
+    const first = await fetchShelterLuvPage(api_key, 0, limit);
+    const total = first.total || first.animals.length;
 
-    while (true) {
-      const slRes = await fetch(
-        `https://www.shelterluv.com/api/v1/animals?offset=${offset}&limit=${limit}&status_type=publishable`,
-        { headers: { 'X-Api-Key': api_key } }
-      );
-      if (!slRes.ok) throw new Error(`ShelterLuv API ${slRes.status}: ${await slRes.text().then(t => t.slice(0, 200))}`);
-      const slData = await slRes.json();
-      const animals = slData.animals || [];
-      allAnimals = allAnimals.concat(animals);
-      if (animals.length < limit) break;
-      offset += limit;
-    }
+    // Fetch remaining pages in parallel
+    const pageCount = Math.ceil(total / limit);
+    const offsets = Array.from({ length: pageCount - 1 }, (_, i) => (i + 1) * limit);
+    const rest = await Promise.all(offsets.map(offset => fetchShelterLuvPage(api_key, offset, limit)));
+
+    const allAnimals = [first, ...rest].flatMap(p => p.animals);
 
     const pets = allAnimals.map((a) => ({
       name: a.Name || '',
@@ -82,9 +73,18 @@ export default async function handler(req, res) {
       url: a.AdoptionUrl || '',
     }));
 
-    for (let i = 0; i < pets.length; i += 50) {
-      await supabaseUpsert('pets', pets.slice(i, i + 50), 'source_id');
-    }
+    // Upsert all at once
+    const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/pets?on_conflict=source_id`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify(pets),
+    });
+    if (!upsertRes.ok) throw new Error(`Upsert failed: ${upsertRes.status} ${await upsertRes.text()}`);
 
     await supabasePatch('shelter_connections', connection_id, {
       last_sync: new Date().toISOString(),
