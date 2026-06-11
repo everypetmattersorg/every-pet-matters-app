@@ -83,7 +83,7 @@ export default async function handler(req, res) {
     }));
 
     for (let i = 0; i < pets.length; i += 50) {
-      await supabaseUpsert('pets', pets.slice(i, i + 50), 'source_id');
+      await supabaseUpsert('pets', pets.slice(i, i + 50), 'source%2Csource_id');
     }
 
     await supabasePatch('shelter_connections', connection_id, {

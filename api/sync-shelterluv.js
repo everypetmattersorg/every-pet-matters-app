@@ -74,7 +74,7 @@ export default async function handler(req, res) {
     }));
 
     // Upsert all at once
-    const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/pets?on_conflict=source_id`, {
+    const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/pets?on_conflict=source%2Csource_id`, {
       method: 'POST',
       headers: {
         apikey: SUPABASE_KEY,
