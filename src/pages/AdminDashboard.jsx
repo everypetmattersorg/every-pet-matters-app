@@ -267,8 +267,13 @@ function ConnectionsTab() {
   const handleForceSync = async (conn) => {
     setSyncing(conn.id); setSyncStartTime(Date.now()); setElapsedTime(0);
     try {
-      if (conn.software_platform?.toLowerCase() === 'shelterluv') {
-        const res = await fetch('/api/sync-shelterluv', {
+      const platform = conn.software_platform?.toLowerCase();
+      let endpoint = null;
+      if (platform === 'shelterluv') endpoint = '/api/sync-shelterluv';
+      else if (platform === 'adopt-a-pet') endpoint = '/api/sync-adoptapet';
+
+      if (endpoint) {
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ connection_id: conn.id }),
