@@ -2,57 +2,30 @@ export const config = { maxDuration: 60 };
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-);
-
-function fetchWithTimeout(url, options = {}, timeoutMs = 30000) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
-  return fetch(url, { ...options, signal: controller.signal })
-    .finally(() => clearTimeout(timer));
-}
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end('Method not allowed');
 
-  const { connection_id } = req.body || {};
-  if (!connection_id) return res.status(400).json({ error: 'connection_id is required' });
-
-  console.log('[shelterluv-sync] loading connection', connection_id);
-
-  const { data: conn, error: connErr } = await supabase
-    .from('shelter_connections')
-    .select('*')
-    .eq('id', connection_id)
-    .single();
-
-  if (connErr || !conn) {
-    console.error('[shelterluv-sync] connection not found', connErr?.message);
-    return res.status(404).json({ error: 'Connection not found: ' + (connErr?.message || '') });
-  }
-
-  const { api_key, shelter_name, software_platform } = conn;
-  console.log('[shelterluv-sync] platform:', software_platform, 'shelter:', shelter_name);
-
-  if (software_platform?.toLowerCase() !== 'shelterluv') {
-    return res.status(400).json({ error: `Sync not supported for platform: ${software_platform}` });
-  }
+  const { api_key, shelter_name, connection_id } = req.body || {};
+  if (!api_key) return res.status(400).json({ error: 'api_key is required' });
 
   try {
+    // Fetch animals from ShelterLuv API (paginated)
     let offset = 0;
     const limit = 100;
     let allAnimals = [];
 
     while (true) {
-      console.log('[shelterluv-sync] fetching offset', offset);
-      const slRes = await fetchWithTimeout(
-        `https://www.shelterluv.com/api/v1/animals?offset=${offset}&limit=${limit}&status_type=publishable`,
-        { headers: { 'X-Api-Key': api_key } },
-        25000
-      );
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 25000);
+      let slRes;
+      try {
+        slRes = await fetch(
+          `https://www.shelterluv.com/api/v1/animals?offset=${offset}&limit=${limit}&status_type=publishable`,
+          { headers: { 'X-Api-Key': api_key }, signal: controller.signal }
+        );
+      } finally {
+        clearTimeout(timer);
+      }
 
       if (!slRes.ok) {
         const errText = await slRes.text();
@@ -61,13 +34,12 @@ export default async function handler(req, res) {
 
       const slData = await slRes.json();
       const animals = slData.animals || [];
-      console.log('[shelterluv-sync] got', animals.length, 'animals at offset', offset);
       allAnimals = allAnimals.concat(animals);
-
       if (animals.length < limit) break;
       offset += limit;
     }
 
+    // Map to pets table schema
     const pets = allAnimals.map((a) => ({
       name: a.Name || '',
       species: a.Type || '',
@@ -82,32 +54,31 @@ export default async function handler(req, res) {
       url: a.AdoptionUrl || '',
     }));
 
-    console.log('[shelterluv-sync] upserting', pets.length, 'pets');
+    // Upsert via service role (bypasses RLS)
+    const supabase = createClient(
+      process.env.VITE_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+
     let upserted = 0;
-    const BATCH = 50;
-    for (let i = 0; i < pets.length; i += BATCH) {
-      const batch = pets.slice(i, i + BATCH);
-      const { error: upsertErr } = await supabase
+    for (let i = 0; i < pets.length; i += 50) {
+      const { error } = await supabase
         .from('pets')
-        .upsert(batch, { onConflict: 'source_id', ignoreDuplicates: false });
-      if (upsertErr) throw new Error('Upsert failed: ' + upsertErr.message);
-      upserted += batch.length;
+        .upsert(pets.slice(i, i + 50), { onConflict: 'source_id' });
+      if (error) throw new Error('DB upsert failed: ' + error.message);
+      upserted += Math.min(50, pets.length - i);
     }
 
-    await supabase
-      .from('shelter_connections')
-      .update({ last_sync: new Date().toISOString(), pets_synced: upserted, status: 'active' })
-      .eq('id', connection_id);
+    if (connection_id) {
+      await supabase
+        .from('shelter_connections')
+        .update({ last_sync: new Date().toISOString(), pets_synced: upserted, status: 'active' })
+        .eq('id', connection_id);
+    }
 
-    console.log('[shelterluv-sync] done:', upserted, 'synced');
-    return res.status(200).json({ success: true, animals_synced: upserted, shelter: shelter_name });
+    return res.status(200).json({ success: true, animals_synced: upserted });
   } catch (err) {
-    console.error('[shelterluv-sync] error:', err.message);
-    await supabase
-      .from('shelter_connections')
-      .update({ status: 'error', notes: `Last sync error: ${err.message}` })
-      .eq('id', connection_id);
-
     return res.status(500).json({ error: err.message });
   }
 }
