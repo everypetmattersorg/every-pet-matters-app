@@ -278,8 +278,10 @@ function ConnectionsTab() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ connection_id: conn.id }),
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Sync failed');
+        const text = await res.text();
+        console.log('[sync response]', res.status, text);
+        const data = text ? JSON.parse(text) : {};
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}: ${text.slice(0, 200)}`);
         toast.success(`Synced ${data.animals_synced ?? 0} animals for ${conn.shelter_name}!`);
       } else {
         toast.info(`Sync for ${conn.software_platform} is not yet supported.`);
