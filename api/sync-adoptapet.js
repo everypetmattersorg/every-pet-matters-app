@@ -55,14 +55,18 @@ export default async function handler(req, res) {
   if (!api_key || !organization_id) return res.status(400).json({ error: 'Missing api_key or organization_id on connection' });
 
   try {
-    const apRes = await fetch(
-      `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1`
-    );
-    if (!apRes.ok) throw new Error(`Adopt-a-Pet API ${apRes.status}: ${await apRes.text().then(t => t.slice(0, 200))}`);
-
-    const apData = await apRes.json();
-    const animals = apData.pets || apData.pet || [];
-    if (!Array.isArray(animals)) throw new Error('Unexpected Adopt-a-Pet response: ' + JSON.stringify(apData).slice(0, 200));
+    let allAnimals = [];
+    for (const species of ['dog', 'cat', 'rabbit', 'bird', 'smallfurry', 'horse', 'pig', 'reptile']) {
+      const apRes = await fetch(
+        `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1&species=${species}`
+      );
+      if (!apRes.ok) continue;
+      const apData = await apRes.json();
+      if (apData.status === 'fail') continue;
+      const animals = apData.pets || apData.pet || [];
+      if (Array.isArray(animals)) allAnimals = allAnimals.concat(animals);
+    }
+    const animals = allAnimals;
 
     const pets = animals.map((a) => ({
       name: a.pet_name || a.name || '',
