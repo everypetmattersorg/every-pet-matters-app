@@ -1,5 +1,3 @@
-export const config = { maxDuration: 60 };
-
 import { createClient } from '@supabase/supabase-js';
 
 export default async function handler(req, res) {
@@ -9,29 +7,14 @@ export default async function handler(req, res) {
   if (!api_key || !organization_id) return res.status(400).json({ error: 'api_key and organization_id are required' });
 
   try {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 25000);
-    let apRes;
-    try {
-      apRes = await fetch(
-        `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1`,
-        { signal: controller.signal }
-      );
-    } finally {
-      clearTimeout(timer);
-    }
-
-    if (!apRes.ok) {
-      const errText = await apRes.text();
-      throw new Error(`Adopt-a-Pet API ${apRes.status}: ${errText.slice(0, 300)}`);
-    }
+    const apRes = await fetch(
+      `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1`
+    );
+    if (!apRes.ok) throw new Error(`Adopt-a-Pet API ${apRes.status}: ${await apRes.text().then(t => t.slice(0, 200))}`);
 
     const apData = await apRes.json();
     const animals = apData.pets || apData.pet || [];
-
-    if (!Array.isArray(animals)) {
-      throw new Error('Unexpected Adopt-a-Pet response: ' + JSON.stringify(apData).slice(0, 200));
-    }
+    if (!Array.isArray(animals)) throw new Error('Unexpected Adopt-a-Pet response: ' + JSON.stringify(apData).slice(0, 200));
 
     const pets = animals.map((a) => ({
       name: a.pet_name || a.name || '',
@@ -55,16 +38,13 @@ export default async function handler(req, res) {
 
     let upserted = 0;
     for (let i = 0; i < pets.length; i += 50) {
-      const { error } = await supabase
-        .from('pets')
-        .upsert(pets.slice(i, i + 50), { onConflict: 'source_id' });
+      const { error } = await supabase.from('pets').upsert(pets.slice(i, i + 50), { onConflict: 'source_id' });
       if (error) throw new Error('DB upsert failed: ' + error.message);
       upserted += Math.min(50, pets.length - i);
     }
 
     if (connection_id) {
-      await supabase
-        .from('shelter_connections')
+      await supabase.from('shelter_connections')
         .update({ last_sync: new Date().toISOString(), pets_synced: upserted, status: 'active' })
         .eq('id', connection_id);
     }
