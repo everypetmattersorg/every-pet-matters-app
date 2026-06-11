@@ -4,12 +4,9 @@ const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 async function supabaseGet(table, filter) {
   const params = new URLSearchParams({ select: '*', ...filter });
   const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${params}`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`,
-    },
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` },
   });
-  if (!res.ok) throw new Error(`Supabase GET ${table} failed: ${res.status}`);
+  if (!res.ok) throw new Error(`Supabase GET ${table} ${res.status}: ${await res.text()}`);
   return res.json();
 }
 
@@ -28,7 +25,7 @@ async function supabaseUpsert(table, rows, onConflict) {
 }
 
 async function supabasePatch(table, id, data) {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
     method: 'PATCH',
     headers: {
       apikey: SUPABASE_KEY,
@@ -38,7 +35,6 @@ async function supabasePatch(table, id, data) {
     },
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error(`Supabase PATCH ${table} failed: ${res.status}`);
 }
 
 export default async function handler(req, res) {
@@ -47,15 +43,14 @@ export default async function handler(req, res) {
   const { connection_id } = req.body || {};
   if (!connection_id) return res.status(400).json({ error: 'connection_id is required' });
 
-  // Load connection using service role key
-  const rows = await supabaseGet('shelter_connections', { id: `eq.${connection_id}` });
-  const conn = rows?.[0];
-  if (!conn) return res.status(404).json({ error: 'Connection not found' });
-
-  const { api_key, shelter_name } = conn;
-  if (!api_key) return res.status(400).json({ error: 'No API key on connection' });
-
   try {
+    const rows = await supabaseGet('shelter_connections', { id: `eq.${connection_id}` });
+    const conn = rows?.[0];
+    if (!conn) return res.status(404).json({ error: 'Connection not found' });
+
+    const { api_key, shelter_name } = conn;
+    if (!api_key) return res.status(400).json({ error: 'No API key on connection' });
+
     let offset = 0;
     const limit = 100;
     let allAnimals = [];
