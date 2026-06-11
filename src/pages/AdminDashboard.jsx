@@ -267,7 +267,7 @@ function ConnectionsTab() {
   const handleForceSync = async (conn) => {
     setSyncing(conn.id); setSyncStartTime(Date.now()); setElapsedTime(0);
     try {
-      if (conn.software_platform === 'ShelterLuv') {
+      if (conn.software_platform?.toLowerCase() === 'shelterluv') {
         const res = await fetch('/api/sync-shelterluv', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

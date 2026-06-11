@@ -23,7 +23,7 @@ export default async function handler(req, res) {
 
   const { api_key, shelter_name, software_platform } = conn;
 
-  if (software_platform !== 'ShelterLuv') {
+  if (software_platform?.toLowerCase() !== 'shelterluv') {
     return res.status(400).json({ error: `Sync not supported for platform: ${software_platform}` });
   }
 
