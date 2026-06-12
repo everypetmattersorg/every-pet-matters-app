@@ -18,14 +18,18 @@ export default function Login() {
   const isRecovery = useRef(false);
 
   useEffect(() => {
-    // Check URL hash for recovery token (Supabase puts it there)
     const hash = window.location.hash;
-    if (hash.includes('type=recovery') || hash.includes('type=signup')) {
+    const search = window.location.search;
+    console.log('[login] hash:', hash, 'search:', search);
+
+    // Hash-based flow (older Supabase)
+    if (hash.includes('type=recovery')) {
       isRecovery.current = true;
       setMode('new-password');
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('[login] auth event:', event, 'session:', !!session);
       if (event === 'PASSWORD_RECOVERY') {
         isRecovery.current = true;
         setMode('new-password');
@@ -34,6 +38,17 @@ export default function Login() {
         window.location.href = returnUrl;
       }
     });
+
+    // PKCE flow: check if we have a session from a recovery code exchange
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('[login] getSession:', session?.user?.email, 'url search:', search);
+      if (session && search.includes('code=')) {
+        // A code was exchanged — this is a recovery/confirmation redirect
+        isRecovery.current = true;
+        setMode('new-password');
+      }
+    });
+
     return () => subscription.unsubscribe();
   }, [returnUrl]);
 
