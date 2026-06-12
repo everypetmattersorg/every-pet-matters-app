@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,18 +15,20 @@ export default function Login() {
   const [error, setError] = useState(null);
 
   const returnUrl = sessionStorage.getItem('login_return_url') || '/';
+  const isRecovery = useRef(false);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
+        isRecovery.current = true;
         setMode('new-password');
-      } else if (event === 'SIGNED_IN' && session && mode !== 'new-password') {
+      } else if (event === 'SIGNED_IN' && session && !isRecovery.current) {
         sessionStorage.removeItem('login_return_url');
         window.location.href = returnUrl;
       }
     });
     return () => subscription.unsubscribe();
-  }, [returnUrl, mode]);
+  }, [returnUrl]);
 
   const handleSetNewPassword = async (e) => {
     e.preventDefault();
