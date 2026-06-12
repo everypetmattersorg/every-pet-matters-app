@@ -5,9 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 export default function Login() {
-  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'reset'
+  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'reset' | 'new-password'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
@@ -15,16 +16,32 @@ export default function Login() {
 
   const returnUrl = sessionStorage.getItem('login_return_url') || '/';
 
-  // After OAuth redirect, Supabase sets the session — detect it and forward the user.
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
+      if (event === 'PASSWORD_RECOVERY') {
+        setMode('new-password');
+      } else if (event === 'SIGNED_IN' && session && mode !== 'new-password') {
         sessionStorage.removeItem('login_return_url');
         window.location.href = returnUrl;
       }
     });
     return () => subscription.unsubscribe();
-  }, [returnUrl]);
+  }, [returnUrl, mode]);
+
+  const handleSetNewPassword = async (e) => {
+    e.preventDefault();
+    if (newPassword.length < 6) { setError('Password must be at least 6 characters'); return; }
+    setLoading(true);
+    setError(null);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      setError(error.message);
+    } else {
+      setMessage('Password updated! You are now signed in.');
+      setTimeout(() => { window.location.href = '/'; }, 2000);
+    }
+    setLoading(false);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -89,7 +106,7 @@ export default function Login() {
             className="w-10 h-10"
           />
           <h1 className="text-2xl font-bold text-slate-800">
-            {mode === 'login' ? 'sign in' : mode === 'signup' ? 'create account' : 'reset password'}
+            {mode === 'login' ? 'sign in' : mode === 'signup' ? 'create account' : mode === 'new-password' ? 'set new password' : 'reset password'}
           </h1>
         </div>
 
@@ -104,7 +121,28 @@ export default function Login() {
           </div>
         )}
 
-        <form onSubmit={mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handleReset} className="space-y-4">
+        {mode === 'new-password' && (
+          <form onSubmit={handleSetNewPassword} className="space-y-4">
+            <div>
+              <Label htmlFor="new-password">new password</Label>
+              <Input
+                id="new-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                minLength={6}
+                placeholder="at least 6 characters"
+                className="mt-1"
+              />
+            </div>
+            <Button type="submit" disabled={loading} className="w-full rounded-xl text-slate-900 font-medium" style={{ backgroundColor: '#eab308' }}>
+              {loading ? 'saving...' : 'set new password'}
+            </Button>
+          </form>
+        )}
+
+        {mode !== 'new-password' && <form onSubmit={mode === 'login' ? handleLogin : mode === 'signup' ? handleSignup : handleReset} className="space-y-4">
           {mode === 'signup' && (
             <div>
               <Label htmlFor="fullName">full name</Label>
@@ -151,9 +189,10 @@ export default function Login() {
           >
             {loading ? 'please wait...' : mode === 'login' ? 'sign in' : mode === 'signup' ? 'create account' : 'send reset email'}
           </Button>
-        </form>
+        </form>}
 
-        {mode !== 'reset' && (
+
+        {mode !== 'reset' && mode !== 'new-password' && (
           <>
             <div className="relative flex items-center gap-3 my-4">
               <div className="flex-1 border-t border-slate-200" />
