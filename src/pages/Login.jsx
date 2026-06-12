@@ -18,6 +18,13 @@ export default function Login() {
   const isRecovery = useRef(false);
 
   useEffect(() => {
+    // Check URL hash for recovery token (Supabase puts it there)
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery') || hash.includes('type=signup')) {
+      isRecovery.current = true;
+      setMode('new-password');
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         isRecovery.current = true;
