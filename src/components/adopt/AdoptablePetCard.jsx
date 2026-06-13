@@ -50,9 +50,9 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
           )}
 
           {/* Source badge */}
-          {pet.rescue_name && (
+          {(pet.rescue_name || pet.source) && (
             <div className="absolute bottom-3 left-3">
-              <Badge className="bg-slate-700 text-white text-xs px-2 py-1">{pet.rescue_name}</Badge>
+              <Badge className="bg-slate-700 text-white text-xs px-2 py-1">{pet.rescue_name || pet.source}</Badge>
             </div>
           )}
 
