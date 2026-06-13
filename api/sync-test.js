@@ -14,7 +14,25 @@ export default async function handler(req, res) {
     { headers: { 'X-Api-Key': conn.api_key } }
   );
   const slData = await slRes.json();
-  const sample = slData.animals?.slice(0, 2).map(a => ({ name: a.Name, Photos: a.Photos }));
+  const sample = slData.animals?.slice(0, 2).map(a => ({
+    name: a.Name,
+    Breed: a.Breed,
+    PrimaryBreed: a.PrimaryBreed,
+    SecondaryBreed: a.SecondaryBreed,
+    Color: a.Color,
+    PrimaryColor: a.PrimaryColor,
+    Size: a.Size,
+    Age: a.Age,
+    IsGoodWithKids: a.IsGoodWithKids,
+    IsGoodWithDogs: a.IsGoodWithDogs,
+    IsGoodWithCats: a.IsGoodWithCats,
+    IsHouseTrained: a.IsHouseTrained,
+    IsFixed: a.IsFixed,
+    IsVaccinated: a.IsVaccinated,
+    Note: a.Note,
+    Notes: a.Notes,
+    Attributes: a.Attributes,
+  }));
 
   return res.status(200).json({ sample });
 }

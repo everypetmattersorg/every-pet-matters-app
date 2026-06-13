@@ -68,7 +68,7 @@ export default async function handler(req, res) {
       return {
         name: a.Name || '',
         species: a.Type || '',
-        breed: [a.PrimaryBreed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
+        breed: [a.PrimaryBreed || a.Breed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
         age: a.Age != null ? String(a.Age) : '',
         age_years: age_years || null,
         age_months: (age_years !== null && age_months > 0) ? age_months : null,
