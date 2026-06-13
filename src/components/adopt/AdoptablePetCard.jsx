@@ -27,11 +27,12 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
     setShowShareMenu(false);
   };
 
-  const ageDisplay = pet.age_years
-    ? `${pet.age_years}y`
-    : pet.age_months
-    ? `${pet.age_months}m`
-    : pet.age || null;
+  const ageDisplay = (() => {
+    if (pet.age_years && pet.age_months) return `${pet.age_years} yr ${pet.age_months} mo`;
+    if (pet.age_years) return `${pet.age_years} ${pet.age_years === 1 ? 'year' : 'years'}`;
+    if (pet.age_months) return `${pet.age_months} ${pet.age_months === 1 ? 'month' : 'months'}`;
+    return pet.age || null;
+  })();
 
   const location =
     pet.rescue_city && pet.rescue_state
@@ -52,7 +53,9 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
           {/* Source badge */}
           {(pet.rescue_name || pet.source) && (
             <div className="absolute bottom-3 left-3">
-              <Badge className="bg-slate-700 text-white text-xs px-2 py-1">{pet.rescue_name || pet.source}</Badge>
+              <span style={{ backgroundColor: '#eab308', color: '#fff', fontSize: '11px', fontWeight: 600, padding: '2px 8px', borderRadius: '4px' }}>
+                {pet.rescue_name || pet.source}
+              </span>
             </div>
           )}
 
