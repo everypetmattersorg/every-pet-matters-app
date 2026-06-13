@@ -59,25 +59,41 @@ export default async function handler(req, res) {
 
     const allAnimals = [first, ...rest].flatMap(p => p.animals);
 
+    const toYesNo = (val) => val === true ? 'yes' : val === false ? 'no' : null;
+
     const pets = allAnimals.map((a) => {
       const ageMonths = typeof a.Age === 'number' ? a.Age : parseInt(a.Age, 10);
       const age_years = !isNaN(ageMonths) ? Math.floor(ageMonths / 12) : null;
       const age_months = !isNaN(ageMonths) ? ageMonths % 12 : null;
       return {
-      name: a.Name || '',
-      species: a.Type || '',
-      breed: [a.PrimaryBreed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
-      age: a.Age || '',
-      age_years: age_years || null,
-      age_months: (age_years !== null && age_months > 0) ? age_months : null,
-      gender: a.Sex || '',
-      description: a.Description || '',
-      photo_url: Array.isArray(a.Photos) ? (a.Photos[0] || '') : (a.Photos?.[0]?.large || a.Photos?.[0]?.medium || ''),
-      adoption_status: 'Available',
-      source: shelter_name || '',
-      source_id: `shelterluv_${a.ID}`,
-      url: a.AdoptionUrl || '',
-    };});
+        name: a.Name || '',
+        species: a.Type || '',
+        breed: [a.PrimaryBreed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
+        age: a.Age != null ? String(a.Age) : '',
+        age_years: age_years || null,
+        age_months: (age_years !== null && age_months > 0) ? age_months : null,
+        gender: a.Sex || '',
+        color: a.PrimaryColor || a.Color || '',
+        size: a.Size || '',
+        weight: a.Weight ? parseFloat(a.Weight) : null,
+        description: a.Description || '',
+        notes: a.Note || a.Notes || '',
+        photo_url: Array.isArray(a.Photos) ? (a.Photos[0] || '') : (a.Photos?.[0]?.large || a.Photos?.[0]?.medium || ''),
+        adoption_status: 'Available',
+        source: shelter_name || '',
+        rescue_name: shelter_name || '',
+        source_id: `shelterluv_${a.ID}`,
+        url: a.AdoptionUrl || '',
+        vaccinated: a.IsVaccinated ?? null,
+        spayed_neutered: a.IsFixed ?? a.SpayedNeutered ?? null,
+        special_needs: a.HasSpecialNeeds ?? null,
+        urgent: a.IsUrgent ?? null,
+        house_trained: a.IsHouseTrained ?? null,
+        kid_friendly: toYesNo(a.IsGoodWithKids ?? a.GoodWithKids),
+        dog_friendly: toYesNo(a.IsGoodWithDogs ?? a.GoodWithDogs),
+        cat_friendly: toYesNo(a.IsGoodWithCats ?? a.GoodWithCats),
+      };
+    });
 
     // Upsert all at once
     const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/pets?on_conflict=source%2Csource_id`, {

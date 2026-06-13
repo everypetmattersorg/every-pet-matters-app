@@ -154,7 +154,7 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
             )}
 
             {/* Temperament & Compatibility */}
-            {(pet.energy_level || pet.good_with_kids != null || pet.good_with_dogs != null || pet.good_with_cats != null || pet.house_trained != null || pet.special_needs) && (
+            {(pet.energy_level || pet.kid_friendly || pet.dog_friendly || pet.cat_friendly || pet.house_trained != null || pet.vaccinated != null || pet.spayed_neutered != null || pet.special_needs) && (
               <div>
                 <h3 className="font-semibold text-slate-700 mb-2 text-sm">Temperament & Compatibility</h3>
                 <div className="space-y-2">
@@ -167,28 +167,40 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
                       </div>
                     </div>
                   )}
-                  {pet.good_with_kids != null && (
+                  {pet.kid_friendly && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-                      <Users className="w-4 h-4 shrink-0" style={{ color: pet.good_with_kids ? "#059669" : "#dc2626" }} />
-                      <p className="text-sm text-slate-800">{pet.good_with_kids ? "✓ Good with children" : "✗ Not ideal for young children"}</p>
+                      <Users className="w-4 h-4 shrink-0" style={{ color: pet.kid_friendly === 'yes' ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.kid_friendly === 'yes' ? "✓ Good with children" : pet.kid_friendly === 'no' ? "✗ Not ideal for young children" : "~ May be okay with children"}</p>
                     </div>
                   )}
-                  {pet.good_with_dogs != null && (
+                  {pet.dog_friendly && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.good_with_dogs ? "#059669" : "#dc2626" }} />
-                      <p className="text-sm text-slate-800">{pet.good_with_dogs ? "✓ Good with other dogs" : "✗ Prefers to be only dog"}</p>
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.dog_friendly === 'yes' ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.dog_friendly === 'yes' ? "✓ Good with other dogs" : pet.dog_friendly === 'no' ? "✗ Prefers to be only dog" : "~ May be okay with dogs"}</p>
                     </div>
                   )}
-                  {pet.good_with_cats != null && (
+                  {pet.cat_friendly && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.good_with_cats ? "#059669" : "#dc2626" }} />
-                      <p className="text-sm text-slate-800">{pet.good_with_cats ? "✓ Good with cats" : "✗ Not suitable with cats"}</p>
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.cat_friendly === 'yes' ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.cat_friendly === 'yes' ? "✓ Good with cats" : pet.cat_friendly === 'no' ? "✗ Not suitable with cats" : "~ May be okay with cats"}</p>
                     </div>
                   )}
                   {pet.house_trained != null && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
                       <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.house_trained ? "#059669" : "#dc2626" }} />
                       <p className="text-sm text-slate-800">{pet.house_trained ? "✓ House trained" : "✗ Not yet house trained"}</p>
+                    </div>
+                  )}
+                  {pet.vaccinated != null && (
+                    <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.vaccinated ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.vaccinated ? "✓ Vaccinated" : "✗ Not yet vaccinated"}</p>
+                    </div>
+                  )}
+                  {pet.spayed_neutered != null && (
+                    <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.spayed_neutered ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.spayed_neutered ? "✓ Spayed / Neutered" : "✗ Not yet spayed / neutered"}</p>
                     </div>
                   )}
                   {pet.special_needs && (

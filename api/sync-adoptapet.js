@@ -68,18 +68,35 @@ export default async function handler(req, res) {
     }
     const animals = allAnimals;
 
+    const toYesNo = (val) => val === true || val === 'yes' || val === '1' || val === 1 ? 'yes'
+      : val === false || val === 'no' || val === '0' || val === 0 ? 'no' : null;
+
     const pets = animals.map((a) => ({
       name: a.pet_name || a.name || '',
       species: a.species || a.pet_type || '',
       breed: [a.primary_breed, a.secondary_breed].filter(Boolean).join(' / ') || a.breed || '',
       age: a.age || '',
       gender: a.sex || a.gender || '',
-      description: a.description || '',
+      color: a.color || a.primary_color || '',
+      size: a.size || '',
+      weight: a.weight ? parseFloat(a.weight) : null,
+      description: a.description || a.bio || '',
+      notes: a.notes || '',
       photo_url: a.photo?.large || a.large_results_photo_url || a.thumbnail_url || '',
       adoption_status: 'Available',
       source: shelter_name || '',
+      rescue_name: shelter_name || '',
+      rescue_city: a.city || '',
+      rescue_state: a.state || a.state_code || '',
       source_id: `adoptapet_${a.id || a.pet_id}`,
       url: a.detail_url || a.url || '',
+      vaccinated: a.shots_current != null ? Boolean(a.shots_current) : null,
+      spayed_neutered: a.altered != null ? Boolean(a.altered) : null,
+      special_needs: a.special_needs != null ? Boolean(a.special_needs) : null,
+      house_trained: a.house_trained != null ? Boolean(a.house_trained) : null,
+      kid_friendly: toYesNo(a.good_with_kids ?? a.children),
+      dog_friendly: toYesNo(a.good_with_dogs ?? a.dogs),
+      cat_friendly: toYesNo(a.good_with_cats ?? a.cats),
     }));
 
     for (let i = 0; i < pets.length; i += 50) {
