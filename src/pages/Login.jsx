@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/api/supabaseClient';
+
+// Subscribe at module level so we catch PASSWORD_RECOVERY before the component mounts
+let _recoveryDetected = false;
+supabase.auth.onAuthStateChange((event) => {
+  if (event === 'PASSWORD_RECOVERY') {
+    _recoveryDetected = true;
+  }
+});
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,34 +26,26 @@ export default function Login() {
   const isRecovery = useRef(false);
 
   useEffect(() => {
-    const hash = window.location.hash;
-    const search = window.location.search;
-    console.log('[login] hash:', hash, 'search:', search);
+    // Check if recovery was detected before this component mounted
+    if (_recoveryDetected) {
+      isRecovery.current = true;
+      _recoveryDetected = false;
+      setMode('new-password');
+    }
 
-    // Hash-based flow (older Supabase)
-    if (hash.includes('type=recovery')) {
+    // Also detect from URL: bare # means Supabase just cleared a recovery hash
+    if (window.location.href.endsWith('#')) {
       isRecovery.current = true;
       setMode('new-password');
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('[login] auth event:', event, 'session:', !!session);
       if (event === 'PASSWORD_RECOVERY') {
         isRecovery.current = true;
         setMode('new-password');
       } else if (event === 'SIGNED_IN' && session && !isRecovery.current) {
         sessionStorage.removeItem('login_return_url');
         window.location.href = returnUrl;
-      }
-    });
-
-    // PKCE flow: check if we have a session from a recovery code exchange
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('[login] getSession:', session?.user?.email, 'url search:', search);
-      if (session && search.includes('code=')) {
-        // A code was exchanged — this is a recovery/confirmation redirect
-        isRecovery.current = true;
-        setMode('new-password');
       }
     });
 
