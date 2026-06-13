@@ -67,11 +67,6 @@ export default function PetDashboard() {
 
   const handleManualSync = async () => {
     setSyncing(true);
-    try {
-      await base44.functions.invoke('syncAllPetPhotos', {});
-    } catch (err) {
-      console.error('Sync failed:', err);
-    }
     await refetch();
     setSyncing(false);
   };

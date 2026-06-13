@@ -1,23 +1,27 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, ArrowLeft, Send, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import MessageBubble from '@/components/agents/MessageBubble';
+
+const SYSTEM_CONTEXT = `You are an AI assistant for animal rescue organizations and shelters using the Every Pet Matters platform. You help with:
+- Writing compelling pet adoption descriptions
+- Drafting social media posts about pets and events
+- Suggesting adoption matches based on applicant and pet details
+- General rescue operations advice
+
+Be warm, concise, and focused on helping animals find homes.`;
 
 export default function RescueAIAssistant() {
   const [user, setUser] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [initialized, setInitialized] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Fetch user
   useEffect(() => {
     base44.auth.me()
       .then(setUser)
@@ -25,60 +29,40 @@ export default function RescueAIAssistant() {
       .finally(() => setLoadingUser(false));
   }, []);
 
-  // Initialize conversation
-  useEffect(() => {
-    if (user && !initialized) {
-      initializeConversation();
-    }
-  }, [user, initialized]);
-
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const initializeConversation = async () => {
-    try {
-      const conv = await base44.agents.createConversation({
-        agent_name: 'rescueAIAssistant',
-        metadata: {
-          name: `${user.full_name || 'Rescue'} AI Assistant`,
-          description: 'AI assistance for pet descriptions, social media, and matching',
-        },
-      });
-      setConversation(conv);
-      setMessages(conv.messages || []);
-      subscribeToUpdates(conv.id);
-      setInitialized(true);
-    } catch (err) {
-      console.error('Failed to initialize conversation:', err);
-    }
-  };
-
-  const subscribeToUpdates = (conversationId) => {
-    const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
-      setMessages(data.messages || []);
-    });
-    return unsubscribe;
-  };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!input.trim() || !conversation) return;
+    const text = input.trim();
+    if (!text || loading) return;
+
+    const userMessage = { role: 'user', content: text };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setInput('');
+    setLoading(true);
 
     try {
-      setLoading(true);
-      const userMessage = input.trim();
-      setInput('');
+      // Build prompt with full conversation history for context
+      const history = updatedMessages
+        .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+        .join('\n\n');
 
-      await base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: userMessage,
+      const prompt = `${SYSTEM_CONTEXT}\n\nConversation so far:\n${history}\n\nAssistant:`;
+
+      const res = await fetch('/api/invoke-llm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
       });
 
-      // Messages will update via subscription
-    } catch (err) {
-      console.error('Failed to send message:', err);
+      const data = await res.json();
+      const reply = data.result || 'Sorry, I was unable to generate a response.';
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
+    } catch {
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Please try again.' }]);
     } finally {
       setLoading(false);
     }
@@ -156,8 +140,28 @@ export default function RescueAIAssistant() {
             ) : (
               <>
                 {messages.map((msg, idx) => (
-                  <MessageBubble key={idx} message={msg} />
+                  <div
+                    key={idx}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap ${
+                        msg.role === 'user'
+                          ? 'bg-blue-600 text-white rounded-br-sm'
+                          : 'bg-slate-100 text-slate-800 rounded-bl-sm'
+                      }`}
+                    >
+                      {msg.content}
+                    </div>
+                  </div>
                 ))}
+                {loading && (
+                  <div className="flex justify-start">
+                    <div className="bg-slate-100 rounded-2xl rounded-bl-sm px-4 py-3">
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                    </div>
+                  </div>
+                )}
                 <div ref={messagesEndRef} />
               </>
             )}
@@ -178,11 +182,7 @@ export default function RescueAIAssistant() {
                 disabled={loading || !input.trim()}
                 className="bg-blue-600 hover:bg-blue-700"
               >
-                {loading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
+                <Send className="w-4 h-4" />
               </Button>
             </form>
           </div>

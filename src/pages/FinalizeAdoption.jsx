@@ -92,13 +92,15 @@ export default function FinalizeAdoption() {
         });
       }
 
-      // Send notification to adopter
-      await base44.functions.invoke("sendNotification", {
-        user_email: application.adopter_email,
-        type: "system",
-        title: "Adoption Finalized!",
-        message: `Congratulations! Your adoption of ${pet.name} has been finalized. Welcome to the family!`,
-        action_url: "/MyAdoptedPets",
+      // Send email notification to adopter
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: application.adopter_email,
+          subject: `Adoption Finalized — Welcome, ${pet.name}!`,
+          html: `<p>Hi ${application.adopter_name},</p><p>Congratulations! Your adoption of <strong>${pet.name}</strong> has been finalized. Welcome to the family!</p><p>You can track ${pet.name}'s journey at <a href="/MyAdoptedPets">My Adopted Pets</a>.</p>`,
+        }),
       });
 
       return { success: true };

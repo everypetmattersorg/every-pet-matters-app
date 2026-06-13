@@ -22,16 +22,16 @@ export default function MyAdoptedPets() {
   }, []);
 
   const { data: adoptedPets = [], isLoading: petsLoading } = useQuery({
-    queryKey: ["adoptedPets", user?.email],
+    queryKey: ["adoptedPets", user?.id],
     queryFn: async () => {
-      if (!user?.email) return [];
+      if (!user?.id) return [];
       const pets = await base44.entities.AdoptablePet.filter({
         status: "adopted",
-        created_by: user.email
+        created_by: user.id
       }, "-created_date");
       return pets;
     },
-    enabled: !!user?.email,
+    enabled: !!user?.id,
   });
 
   const { data: updates = {} } = useQuery({

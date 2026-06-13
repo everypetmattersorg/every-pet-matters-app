@@ -17,6 +17,7 @@ import ShelterDetail from './pages/ShelterDetail';
 import ShelterDirectory from './pages/ShelterDirectory';
 import ShelterPortal from './pages/ShelterPortal';
 import ShelterSyncDashboard from './pages/ShelterSyncDashboard';
+import RescueAIAssistant from './pages/RescueAIAssistant';
 import UserProfile from './pages/UserProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import UserDirectory from './pages/UserDirectory';
@@ -85,7 +86,7 @@ const AuthenticatedApp = () => {
       <Route path="/ShelterDirectory" element={<LayoutWrapper currentPageName="ShelterDirectory"><ShelterDirectory /></LayoutWrapper>} />
       <Route path="/ShelterPortal" element={<LayoutWrapper currentPageName="ShelterPortal"><ShelterPortal /></LayoutWrapper>} />
       <Route path="/ShelterSyncDashboard" element={<LayoutWrapper currentPageName="ShelterSyncDashboard"><ShelterSyncDashboard /></LayoutWrapper>} />
-      <Route path="/RescueAIAssistant" element={<LayoutWrapper currentPageName="RescueAIAssistant"><ShelterPortal /></LayoutWrapper>} />
+      <Route path="/RescueAIAssistant" element={<LayoutWrapper currentPageName="RescueAIAssistant"><RescueAIAssistant /></LayoutWrapper>} />
       <Route path="/UserProfile" element={<LayoutWrapper currentPageName="UserProfile"><UserProfile /></LayoutWrapper>} />
       <Route path="/AdminDashboard" element={<LayoutWrapper currentPageName="AdminDashboard"><AdminDashboard /></LayoutWrapper>} />
       <Route path="/UserDirectory" element={<LayoutWrapper currentPageName="UserDirectory"><UserDirectory /></LayoutWrapper>} />
