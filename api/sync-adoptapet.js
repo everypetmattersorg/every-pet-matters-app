@@ -83,6 +83,7 @@ export default async function handler(req, res) {
       description: a.description || a.bio || '',
       notes: a.notes || '',
       photo_url: a.photo?.large || a.large_results_photo_url || a.thumbnail_url || '',
+      shelter_status: a.status || a.adoption_status || null,
       adoption_status: 'Available',
       source: shelter_name || '',
       rescue_name: shelter_name || '',

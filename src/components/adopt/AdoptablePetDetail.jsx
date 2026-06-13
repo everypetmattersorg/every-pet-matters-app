@@ -99,13 +99,18 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
           {/* All info */}
           <div className="p-5 space-y-5">
 
-            {/* Shelter Location */}
-            {(shelterName || shelterLocation) && (
-              <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg">
+            {/* Shelter Location + Status */}
+            {(shelterName || shelterLocation || pet.shelter_status) && (
+              <div className="flex items-start justify-between gap-2 p-3 bg-slate-50 rounded-lg">
                 <div>
                   {shelterName && <p className="font-semibold text-slate-800 text-sm">{shelterName}</p>}
                   {shelterLocation && <p className="text-xs text-slate-500 mt-0.5">{shelterLocation}</p>}
                 </div>
+                {pet.shelter_status && (
+                  <span className="shrink-0 text-xs font-medium px-2 py-1 rounded-full bg-green-100 text-green-800 capitalize">
+                    {pet.shelter_status}
+                  </span>
+                )}
               </div>
             )}
 

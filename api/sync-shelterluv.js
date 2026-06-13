@@ -98,6 +98,7 @@ export default async function handler(req, res) {
         description: a.Description || '',
         notes: a.Note || a.Notes || '',
         photo_url: a.CoverPhoto || (Array.isArray(a.Photos) ? a.Photos[0] : '') || '',
+        shelter_status: (a.Status || '').trim() || null,
         adoption_status: 'Available',
         source: shelter_name || '',
         rescue_name: shelter_name || '',

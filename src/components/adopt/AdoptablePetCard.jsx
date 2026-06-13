@@ -90,7 +90,14 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
         {/* Content */}
         <CardContent className="p-4 flex-1 flex flex-col">
           <div className="mb-3">
-            <h3 className="font-semibold text-base text-slate-800">{pet.name}</h3>
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-semibold text-base text-slate-800">{pet.name}</h3>
+              {pet.shelter_status && (
+                <span className="shrink-0 text-xs font-medium px-2 py-0.5 rounded-full bg-green-100 text-green-800 capitalize">
+                  {pet.shelter_status}
+                </span>
+              )}
+            </div>
             {pet.breed && (
               <p className="text-xs text-slate-500 mt-0.5">{pet.breed}</p>
             )}
