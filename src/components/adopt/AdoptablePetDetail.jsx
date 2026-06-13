@@ -19,6 +19,8 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
   const contact_phone = pet.rescue_phone || pet.contact_phone;
   const contact_email = pet.rescue_email || pet.contact_email;
   const contact_website = pet.rescue_website || pet.url;
+  const shelterName = pet.rescue_name || pet.source;
+  const shelterLocation = [pet.rescue_city, pet.rescue_state].filter(Boolean).join(', ');
   const petType = pet.pet_type || pet.species;
   const mainPhoto = pet.photo_url || pet.photo_urls?.[0];
   const extraPhotos = pet.extra_photos || pet.photo_urls?.slice(1) || [];
@@ -97,6 +99,16 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
           {/* All info */}
           <div className="p-5 space-y-5">
 
+            {/* Shelter Location */}
+            {(shelterName || shelterLocation) && (
+              <div className="flex items-start gap-2 p-3 bg-slate-50 rounded-lg">
+                <div>
+                  {shelterName && <p className="font-semibold text-slate-800 text-sm">{shelterName}</p>}
+                  {shelterLocation && <p className="text-xs text-slate-500 mt-0.5">{shelterLocation}</p>}
+                </div>
+              </div>
+            )}
+
             {/* Basic Info */}
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -125,7 +137,7 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
               )}
             </div>
 
-            {/* Description */}
+            {/* Description / Bio */}
             {pet.description && (
               <div>
                 <h3 className="font-semibold text-slate-700 mb-1.5 text-sm">About {pet.name}</h3>
@@ -133,36 +145,50 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
               </div>
             )}
 
-            {/* Temperament */}
-            {(pet.energy_level || pet.good_with_kids !== undefined || pet.good_with_dogs !== undefined || pet.good_with_cats !== undefined || pet.special_needs) && (
+            {/* Notes */}
+            {pet.notes && (
               <div>
-                <h3 className="font-semibold text-slate-700 mb-2 text-sm">Temperament & Needs</h3>
+                <h3 className="font-semibold text-slate-700 mb-1.5 text-sm">Notes</h3>
+                <p className="text-slate-600 leading-relaxed text-sm">{pet.notes}</p>
+              </div>
+            )}
+
+            {/* Temperament & Compatibility */}
+            {(pet.energy_level || pet.good_with_kids != null || pet.good_with_dogs != null || pet.good_with_cats != null || pet.house_trained != null || pet.special_needs) && (
+              <div>
+                <h3 className="font-semibold text-slate-700 mb-2 text-sm">Temperament & Compatibility</h3>
                 <div className="space-y-2">
                   {pet.energy_level && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
                       <Zap className="w-4 h-4 text-amber-600 shrink-0" />
                       <div>
                         <p className="text-sm font-medium text-slate-800">Energy Level</p>
-                        <p className="text-xs text-slate-600">{energyLabel[pet.energy_level]}</p>
+                        <p className="text-xs text-slate-600">{energyLabel[pet.energy_level] || pet.energy_level}</p>
                       </div>
                     </div>
                   )}
-                  {pet.good_with_kids !== undefined && (
+                  {pet.good_with_kids != null && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
                       <Users className="w-4 h-4 shrink-0" style={{ color: pet.good_with_kids ? "#059669" : "#dc2626" }} />
                       <p className="text-sm text-slate-800">{pet.good_with_kids ? "✓ Good with children" : "✗ Not ideal for young children"}</p>
                     </div>
                   )}
-                  {pet.good_with_dogs !== undefined && (
+                  {pet.good_with_dogs != null && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
                       <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.good_with_dogs ? "#059669" : "#dc2626" }} />
                       <p className="text-sm text-slate-800">{pet.good_with_dogs ? "✓ Good with other dogs" : "✗ Prefers to be only dog"}</p>
                     </div>
                   )}
-                  {pet.good_with_cats !== undefined && (
+                  {pet.good_with_cats != null && (
                     <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
                       <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.good_with_cats ? "#059669" : "#dc2626" }} />
                       <p className="text-sm text-slate-800">{pet.good_with_cats ? "✓ Good with cats" : "✗ Not suitable with cats"}</p>
+                    </div>
+                  )}
+                  {pet.house_trained != null && (
+                    <div className="flex items-center gap-2 p-3 bg-slate-50 rounded-lg">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" style={{ color: pet.house_trained ? "#059669" : "#dc2626" }} />
+                      <p className="text-sm text-slate-800">{pet.house_trained ? "✓ House trained" : "✗ Not yet house trained"}</p>
                     </div>
                   )}
                   {pet.special_needs && (
