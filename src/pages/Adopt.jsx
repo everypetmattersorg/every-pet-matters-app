@@ -44,14 +44,20 @@ export default function Adopt() {
 
   const { data: adoptablePets = [], isLoading: adoptableLoading } = useQuery({
     queryKey: ["adoptable-pets"],
-    queryFn: () => base44.entities.AdoptablePet.filter({ status: "available" }, "-created_date", 100)
+    queryFn: async () => {
+      const all = await base44.entities.AdoptablePet.filter({ status: "available" }, "-created_date", 100);
+      return all.filter(p => p.status === "available");
+    }
   });
 
   const { data: syncedPets = [], isLoading: syncedLoading } = useQuery({
     queryKey: ["synced-adoption-pets"],
     queryFn: async () => {
       const allPets = await base44.entities.Pet.list("-created_date", 500);
-      return allPets.filter(p => p.adoption_status === "Available" && (p.url || p.source_id));
+      return allPets.filter(p =>
+        p.adoption_status === "Available" &&
+        (p.url || p.source_id)
+      );
     }
   });
 
@@ -91,12 +97,12 @@ export default function Adopt() {
       pet.rescue_name?.toLowerCase().includes(filters.location.toLowerCase())
     )) return false;
 
-    if (filters.good_with_kids === "yes" && !pet.good_with_kids) return false;
-    if (filters.good_with_kids === "no" && pet.good_with_kids) return false;
-    if (filters.good_with_dogs === "yes" && !pet.good_with_dogs) return false;
-    if (filters.good_with_dogs === "no" && pet.good_with_dogs) return false;
-    if (filters.good_with_cats === "yes" && !pet.good_with_cats) return false;
-    if (filters.good_with_cats === "no" && pet.good_with_cats) return false;
+    if (filters.good_with_kids === "yes" && pet.kid_friendly !== "yes") return false;
+    if (filters.good_with_kids === "no" && pet.kid_friendly !== "no") return false;
+    if (filters.good_with_dogs === "yes" && pet.dog_friendly !== "yes") return false;
+    if (filters.good_with_dogs === "no" && pet.dog_friendly !== "no") return false;
+    if (filters.good_with_cats === "yes" && pet.cat_friendly !== "yes") return false;
+    if (filters.good_with_cats === "no" && pet.cat_friendly !== "no") return false;
 
     if (filters.urgent === "yes" && !pet.is_urgent) return false;
     if (filters.urgent === "no" && pet.is_urgent) return false;
