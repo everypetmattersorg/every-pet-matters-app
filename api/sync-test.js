@@ -35,13 +35,18 @@ export default async function handler(req, res) {
     result.adoptapet_conn = 'not found';
   }
 
-  // Check what's actually in the pets table
+  // Check shelter_status values present in the pets table
   const petsRes = await fetch(
-    `${supabaseUrl}/rest/v1/pets?select=id,name,source,shelter_status,adoption_status&limit=5&order=created_date.desc`,
+    `${supabaseUrl}/rest/v1/pets?select=shelter_status&adoption_status=eq.Available`,
     { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
   );
-  const petsCheck = await petsRes.json();
-  result.pets_sample = petsCheck;
+  const petsRaw = await petsRes.json();
+  const statusCounts = {};
+  for (const p of (Array.isArray(petsRaw) ? petsRaw : [])) {
+    const s = p.shelter_status || '(null)';
+    statusCounts[s] = (statusCounts[s] || 0) + 1;
+  }
+  result.shelter_status_counts = statusCounts;
 
   return res.status(200).json({ platforms, ...result });
 }
