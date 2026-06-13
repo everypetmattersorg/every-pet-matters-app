@@ -91,6 +91,9 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
         <CardContent className="p-4 flex-1 flex flex-col">
           <div className="mb-3">
             <h3 className="font-semibold text-base text-slate-800">{pet.name}</h3>
+            {pet.breed && (
+              <p className="text-xs text-slate-500 mt-0.5">{pet.breed}</p>
+            )}
             {location && (
               <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                 <MapPin className="w-3 h-3" />{location}
