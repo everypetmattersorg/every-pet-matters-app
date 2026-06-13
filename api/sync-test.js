@@ -23,12 +23,16 @@ export default async function handler(req, res) {
   }
 
   if (apConn) {
+    result.adoptapet_conn = { has_api_key: !!apConn.api_key, organization_id: apConn.organization_id };
     const apRes = await fetch(
       `https://api.adoptapet.com/search/pet_search?key=${apConn.api_key}&shelter_id=${apConn.organization_id}&v=2&output=json&count=1&start=1&species=dog`
     );
     const apData = await apRes.json();
+    result.adoptapet_response = apData;
     const pets = apData.pets || apData.pet || [];
-    result.adoptapet_raw = Array.isArray(pets) ? pets[0] : null;
+    result.adoptapet_raw = Array.isArray(pets) ? pets[0] : (pets || null);
+  } else {
+    result.adoptapet_conn = 'not found';
   }
 
   return res.status(200).json({ platforms, ...result });
