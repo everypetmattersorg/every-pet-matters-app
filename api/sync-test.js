@@ -7,8 +7,9 @@ export default async function handler(req, res) {
   });
   const connections = await r.json();
 
+  const platforms = connections?.map(c => ({ id: c.id, shelter_name: c.shelter_name, software_platform: c.software_platform }));
   const slConn = connections?.find(c => c.software_platform?.toLowerCase() === 'shelterluv');
-  const apConn = connections?.find(c => c.software_platform?.toLowerCase() === 'adopt-a-pet');
+  const apConn = connections?.find(c => c.software_platform?.toLowerCase().includes('adopt'));
 
   const result = {};
 
@@ -30,5 +31,5 @@ export default async function handler(req, res) {
     result.adoptapet_raw = Array.isArray(pets) ? pets[0] : null;
   }
 
-  return res.status(200).json(result);
+  return res.status(200).json({ platforms, ...result });
 }
