@@ -59,11 +59,17 @@ export default async function handler(req, res) {
 
     const allAnimals = [first, ...rest].flatMap(p => p.animals);
 
-    const pets = allAnimals.map((a) => ({
+    const pets = allAnimals.map((a) => {
+      const ageMonths = typeof a.Age === 'number' ? a.Age : parseInt(a.Age, 10);
+      const age_years = !isNaN(ageMonths) ? Math.floor(ageMonths / 12) : null;
+      const age_months = !isNaN(ageMonths) ? ageMonths % 12 : null;
+      return {
       name: a.Name || '',
       species: a.Type || '',
       breed: [a.PrimaryBreed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
       age: a.Age || '',
+      age_years: age_years || null,
+      age_months: (age_years !== null && age_months > 0) ? age_months : null,
       gender: a.Sex || '',
       description: a.Description || '',
       photo_url: Array.isArray(a.Photos) ? (a.Photos[0] || '') : (a.Photos?.[0]?.large || a.Photos?.[0]?.medium || ''),
@@ -71,7 +77,7 @@ export default async function handler(req, res) {
       source: shelter_name || '',
       source_id: `shelterluv_${a.ID}`,
       url: a.AdoptionUrl || '',
-    }));
+    };});
 
     // Upsert all at once
     const upsertRes = await fetch(`${SUPABASE_URL}/rest/v1/pets?on_conflict=source%2Csource_id`, {
