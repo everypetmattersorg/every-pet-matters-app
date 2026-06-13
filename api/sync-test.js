@@ -35,5 +35,13 @@ export default async function handler(req, res) {
     result.adoptapet_conn = 'not found';
   }
 
+  // Check what's actually in the pets table
+  const petsRes = await fetch(
+    `${supabaseUrl}/rest/v1/pets?select=id,name,source,shelter_status,adoption_status&limit=5&order=created_date.desc`,
+    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+  );
+  const petsCheck = await petsRes.json();
+  result.pets_sample = petsCheck;
+
   return res.status(200).json({ platforms, ...result });
 }
