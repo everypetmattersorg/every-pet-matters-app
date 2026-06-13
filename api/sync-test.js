@@ -25,7 +25,7 @@ export default async function handler(req, res) {
   if (apConn) {
     result.adoptapet_conn = { has_api_key: !!apConn.api_key, organization_id: apConn.organization_id };
     const apRes = await fetch(
-      `https://api.adoptapet.com/search/pet_search?key=${apConn.api_key}&shelter_id=${apConn.organization_id}&v=2&output=json&count=1&start=1&species=dog`
+      `https://api.adoptapet.com/search/pet_search?key=${apConn.api_key}&shelter_id=${apConn.organization_id}&v=2&output=json&count=1&start=1&species=dog&city_or_zip=00000&geo_range=10000`
     );
     const apData = await apRes.json();
     result.adoptapet_response = apData;

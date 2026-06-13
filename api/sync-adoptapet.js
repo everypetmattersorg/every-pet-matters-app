@@ -58,7 +58,7 @@ export default async function handler(req, res) {
     let allAnimals = [];
     for (const species of ['dog', 'cat', 'rabbit', 'bird', 'smallfurry', 'horse', 'pig', 'reptile']) {
       const apRes = await fetch(
-        `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1&species=${species}`
+        `https://api.adoptapet.com/search/pet_search?key=${api_key}&shelter_id=${organization_id}&v=2&output=json&count=500&start=1&species=${species}&city_or_zip=00000&geo_range=10000`
       );
       if (!apRes.ok) continue;
       const apData = await apRes.json();
