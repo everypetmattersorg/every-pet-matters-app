@@ -59,39 +59,47 @@ export default async function handler(req, res) {
 
     const allAnimals = [first, ...rest].flatMap(p => p.animals);
 
-    const toYesNo = (val) => val === true ? 'yes' : val === false ? 'no' : null;
+    const attrMatch = (attrs, ...keywords) => {
+      if (!Array.isArray(attrs)) return null;
+      const strs = attrs.map(a => (typeof a === 'string' ? a : a?.Name || a?.Label || '').toLowerCase());
+      const pos = keywords.some(k => strs.some(s => s.includes(k)));
+      const neg = strs.some(s => keywords.some(k => s.includes('not') && s.includes(k)));
+      if (neg) return 'no';
+      if (pos) return 'yes';
+      return null;
+    };
 
     const pets = allAnimals.map((a) => {
+      const attrs = a.Attributes || [];
       const ageMonths = typeof a.Age === 'number' ? a.Age : parseInt(a.Age, 10);
       const age_years = !isNaN(ageMonths) ? Math.floor(ageMonths / 12) : null;
       const age_months = !isNaN(ageMonths) ? ageMonths % 12 : null;
+      const colorParts = [a.Color, a.Pattern].filter(Boolean);
       return {
         name: a.Name || '',
         species: a.Type || '',
-        breed: [a.Breed || a.PrimaryBreed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
+        breed: [a.Breed, a.SecondaryBreed].filter(Boolean).join(' / ') || '',
         age: a.Age != null ? String(a.Age) : '',
         age_years: age_years || null,
         age_months: (age_years !== null && age_months > 0) ? age_months : null,
         gender: a.Sex || '',
-        color: a.Color || a.PrimaryColor || '',
+        color: colorParts.join(' ') || '',
         size: a.Size || '',
-        weight: a.Weight ? parseFloat(a.Weight) : null,
+        weight: a.CurrentWeightPounds ? parseFloat(a.CurrentWeightPounds) : null,
         description: a.Description || '',
         notes: a.Note || a.Notes || '',
-        photo_url: Array.isArray(a.Photos) ? (a.Photos[0] || '') : (a.Photos?.[0]?.large || a.Photos?.[0]?.medium || ''),
+        photo_url: a.CoverPhoto || (Array.isArray(a.Photos) ? a.Photos[0] : '') || '',
         adoption_status: 'Available',
         source: shelter_name || '',
         rescue_name: shelter_name || '',
         source_id: `shelterluv_${a.ID}`,
         url: a.AdoptionUrl || '',
-        vaccinated: a.IsVaccinated ?? null,
-        spayed_neutered: a.IsFixed ?? a.SpayedNeutered ?? null,
-        special_needs: a.HasSpecialNeeds ?? null,
-        urgent: a.IsUrgent ?? null,
-        house_trained: a.IsHouseTrained ?? null,
-        kid_friendly: toYesNo(a.IsGoodWithKids ?? a.GoodWithKids),
-        dog_friendly: toYesNo(a.IsGoodWithDogs ?? a.GoodWithDogs),
-        cat_friendly: toYesNo(a.IsGoodWithCats ?? a.GoodWithCats),
+        spayed_neutered: a.Altered === 'Yes' ? true : a.Altered === 'No' ? false : null,
+        special_needs: attrMatch(attrs, 'special need') === 'yes' ? true : null,
+        house_trained: attrMatch(attrs, 'house train', 'potty train'),
+        kid_friendly: attrMatch(attrs, 'kid', 'child', 'children'),
+        dog_friendly: attrMatch(attrs, 'dog'),
+        cat_friendly: attrMatch(attrs, 'cat'),
       };
     });
 
