@@ -1,32 +1,54 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin } from 'lucide-react';
+import { geocodeAll } from '@/lib/geocode';
 
 export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
-  // Group pets by city/state, using _lat/_lng coords
+  const [coordsMap, setCoordsMap] = useState({});
+
+  // Collect unique city/state pairs that need geocoding
+  const pairs = useMemo(() => {
+    const seen = new Set();
+    const result = [];
+    for (const pet of pets) {
+      const city = pet.rescue_city || pet.location || '';
+      const state = pet.rescue_state || '';
+      const key = [city, state].filter(Boolean).join(', ').toLowerCase();
+      if (key && !seen.has(key)) { seen.add(key); result.push({ city, state }); }
+    }
+    return result;
+  }, [pets]);
+
+  useEffect(() => {
+    if (pairs.length === 0) return;
+    geocodeAll(pairs).then(setCoordsMap);
+  }, [pairs]);
+
   const markers = useMemo(() => {
     const groups = {};
     for (const pet of pets) {
-      if (!pet._lat || !pet._lng) continue;
-      const city = pet.rescue_city || pet.location || 'Unknown';
+      const city = pet.rescue_city || pet.location || '';
       const state = pet.rescue_state || '';
-      const key = `${city}, ${state}`.trim().toLowerCase();
+      const key = [city, state].filter(Boolean).join(', ').toLowerCase();
+      const coords = (pet._lat && pet._lng)
+        ? { lat: pet._lat, lng: pet._lng }
+        : coordsMap[key];
+      if (!coords) continue;
       if (!groups[key]) {
         groups[key] = {
-          lat: pet._lat,
-          lng: pet._lng,
+          lat: coords.lat,
+          lng: coords.lng,
           label: state ? `${city}, ${state}` : city,
-          pets: []
+          pets: [],
         };
       }
       groups[key].pets.push(pet);
     }
     return Object.values(groups);
-  }, [pets]);
+  }, [pets, coordsMap]);
 
   const maxCount = useMemo(() => Math.max(...markers.map((m) => m.pets.length), 1), [markers]);
-  const petsWithCoords = useMemo(() => pets.filter(p => p._lat && p._lng).length, [pets]);
 
   if (markers.length === 0) {
     return (
@@ -34,7 +56,7 @@ export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
         <div className="text-center space-y-2 text-muted-foreground">
           <MapPin className="w-10 h-10 mx-auto text-slate-300" />
           <p className="text-sm">No location data available</p>
-          <p className="text-xs text-slate-400">Pets need coordinates populated to appear on the map</p>
+          <p className="text-xs text-slate-400">Pets need a city and state to appear on the map</p>
         </div>
       </div>
     );
@@ -48,7 +70,7 @@ export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
           <p className="text-xs text-muted-foreground mt-0.5">Mapped by rescue organization city/state</p>
         </div>
         <span className="text-sm font-semibold bg-orange-100 text-orange-700 px-3 py-1 rounded-full">
-          {petsWithCoords} of {pets.length} mapped
+          {markers.reduce((n, m) => n + m.pets.length, 0)} of {pets.length} mapped
         </span>
       </div>
       <MapContainer
@@ -68,12 +90,7 @@ export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
               key={`${lat},${lng}`}
               center={[lat, lng]}
               radius={radius}
-              pathOptions={{
-                fillColor: '#b1511d',
-                fillOpacity: 0.75,
-                color: '#fff',
-                weight: 1.5,
-              }}
+              pathOptions={{ fillColor: '#b1511d', fillOpacity: 0.75, color: '#fff', weight: 1.5 }}
             >
               <Popup>
                 <div className="text-sm font-semibold">{label}</div>

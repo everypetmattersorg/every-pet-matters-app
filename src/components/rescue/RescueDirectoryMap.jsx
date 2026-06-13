@@ -1,10 +1,11 @@
+import { useState, useEffect, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { geocodeCityState } from "@/lib/geocode";
 
-// Fix default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -13,9 +14,30 @@ L.Icon.Default.mergeOptions({
 });
 
 export default function RescueDirectoryMap({ rescues }) {
-  const withCoords = rescues.filter((r) => r.latitude && r.longitude);
+  const [geocoded, setGeocoded] = useState({});
+
+  useEffect(() => {
+    const needsGeocode = rescues.filter(r => !(r.latitude && r.longitude) && r.address);
+    Promise.all(
+      needsGeocode.map(async (r) => {
+        const coords = await geocodeCityState(r.address, '');
+        return [r.id, coords];
+      })
+    ).then(entries => {
+      setGeocoded(Object.fromEntries(entries.filter(([, v]) => v)));
+    });
+  }, [rescues]);
+
+  const withCoords = useMemo(() =>
+    rescues.map(r => ({
+      ...r,
+      _lat: r.latitude || geocoded[r.id]?.lat,
+      _lng: r.longitude || geocoded[r.id]?.lng,
+    })).filter(r => r._lat && r._lng),
+  [rescues, geocoded]);
+
   const center = withCoords.length > 0
-    ? [withCoords[0].latitude, withCoords[0].longitude]
+    ? [withCoords[0]._lat, withCoords[0]._lng]
     : [39.5, -98.35];
 
   if (withCoords.length === 0) {
@@ -23,7 +45,7 @@ export default function RescueDirectoryMap({ rescues }) {
       <div className="text-center py-20">
         <div className="text-6xl mb-4">🗺️</div>
         <p className="text-slate-500 text-lg">No rescues with location data to display on the map.</p>
-        <p className="text-slate-400 text-sm mt-1">Rescues need latitude/longitude coordinates set to appear here.</p>
+        <p className="text-slate-400 text-sm mt-1">Add an address to rescues to see them here.</p>
       </div>
     );
   }
@@ -36,7 +58,7 @@ export default function RescueDirectoryMap({ rescues }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
         {withCoords.map((rescue) => (
-          <Marker key={rescue.id} position={[rescue.latitude, rescue.longitude]}>
+          <Marker key={rescue.id} position={[rescue._lat, rescue._lng]}>
             <Popup>
               <div className="p-1 min-w-[160px]">
                 {rescue.logo_url && (

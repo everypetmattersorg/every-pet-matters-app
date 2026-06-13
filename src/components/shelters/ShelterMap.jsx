@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { useNavigate } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { geocodeCityState } from '@/lib/geocode';
 
-// Fix default marker icons for Leaflet with Vite
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
@@ -14,10 +14,29 @@ L.Icon.Default.mergeOptions({
 
 export default function ShelterMap({ shelters, pets }) {
   const navigate = useNavigate();
+  const [geocoded, setGeocoded] = useState({});
 
-  const sheltersWithCoords = useMemo(() => {
-    return shelters.filter(s => s.latitude && s.longitude);
+  useEffect(() => {
+    const needsGeocode = shelters.filter(s => !(s.latitude && s.longitude));
+    Promise.all(
+      needsGeocode.map(async (s) => {
+        // Try address first, fall back to shelter name (Nominatim handles business names)
+        const query = s.address || s.shelter_name;
+        const coords = await geocodeCityState(query, '');
+        return [s.id, coords];
+      })
+    ).then(entries => {
+      setGeocoded(Object.fromEntries(entries.filter(([, v]) => v)));
+    });
   }, [shelters]);
+
+  const sheltersWithCoords = useMemo(() =>
+    shelters.map(s => ({
+      ...s,
+      _lat: s.latitude || geocoded[s.id]?.lat,
+      _lng: s.longitude || geocoded[s.id]?.lng,
+    })).filter(s => s._lat && s._lng),
+  [shelters, geocoded]);
 
   const getPetCount = (shelterName) =>
     pets.filter(p => p.source === shelterName && p.adoption_status !== 'Adopted' && p.adoption_status !== 'Transferred').length;
@@ -30,7 +49,7 @@ export default function ShelterMap({ shelters, pets }) {
     );
   }
 
-  const center = [sheltersWithCoords[0].latitude, sheltersWithCoords[0].longitude];
+  const center = [sheltersWithCoords[0]._lat, sheltersWithCoords[0]._lng];
 
   return (
     <div className="h-[500px] rounded-xl overflow-hidden border">
@@ -39,8 +58,8 @@ export default function ShelterMap({ shelters, pets }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {sheltersWithCoords.map((shelter, idx) => (
-          <Marker key={idx} position={[shelter.latitude, shelter.longitude]}>
+        {sheltersWithCoords.map((shelter) => (
+          <Marker key={shelter.id} position={[shelter._lat, shelter._lng]}>
             <Popup>
               <div className="space-y-1 min-w-[160px]">
                 <p className="font-semibold text-sm">{shelter.shelter_name}</p>
