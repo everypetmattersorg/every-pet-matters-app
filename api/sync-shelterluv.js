@@ -44,8 +44,12 @@ export default async function handler(req, res) {
     const conn = rows?.[0];
     if (!conn) return res.status(404).json({ error: 'Connection not found' });
 
-    const { api_key, shelter_name } = conn;
+    const { api_key, shelter_name, shelterluv_adoptable_statuses } = conn;
     if (!api_key) return res.status(400).json({ error: 'No API key on connection' });
+
+    const adoptableStatuses = Array.isArray(shelterluv_adoptable_statuses)
+      ? shelterluv_adoptable_statuses.map(s => s.toLowerCase().trim())
+      : ['adoption available', 'stray in foster', 'available foster'];
 
     // Fetch first page to get total count
     const limit = 100;
@@ -57,7 +61,12 @@ export default async function handler(req, res) {
     const offsets = Array.from({ length: pageCount - 1 }, (_, i) => (i + 1) * limit);
     const rest = await Promise.all(offsets.map(offset => fetchShelterLuvPage(api_key, offset, limit)));
 
-    const allAnimals = [first, ...rest].flatMap(p => p.animals);
+    const allAnimals = [first, ...rest]
+      .flatMap(p => p.animals)
+      .filter(a => {
+        const status = (a.Status || '').toLowerCase().trim();
+        return adoptableStatuses.some(s => status.includes(s));
+      });
 
     const attrMatch = (attrs, ...keywords) => {
       if (!Array.isArray(attrs)) return null;
