@@ -49,7 +49,7 @@ export default async function handler(req, res) {
 
     const adoptableStatuses = Array.isArray(shelterluv_adoptable_statuses)
       ? shelterluv_adoptable_statuses.map(s => s.toLowerCase().trim())
-      : ['adoption available', 'stray in foster', 'available foster'];
+      : ['adoption available', 'available foster'];
 
     // Fetch first page to get total count
     const limit = 100;

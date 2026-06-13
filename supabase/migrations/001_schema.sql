@@ -486,7 +486,7 @@ create table if not exists shelter_connections (
   last_sync                    text,
   pets_synced                  numeric,
   notes                        text,
-  shelterluv_adoptable_statuses jsonb default '["adoption available","stray in foster","available foster"]',
+  shelterluv_adoptable_statuses jsonb default '["adoption available","available foster"]',
   created_by                   uuid references auth.users,
   created_date                 timestamptz default now(),
   updated_date                 timestamptz default now()
