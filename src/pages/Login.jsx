@@ -1,16 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/api/supabaseClient';
-
-// Subscribe at module level so we catch PASSWORD_RECOVERY before the component mounts
-let _recoveryDetected = false;
-supabase.auth.onAuthStateChange((event) => {
-  if (event === 'PASSWORD_RECOVERY') {
-    _recoveryDetected = true;
-  }
-});
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+
+// Capture hash at module load time before Supabase clears it
+const _initialHash = window.location.hash;
 
 export default function Login() {
   const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'reset' | 'new-password'
@@ -26,15 +21,8 @@ export default function Login() {
   const isRecovery = useRef(false);
 
   useEffect(() => {
-    // Check if recovery was detected before this component mounted
-    if (_recoveryDetected) {
-      isRecovery.current = true;
-      _recoveryDetected = false;
-      setMode('new-password');
-    }
-
-    // Also detect from URL: bare # means Supabase just cleared a recovery hash
-    if (window.location.href.endsWith('#')) {
+    // Detect recovery from the hash captured before Supabase cleared it
+    if (_initialHash.includes('type=recovery')) {
       isRecovery.current = true;
       setMode('new-password');
     }
