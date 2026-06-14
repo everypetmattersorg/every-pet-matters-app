@@ -24,6 +24,7 @@ import UserDirectory from './pages/UserDirectory';
 import TermsAndConditions from './pages/TermsAndConditions';
 import RescueOnboarding from './pages/RescueOnboarding';
 import Login from './pages/Login';
+import ResetPassword from './pages/ResetPassword';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -93,6 +94,7 @@ const AuthenticatedApp = () => {
       <Route path="/TermsAndConditions" element={<LayoutWrapper currentPageName="TermsAndConditions"><TermsAndConditions /></LayoutWrapper>} />
       <Route path="/RescueOnboarding" element={<LayoutWrapper currentPageName="RescueOnboarding"><RescueOnboarding /></LayoutWrapper>} />
       <Route path="/Login" element={<Login />} />
+      <Route path="/ResetPassword" element={<ResetPassword />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
