@@ -95,7 +95,13 @@ export default function PetDashboard() {
       }
       if (filters.size && filters.size !== 'all' && pet.size !== filters.size) return false;
       if (filters.gender && filters.gender !== 'all' && pet.gender !== filters.gender) return false;
-      if (filters.location && !pet.location?.toLowerCase().includes(filters.location.toLowerCase())) return false;
+      if (filters.location) {
+        const loc = filters.location.toLowerCase();
+        const matches = [pet.location, pet.rescue_city, pet.rescue_state]
+          .filter(Boolean)
+          .some((v) => v.toLowerCase().includes(loc));
+        if (!matches) return false;
+      }
       if (pet.weight) {
         if (filters.minWeight && pet.weight < filters.minWeight) return false;
         if (filters.maxWeight && pet.weight > filters.maxWeight) return false;
