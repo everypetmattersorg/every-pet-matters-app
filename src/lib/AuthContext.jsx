@@ -49,6 +49,17 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  const acceptTerms = async () => {
+    if (!user) return { error: new Error('Not signed in') };
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({ id: user.id, email: user.email, terms_accepted: true });
+    if (!error) {
+      setUser({ ...user, terms_accepted: true });
+    }
+    return { error };
+  };
+
   const navigateToLogin = () => {
     sessionStorage.setItem('login_return_url', window.location.href);
     window.location.href = '/Login';
@@ -63,6 +74,7 @@ export const AuthProvider = ({ children }) => {
       authError: null,
       appPublicSettings: {},
       logout,
+      acceptTerms,
       navigateToLogin,
       checkAppState: () => {},
     }}>

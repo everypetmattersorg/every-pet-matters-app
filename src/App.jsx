@@ -25,6 +25,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import RescueOnboarding from './pages/RescueOnboarding';
 import Login from './pages/Login';
 import ResetPassword from './pages/ResetPassword';
+import TermsGateModal from './components/auth/TermsGateModal';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -35,7 +36,8 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   : <>{children}</>;
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, isAuthenticated, user } = useAuth();
+  const location = window.location.pathname;
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -57,9 +59,14 @@ const AuthenticatedApp = () => {
     }
   }
 
+  const needsTermsGate = isAuthenticated && user && user.terms_accepted !== true
+    && location !== '/Login' && location !== '/ResetPassword' && location !== '/TermsAndConditions';
+
   // Render the main app
   return (
-    <Routes>
+    <>
+      {needsTermsGate && <TermsGateModal />}
+      <Routes>
       <Route path="/" element={
         <LayoutWrapper currentPageName={mainPageKey}>
           <MainPage />
@@ -96,7 +103,8 @@ const AuthenticatedApp = () => {
       <Route path="/Login" element={<Login />} />
       <Route path="/ResetPassword" element={<ResetPassword />} />
       <Route path="*" element={<PageNotFound />} />
-    </Routes>
+      </Routes>
+    </>
   );
 };
 
