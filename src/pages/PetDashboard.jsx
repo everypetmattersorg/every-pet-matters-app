@@ -86,7 +86,13 @@ export default function PetDashboard() {
       if (filters.source && filters.source !== 'all' && pet.source !== filters.source) return false;
       if (filters.species && filters.species !== 'all' && pet.species?.toLowerCase() !== filters.species.toLowerCase()) return false;
       if (filters.breed && filters.breed !== 'all' && pet.breed !== filters.breed) return false;
-      if (filters.age && filters.age !== 'all' && pet.age?.toLowerCase() !== filters.age.toLowerCase()) return false;
+      if (filters.age && filters.age !== 'all') {
+        const yrs = pet.age_years || 0;
+        if (filters.age === 'baby' && yrs >= 1) return false;
+        if (filters.age === 'young' && (yrs < 1 || yrs >= 3)) return false;
+        if (filters.age === 'adult' && (yrs < 3 || yrs >= 7)) return false;
+        if (filters.age === 'senior' && yrs < 7) return false;
+      }
       if (filters.size && filters.size !== 'all' && pet.size !== filters.size) return false;
       if (filters.gender && filters.gender !== 'all' && pet.gender !== filters.gender) return false;
       if (filters.location && !pet.location?.toLowerCase().includes(filters.location.toLowerCase())) return false;
@@ -184,7 +190,7 @@ export default function PetDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 py-4 space-y-4">
         <UrgentPetsBanner pets={pets} onFilterUrgent={() => setFilters((f) => ({ ...f, urgent: 'yes' }))} />
-        <PetFilters filters={filters} onFilterChange={setFilters} onMapFilterChange={(map) => setFilters((f) => ({ ...f, mapFilter: map }))} />
+        <PetFilters filters={filters} onFilterChange={setFilters} onMapFilterChange={(map) => setFilters((f) => ({ ...f, mapFilter: map }))} pets={pets} />
 
         {viewMode === 'map' ?
         <PetMap pets={filteredPets.map(({ pet }) => pet)} rescues={rescues} filters={filters} /> :

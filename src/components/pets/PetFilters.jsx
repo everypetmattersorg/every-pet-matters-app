@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Loader2 } from 'lucide-react';
 import LocationAutocomplete from './LocationAutocomplete';
 
-export default function PetFilters({ filters, onFilterChange, onMapFilterChange, hiddenFilters = [] }) {
+export default function PetFilters({ filters, onFilterChange, onMapFilterChange, hiddenFilters = [], pets = [] }) {
   const [locating, setLocating] = useState(false);
+
+  const sourceOptions = [...new Set(pets.map(p => p.source).filter(Boolean))].sort();
+  const breedOptions = [...new Set(pets.map(p => p.breed).filter(Boolean))].sort();
 
   const handleNearMe = () => {
     if (!navigator.geolocation) return;
@@ -65,9 +68,7 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All sources</SelectItem>
-              <SelectItem value="Petfinder">Petfinder</SelectItem>
-              <SelectItem value="RescueGroups">RescueGroups</SelectItem>
-              <SelectItem value="Adopt-a-Pet">Adopt-a-Pet</SelectItem>
+              {sourceOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
@@ -96,37 +97,35 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All breeds</SelectItem>
-              <SelectItem value="Labrador">Labrador</SelectItem>
-              <SelectItem value="Golden Retriever">Golden Retriever</SelectItem>
-              <SelectItem value="German Shepherd">German Shepherd</SelectItem>
+              {breedOptions.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Age</label>
-          <Select value={filters.age || ''} onValueChange={(v) => onFilterChange({ ...filters, age: v })}>
+          <Select value={filters.age || 'all'} onValueChange={(v) => onFilterChange({ ...filters, age: v === 'all' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any age" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any age</SelectItem>
-              <SelectItem value="Baby">Baby</SelectItem>
-              <SelectItem value="Young">Young</SelectItem>
-              <SelectItem value="Adult">Adult</SelectItem>
-              <SelectItem value="Senior">Senior</SelectItem>
+              <SelectItem value="all">Any age</SelectItem>
+              <SelectItem value="baby">Baby (&lt;1 yr)</SelectItem>
+              <SelectItem value="young">Young (1-3 yrs)</SelectItem>
+              <SelectItem value="adult">Adult (3-7 yrs)</SelectItem>
+              <SelectItem value="senior">Senior (7+ yrs)</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Size</label>
-          <Select value={filters.size || ''} onValueChange={(v) => onFilterChange({ ...filters, size: v })}>
+          <Select value={filters.size || 'all'} onValueChange={(v) => onFilterChange({ ...filters, size: v === 'all' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any size" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any size</SelectItem>
+              <SelectItem value="all">Any size</SelectItem>
               <SelectItem value="Small">Small</SelectItem>
               <SelectItem value="Medium">Medium</SelectItem>
               <SelectItem value="Large">Large</SelectItem>
@@ -137,12 +136,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         <div>
           <label className="block text-xs font-medium text-slate-600 mb-1">Gender</label>
-          <Select value={filters.gender || ''} onValueChange={(v) => onFilterChange({ ...filters, gender: v })}>
+          <Select value={filters.gender || 'all'} onValueChange={(v) => onFilterChange({ ...filters, gender: v === 'all' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any gender</SelectItem>
+              <SelectItem value="all">Any gender</SelectItem>
               <SelectItem value="Male">Male</SelectItem>
               <SelectItem value="Female">Female</SelectItem>
               <SelectItem value="Unknown">Unknown</SelectItem>
@@ -165,12 +164,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
       <div className="flex flex-wrap gap-4">
         {!hiddenFilters.includes('kid_friendly') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">👶 Kids</label>
-          <Select value={filters.kid_friendly || ''} onValueChange={(v) => onFilterChange({ ...filters, kid_friendly: v })}>
+          <Select value={filters.kid_friendly || 'any'} onValueChange={(v) => onFilterChange({ ...filters, kid_friendly: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
               <SelectItem value="unsure">Unsure</SelectItem>
@@ -180,12 +179,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         {!hiddenFilters.includes('dog_friendly') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">🐕 Dogs</label>
-          <Select value={filters.dog_friendly || ''} onValueChange={(v) => onFilterChange({ ...filters, dog_friendly: v })}>
+          <Select value={filters.dog_friendly || 'any'} onValueChange={(v) => onFilterChange({ ...filters, dog_friendly: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
               <SelectItem value="unsure">Unsure</SelectItem>
@@ -195,12 +194,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         {!hiddenFilters.includes('cat_friendly') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">🐱 Cats</label>
-          <Select value={filters.cat_friendly || ''} onValueChange={(v) => onFilterChange({ ...filters, cat_friendly: v })}>
+          <Select value={filters.cat_friendly || 'any'} onValueChange={(v) => onFilterChange({ ...filters, cat_friendly: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
               <SelectItem value="unsure">Unsure</SelectItem>
@@ -210,12 +209,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         {!hiddenFilters.includes('urgent') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">Urgent</label>
-          <Select value={filters.urgent || ''} onValueChange={(v) => onFilterChange({ ...filters, urgent: v })}>
+          <Select value={filters.urgent || 'any'} onValueChange={(v) => onFilterChange({ ...filters, urgent: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
             </SelectContent>
@@ -224,12 +223,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         {!hiddenFilters.includes('rescue_needed') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">Rescue Needed</label>
-          <Select value={filters.rescue_needed || ''} onValueChange={(v) => onFilterChange({ ...filters, rescue_needed: v })}>
+          <Select value={filters.rescue_needed || 'any'} onValueChange={(v) => onFilterChange({ ...filters, rescue_needed: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
             </SelectContent>
@@ -238,12 +237,12 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
 
         {!hiddenFilters.includes('vaccinated') && <div className="min-w-[130px]">
           <label className="block text-xs font-medium text-slate-600 mb-1">Vaccinated</label>
-          <Select value={filters.vaccinated || ''} onValueChange={(v) => onFilterChange({ ...filters, vaccinated: v })}>
+          <Select value={filters.vaccinated || 'any'} onValueChange={(v) => onFilterChange({ ...filters, vaccinated: v === 'any' ? '' : v })}>
             <SelectTrigger className="h-9 text-sm rounded-lg bg-white">
               <SelectValue placeholder="Any" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={null}>Any</SelectItem>
+              <SelectItem value="any">Any</SelectItem>
               <SelectItem value="yes">Yes</SelectItem>
               <SelectItem value="no">No</SelectItem>
             </SelectContent>
