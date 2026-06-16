@@ -89,6 +89,7 @@ export default function RescueProfileSettings() {
               ) : (
                 <EditRescueProfileForm
                   rescue={rescue}
+                  userEmail={user?.email}
                   onSaved={() => {
                     queryClient.invalidateQueries({ queryKey: ['rescue-profile'] });
                   }}

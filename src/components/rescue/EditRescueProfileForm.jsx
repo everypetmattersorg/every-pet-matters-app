@@ -7,13 +7,13 @@ import { Loader2, Upload, AlertCircle, CheckCircle, Facebook, Instagram, Twitter
 import RescueGalleryManager from './RescueGalleryManager';
 import SponsorsEditor from './SponsorsEditor';
 
-export default function EditRescueProfileForm({ rescue, onSaved }) {
+export default function EditRescueProfileForm({ rescue, userEmail, onSaved }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState(rescue || {
     name: '',
-    email: '',
+    email: userEmail || '',
     org_type: 'rescue',
     phone: '',
     website: '',
@@ -74,7 +74,7 @@ export default function EditRescueProfileForm({ rescue, onSaved }) {
       if (rescue?.id) {
         await base44.entities.Rescue.update(rescue.id, formData);
       } else {
-        await base44.entities.Rescue.create(formData);
+        await base44.entities.Rescue.create({ ...formData, email: formData.email || userEmail });
       }
 
       setSuccess(true);
