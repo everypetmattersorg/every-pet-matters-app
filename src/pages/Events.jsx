@@ -70,7 +70,7 @@ export default function Events() {
   const pastEvents = filteredEvents.filter((e) => new Date(e.event_date) <= new Date());
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen" style={{ background: '#FAF5F0' }}>
       {/* Hero */}
       <div className="px-4 py-6" style={{ background: HERO_COLORS.background }}>
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '300px' }}>
