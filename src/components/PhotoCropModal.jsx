@@ -1,8 +1,17 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { X, Check } from 'lucide-react';
 
 export default function PhotoCropModal({ imageSrc, onSave, onCancel }) {
   const [saving, setSaving] = useState(false);
+  const [focal, setFocal] = useState({ x: 50, y: 50 });
+  const imgRef = useRef(null);
+
+  const handlePick = (e) => {
+    const rect = imgRef.current.getBoundingClientRect();
+    const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+    setFocal({ x: Math.min(100, Math.max(0, x)), y: Math.min(100, Math.max(0, y)) });
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -10,10 +19,10 @@ export default function PhotoCropModal({ imageSrc, onSave, onCancel }) {
       // Fetch the image as a blob
       const response = await fetch(imageSrc);
       const blob = await response.blob();
-      
+
       // Convert to file
       const file = new File([blob], 'photo.jpg', { type: 'image/jpeg' });
-      onSave(file);
+      onSave(file, focal);
     } catch (error) {
       console.error('Error:', error);
       setSaving(false);
@@ -30,8 +39,21 @@ export default function PhotoCropModal({ imageSrc, onSave, onCancel }) {
           </button>
         </div>
 
-        <div className="flex items-center justify-center p-6 bg-stone-100">
-          <img src={imageSrc} alt="preview" className="max-w-full max-h-64 rounded-lg" />
+        <div className="flex flex-col items-center justify-center p-6 bg-stone-100 gap-3">
+          <p className="text-sm text-stone-500">click the photo to set what stays centered when cropped</p>
+          <div className="relative inline-block max-w-full">
+            <img
+              ref={imgRef}
+              src={imageSrc}
+              alt="preview"
+              onClick={handlePick}
+              className="max-w-full max-h-64 rounded-lg cursor-crosshair"
+            />
+            <div
+              className="absolute w-5 h-5 rounded-full border-2 border-white bg-yellow-400/80 shadow pointer-events-none -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${focal.x}%`, top: `${focal.y}%` }}
+            />
+          </div>
         </div>
 
         <div className="flex gap-3 justify-end p-6 border-t border-stone-200">

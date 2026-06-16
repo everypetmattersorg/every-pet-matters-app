@@ -76,11 +76,11 @@ function TeamMember({ member, index, onPhotoUpdate, onFieldUpdate, isAdmin }) {
     reader.readAsDataURL(file);
   };
 
-  const handleCropSave = async (file) => {
+  const handleCropSave = async (file, focal) => {
     setUploading(true);
     try {
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      onPhotoUpdate(index, file_url);
+      onPhotoUpdate(index, file_url, focal);
       setCropModalOpen(false);
       setImageToCrop(null);
     } catch (error) {
@@ -108,7 +108,15 @@ function TeamMember({ member, index, onPhotoUpdate, onFieldUpdate, isAdmin }) {
       <div className="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group">
         <div className="relative w-full h-60 flex items-center justify-center text-6xl overflow-hidden !grayscale-0" style={{ background: member.photo_url ? undefined : '#f5f5f4', filter: 'none' }}>
           {member.photo_url ?
-          <img src={member.photo_url} alt={member.name} className="w-full h-full object-cover object-center !grayscale-0" style={{ filter: 'saturate(1) grayscale(0%)' }} /> :
+          <img
+            src={member.photo_url}
+            alt={member.name}
+            className="w-full h-full object-cover !grayscale-0"
+            style={{
+              filter: 'saturate(1) grayscale(0%)',
+              objectPosition: `${member.focal_x ?? 50}% ${member.focal_y ?? 50}%`,
+            }}
+          /> :
           member.emoji}
           {isAdmin &&
           <>
@@ -242,8 +250,11 @@ export default function About() {
     }
   };
 
-  const handlePhotoUpdate = (index, photoUrl) => {
-    const updated = team.map((m, i) => i === index ? { ...m, photo_url: photoUrl } : m);
+  const handlePhotoUpdate = (index, photoUrl, focal) => {
+    const updated = team.map((m, i) => i === index
+      ? { ...m, photo_url: photoUrl, focal_x: focal?.x ?? 50, focal_y: focal?.y ?? 50 }
+      : m
+    );
     setTeam(updated);
     saveTeam(updated);
   };
