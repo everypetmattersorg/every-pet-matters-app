@@ -395,18 +395,27 @@ export default function ShelterPortal() {
       return;
     }
     setSubmitting(true);
-    await base44.entities.ShelterConnection.create({ ...form, status: 'pending' });
-    toast.success("Connection request submitted! We'll review and activate it shortly.");
-    setForm(EMPTY_FORM);
-    setShowForm(false);
-    refetch();
-    setSubmitting(false);
+    try {
+      await base44.entities.ShelterConnection.create({ ...form, status: 'pending' });
+      toast.success("Connection request submitted! We'll review and activate it shortly.");
+      setForm(EMPTY_FORM);
+      setShowForm(false);
+      refetch();
+    } catch (err) {
+      toast.error('Failed to submit connection: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleDelete = async (id) => {
-    await base44.entities.ShelterConnection.delete(id);
-    toast.success('Connection removed');
-    refetch();
+    try {
+      await base44.entities.ShelterConnection.delete(id);
+      toast.success('Connection removed');
+      refetch();
+    } catch (err) {
+      toast.error('Failed to delete connection: ' + err.message);
+    }
   };
 
   return (
