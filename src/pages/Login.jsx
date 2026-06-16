@@ -16,6 +16,16 @@ export default function Login() {
   const returnUrl = sessionStorage.getItem('login_return_url') || '/';
 
   useEffect(() => {
+    // Check for an already-established session first — handles the case where
+    // Supabase processed the OAuth redirect and fired SIGNED_IN before this
+    // component mounted (the browser does a full reload coming back from Google).
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        sessionStorage.removeItem('login_return_url');
+        window.location.href = returnUrl;
+      }
+    });
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         sessionStorage.removeItem('login_return_url');
