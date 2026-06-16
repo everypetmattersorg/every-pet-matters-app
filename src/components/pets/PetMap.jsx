@@ -7,13 +7,20 @@ import { geocodeAll } from '@/lib/geocode';
 export default function PetMap({ pets = [] }) {
   const [coordsMap, setCoordsMap] = useState({});
 
+  const keyFor = (pet) => {
+    const city = pet.rescue_city || pet.location || '';
+    const state = pet.rescue_state || '';
+    return [city, state].filter(Boolean).join(', ').toLowerCase();
+  };
+
   const pairs = useMemo(() => {
     const seen = new Set();
     const result = [];
     for (const pet of pets) {
-      const location = pet.location || '';
-      const key = location.trim().toLowerCase();
-      if (key && !seen.has(key)) { seen.add(key); result.push({ city: location, state: '' }); }
+      const city = pet.rescue_city || pet.location || '';
+      const state = pet.rescue_state || '';
+      const key = keyFor(pet);
+      if (key && !seen.has(key)) { seen.add(key); result.push({ city, state }); }
     }
     return result;
   }, [pets]);
@@ -26,13 +33,15 @@ export default function PetMap({ pets = [] }) {
   const markers = useMemo(() => {
     const groups = {};
     for (const pet of pets) {
-      const location = pet.location || '';
-      const key = location.trim().toLowerCase();
+      const city = pet.rescue_city || pet.location || '';
+      const state = pet.rescue_state || '';
+      const key = keyFor(pet);
       const coords = (pet._lat && pet._lng)
         ? { lat: pet._lat, lng: pet._lng }
         : coordsMap[key];
       if (!coords) continue;
-      if (!groups[key]) groups[key] = { lat: coords.lat, lng: coords.lng, location: location || 'Unknown', pets: [] };
+      const label = state ? `${city}, ${state}` : city || 'Unknown';
+      if (!groups[key]) groups[key] = { lat: coords.lat, lng: coords.lng, location: label, pets: [] };
       groups[key].pets.push(pet);
     }
     return Object.values(groups);
@@ -46,7 +55,7 @@ export default function PetMap({ pets = [] }) {
         <div className="text-center space-y-2 text-muted-foreground">
           <MapPin className="w-10 h-10 mx-auto text-slate-300" />
           <p className="text-sm">No location data available</p>
-          <p className="text-xs text-slate-400">Pets need a location to appear on the map</p>
+          <p className="text-xs text-slate-400">Pets need a city and state to appear on the map</p>
         </div>
       </div>
     );

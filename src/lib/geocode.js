@@ -23,18 +23,20 @@ export async function geocodeCityState(city, state) {
 }
 
 // Geocode an array of unique city/state pairs, returns a map of "city, state" -> {lat, lng}
+// Throttled to 1 request at a time per Nominatim's usage policy (no concurrent requests).
 export async function geocodeAll(pairs) {
   const unique = [...new Map(pairs.map(p => {
     const key = [p.city, p.state].filter(Boolean).join(', ').toLowerCase();
     return [key, p];
   })).values()];
 
-  const results = await Promise.all(
-    unique.map(async ({ city, state }) => {
-      const coords = await geocodeCityState(city, state);
-      const key = [city, state].filter(Boolean).join(', ').toLowerCase();
-      return [key, coords];
-    })
-  );
+  const results = [];
+  for (const { city, state } of unique) {
+    const key = [city, state].filter(Boolean).join(', ').toLowerCase();
+    const wasCached = !!cache[key];
+    const coords = await geocodeCityState(city, state);
+    results.push([key, coords]);
+    if (!wasCached) await new Promise((r) => setTimeout(r, 1000));
+  }
   return Object.fromEntries(results.filter(([, v]) => v));
 }
