@@ -47,6 +47,11 @@ export default async function handler(req, res) {
     const { api_key, shelter_name, shelterluv_adoptable_statuses } = conn;
     if (!api_key) return res.status(400).json({ error: 'No API key on connection' });
 
+    const detailsRows = await supabaseGet('shelter_details', { shelter_name: `eq.${shelter_name}` });
+    const details = detailsRows?.[0];
+    const rescue_city = details?.city || '';
+    const rescue_state = details?.state || '';
+
     const adoptableStatuses = Array.isArray(shelterluv_adoptable_statuses)
       ? shelterluv_adoptable_statuses.map(s => s.toLowerCase().trim())
       : ['adoption available', 'available foster'];
@@ -102,6 +107,8 @@ export default async function handler(req, res) {
         adoption_status: 'Available',
         source: shelter_name || '',
         rescue_name: shelter_name || '',
+        rescue_city,
+        rescue_state,
         source_id: `shelterluv_${a.ID}`,
         url: a.AdoptionUrl || '',
         spayed_neutered: a.Altered === 'Yes' ? true : a.Altered === 'No' ? false : null,

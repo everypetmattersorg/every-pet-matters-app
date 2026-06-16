@@ -15,7 +15,7 @@ import HoursOfOperationEditor from '@/components/shelter/HoursOfOperationEditor'
 
 const EMPTY = {
   shelter_name: '', org_type: 'rescue', email: '', phone: '', website: '',
-  address: '', city: '', state: '', animals_accepted: '', mission_statement: '',
+  address: '', city: '', state: '', animals_accepted: '', mission: '',
   logo_url: '', banner_url: '', accepts_volunteers: false, fosters_needed: false,
   services_offered: [], hours: '', public_listing: false, 
   instagram_url: '', facebook_url: '', tiktok_url: '', linkedin_url: '',
@@ -150,7 +150,7 @@ export default function ShelterDetailsManager({ open, onClose, onSaved }) {
 
             <div className="space-y-1.5">
               <Label>Mission Statement</Label>
-              <Textarea rows={2} value={form.mission_statement} onChange={e => set('mission_statement', e.target.value)} placeholder="A short statement about your mission..." />
+              <Textarea rows={2} value={form.mission} onChange={e => set('mission', e.target.value)} placeholder="A short statement about your mission..." />
             </div>
             <div className="space-y-1.5">
               <Label>Animals Accepted or Resources Needed at your Organization</Label>

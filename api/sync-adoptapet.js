@@ -54,6 +54,11 @@ export default async function handler(req, res) {
   const { api_key, organization_id, shelter_name } = conn;
   if (!api_key || !organization_id) return res.status(400).json({ error: 'Missing api_key or organization_id on connection' });
 
+  const detailsRows = await supabaseGet('shelter_details', { shelter_name: `eq.${shelter_name}` });
+  const details = detailsRows?.[0];
+  const fallbackCity = details?.city || '';
+  const fallbackState = details?.state || '';
+
   try {
     let allAnimals = [];
     for (const species of ['dog', 'cat', 'rabbit', 'bird', 'smallfurry', 'horse', 'pig', 'reptile']) {
@@ -87,8 +92,8 @@ export default async function handler(req, res) {
       adoption_status: 'Available',
       source: shelter_name || '',
       rescue_name: shelter_name || '',
-      rescue_city: a.city || '',
-      rescue_state: a.state || a.state_code || '',
+      rescue_city: a.city || fallbackCity,
+      rescue_state: a.state || a.state_code || fallbackState,
       source_id: `adoptapet_${a.id || a.pet_id}`,
       url: a.detail_url || a.url || '',
       vaccinated: a.shots_current != null ? Boolean(a.shots_current) : null,
