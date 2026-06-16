@@ -15,10 +15,41 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
+    const html = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; background: #FAF5F0;">
+        <div style="background: #0F3D1F; padding: 28px 32px; text-align: center;">
+          <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet matters" width="48" height="48" style="display: block; margin: 0 auto 12px;" />
+          <h1 style="color: #DEC0AA; font-size: 20px; margin: 0; font-weight: 700;">new contact form submission</h1>
+        </div>
+        <div style="background: #ffffff; padding: 32px; border: 1px solid #DEC0AA; border-top: none;">
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr>
+              <td style="padding: 8px 0; color: #0F3D1F; font-weight: 700; font-size: 13px; width: 90px; vertical-align: top;">name</td>
+              <td style="padding: 8px 0; color: #44403c; font-size: 14px;">${form.name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #0F3D1F; font-weight: 700; font-size: 13px; vertical-align: top;">email</td>
+              <td style="padding: 8px 0; color: #44403c; font-size: 14px;"><a href="mailto:${form.email}" style="color: #D3713C; text-decoration: none;">${form.email}</a></td>
+            </tr>
+            <tr>
+              <td style="padding: 8px 0; color: #0F3D1F; font-weight: 700; font-size: 13px; vertical-align: top;">subject</td>
+              <td style="padding: 8px 0; color: #44403c; font-size: 14px;">${form.subject}</td>
+            </tr>
+          </table>
+          <div style="background: #FAF5F0; border-radius: 12px; padding: 18px; border: 1px solid #DEC0AA;">
+            <p style="margin: 0; color: #44403c; font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${form.message}</p>
+          </div>
+        </div>
+        <div style="text-align: center; padding: 16px; color: #a8a29e; font-size: 12px;">
+          sent from the contact form on everypetmatters.org
+        </div>
+      </div>
+    `;
     await base44.integrations.Core.SendEmail({
-      to: "bark@everypetmatters.org",
+      to: ["bark@everypetmatters.org", "erin@everypetmatters.org"],
       subject: `[contact form] ${form.subject}`,
-      body: `from: ${form.name} (${form.email})\n\n${form.message}`
+      body: `from: ${form.name} (${form.email})\n\n${form.message}`,
+      html
     });
     toast.success("message sent! we'll get back to you soon.");
     setForm({ name: "", email: "", subject: "", message: "" });
