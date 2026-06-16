@@ -17,6 +17,20 @@ const TEAM = [
     photo_url: ""
   },
   {
+    name: "Pasta",
+    role: "Chief Outside Officer",
+    bio: "Reminds us to take breaks, get outdoors, and lift our snoots to the sky. When she's not outside, she's at the front window watching the world go by.",
+    emoji: "🌳",
+    photo_url: ""
+  },
+  {
+    name: "Moe",
+    role: "Chief Guardian Officer",
+    bio: "Head of security and loves to make you aware of any movement anywhere. When he's not actively securing the perimeter, you can find him cuddled up with his dad on the couch.",
+    emoji: "🛡️",
+    photo_url: ""
+  },
+  {
     name: "Finn",
     role: "Chief Nap Officer",
     bio: "Expert in finding the sunniest spots and coziest blankets. Finn ensures all team members take adequate rest breaks.",
@@ -35,20 +49,6 @@ const TEAM = [
     role: "Chief Treat Officer",
     bio: "Responsible for taste-testing all treats and ensuring quality control meets the highest standards. No treat goes unreviewed.",
     emoji: "🦴",
-    photo_url: ""
-  },
-  {
-    name: "Pasta",
-    role: "Chief Outside Officer",
-    bio: "Reminds us to take breaks, get outdoors, and lift our snoots to the sky. When she's not outside, she's at the front window watching the world go by.",
-    emoji: "🌳",
-    photo_url: ""
-  },
-  {
-    name: "Moe",
-    role: "Chief Guardian Officer",
-    bio: "Head of security and loves to make you aware of any movement anywhere. When he's not actively securing the perimeter, you can find him cuddled up with his dad on the couch.",
-    emoji: "🛡️",
     photo_url: ""
   }
 ];
