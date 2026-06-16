@@ -361,12 +361,24 @@ export default function ShelterPortal() {
   const handleForceSync = async (conn) => {
     setSyncing(conn.id);
     try {
-      if (conn.software_platform === 'ShelterLuv') {
-        await base44.functions.invoke('syncShelterLuvAnimals', { connection_id: conn.id });
+      const platform = conn.software_platform?.toLowerCase();
+      let endpoint = null;
+      if (platform === 'shelterluv') endpoint = '/api/sync-shelterluv';
+      else if (platform === 'adopt-a-pet') endpoint = '/api/sync-adoptapet';
+
+      if (endpoint) {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ connection_id: conn.id }),
+        });
+        const text = await res.text();
+        const data = text ? JSON.parse(text) : {};
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}: ${text.slice(0, 200)}`);
+        toast.success(`Synced ${data.animals_synced ?? 0} animals for ${conn.shelter_name}!`);
       } else {
-        await base44.functions.invoke('syncPetfinderPets', { connection_id: conn.id });
+        toast.info(`Sync for ${conn.software_platform} is not yet supported.`);
       }
-      toast.success(`Sync triggered for ${conn.shelter_name}!`);
       refetch();
       refetchPets();
     } catch (err) {
