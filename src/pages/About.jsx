@@ -242,11 +242,16 @@ export default function About() {
   }, []);
 
   const saveTeam = async (updatedTeam) => {
-    if (contentId) {
-      await base44.entities.AboutPageContent.update(contentId, { team_members: updatedTeam });
-    } else {
-      const record = await base44.entities.AboutPageContent.create({ team_members: updatedTeam });
-      setContentId(record.id);
+    try {
+      if (contentId) {
+        await base44.entities.AboutPageContent.update(contentId, { team_members: updatedTeam });
+      } else {
+        const record = await base44.entities.AboutPageContent.create({ team_members: updatedTeam });
+        setContentId(record.id);
+      }
+    } catch (err) {
+      console.error('Failed to save team members:', err);
+      alert(`Failed to save: ${err.message || err}`);
     }
   };
 
