@@ -48,5 +48,12 @@ export default async function handler(req, res) {
   }
   result.shelter_status_counts = statusCounts;
 
+  // Check source values present in the pets table
+  const sourceRes = await fetch(
+    `${supabaseUrl}/rest/v1/pets?select=source,name&adoption_status=eq.Available&limit=10`,
+    { headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` } }
+  );
+  result.pets_source_sample = await sourceRes.json();
+
   return res.status(200).json({ platforms, ...result });
 }
