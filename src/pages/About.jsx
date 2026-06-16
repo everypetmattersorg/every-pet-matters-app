@@ -15,9 +15,9 @@ const DEFAULT_TEAM = [
 },
 {
   name: "Rory",
-  role: "Co-Founder & CTO",
-  bio: "Software engineer and dog dad. Built fetch&found to solve the real problem he faced when his dog went missing — and to make sure no one else goes through that alone.",
-  emoji: "💻",
+  role: "Co-Founder",
+  bio: "She's the reason we made every pet matters. Rescued from a kill shelter in Louisiana, she traveled all over the U.S., loved being on the water or paddleboard, and was the best co-pilot for any adventure. We miss her dearly, but she's forever our inspiration.",
+  emoji: "🐾",
   photo_url: ""
 },
 {
