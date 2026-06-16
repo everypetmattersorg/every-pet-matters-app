@@ -21,55 +21,6 @@ const DEFAULT_TEAM = [
   photo_url: ""
 },
 {
-  name: "Priya Patel",
-  role: "Head of Rescue Partnerships",
-  bio: "Worked with over 50 rescues across the country to build meaningful relationships and bring more adoptable pets onto the platform.",
-  emoji: "🤝",
-  photo_url: ""
-},
-{
-  name: "Leo Kim",
-  role: "Community & Outreach",
-  bio: "Cat enthusiast and community builder. Leads volunteer programs and local events to bring pet lovers together.",
-  emoji: "🐱",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐕",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐈",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐾",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐕",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐈",
-  photo_url: ""
-},
-{
   name: "Finn",
   role: "Chief Nap Officer",
   bio: "Expert in finding the sunniest spots and coziest blankets. Finn ensures all team members take adequate rest breaks.",
@@ -88,34 +39,6 @@ const DEFAULT_TEAM = [
   role: "Chief Treat Officer",
   bio: "Responsible for taste-testing all treats and ensuring quality control meets the highest standards. No treat goes unreviewed.",
   emoji: "🦴",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐾",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐕",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐈",
-  photo_url: ""
-},
-{
-  name: "Team Member",
-  role: "Role Title",
-  bio: "Bio coming soon.",
-  emoji: "🐾",
   photo_url: ""
 }];
 
