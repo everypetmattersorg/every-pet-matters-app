@@ -7,6 +7,7 @@ import LocationAutocomplete from './LocationAutocomplete';
 export default function PetFilters({ filters, onFilterChange, onMapFilterChange, hiddenFilters = [], pets = [] }) {
   const [locating, setLocating] = useState(false);
 
+  const titleCase = (s) => s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
   const sourceOptions = [...new Set(pets.map(p => p.source).filter(Boolean))].sort();
   const breedOptions = [...new Set(pets.map(p => p.breed).filter(Boolean))].sort();
 
@@ -68,7 +69,7 @@ export default function PetFilters({ filters, onFilterChange, onMapFilterChange,
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All sources</SelectItem>
-              {sourceOptions.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+              {sourceOptions.map(s => <SelectItem key={s} value={s}>{titleCase(s)}</SelectItem>)}
             </SelectContent>
           </Select>
         </div>
