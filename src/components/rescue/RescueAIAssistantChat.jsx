@@ -5,66 +5,36 @@ import { Input } from '@/components/ui/input';
 import { Loader2, Send } from 'lucide-react';
 import MessageBubble from '@/components/agents/MessageBubble';
 
+const SYSTEM_PROMPT = `You are an AI assistant helping animal rescues and shelters. You help write compelling pet adoption descriptions, draft social media posts about adoptions and events, and suggest matches between pets and adopters. Keep responses concise and practical.`;
+
 export default function RescueAIAssistantChat({ rescueEmail }) {
-  const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [initialized, setInitialized] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Initialize conversation
-  useEffect(() => {
-    if (rescueEmail && !initialized) {
-      initializeConversation();
-    }
-  }, [rescueEmail, initialized]);
-
-  // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const initializeConversation = async () => {
-    try {
-      const conv = await base44.agents.createConversation({
-        agent_name: 'rescueAIAssistant',
-        metadata: {
-          name: 'Rescue AI Assistant',
-          description: 'AI assistance for pet descriptions, social media, and matching',
-        },
-      });
-      setConversation(conv);
-      setMessages(conv.messages || []);
-      subscribeToUpdates(conv.id);
-      setInitialized(true);
-    } catch (err) {
-      console.error('Failed to initialize conversation:', err);
-    }
-  };
-
-  const subscribeToUpdates = (conversationId) => {
-    const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
-      setMessages(data.messages || []);
-    });
-    return unsubscribe;
-  };
-
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!input.trim() || !conversation) return;
+    if (!input.trim() || loading) return;
+
+    const userMessage = input.trim();
+    const updated = [...messages, { role: 'user', content: userMessage }];
+    setMessages(updated);
+    setInput('');
+    setLoading(true);
 
     try {
-      setLoading(true);
-      const userMessage = input.trim();
-      setInput('');
-
-      await base44.agents.addMessage(conversation, {
-        role: 'user',
-        content: userMessage,
-      });
+      const history = updated.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n\n');
+      const prompt = `${SYSTEM_PROMPT}\n\n${history}\n\nAssistant:`;
+      const result = await base44.integrations.Core.InvokeLLM({ prompt });
+      setMessages(prev => [...prev, { role: 'assistant', content: result }]);
     } catch (err) {
-      console.error('Failed to send message:', err);
+      console.error('AI assistant error:', err);
+      setMessages(prev => [...prev, { role: 'assistant', content: 'Sorry, something went wrong. Please try again.' }]);
     } finally {
       setLoading(false);
     }
