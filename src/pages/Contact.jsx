@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { base44 } from "@/api/base44Client";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -45,14 +44,24 @@ export default function Contact() {
         </div>
       </div>
     `;
-    await base44.integrations.Core.SendEmail({
-      to: ["bark@everypetmatters.org", "erin@everypetmatters.org"],
-      subject: `[contact form] ${form.subject}`,
-      body: `from: ${form.name} (${form.email})\n\n${form.message}`,
-      html
-    });
-    toast.success("message sent! we'll get back to you soon.");
-    setForm({ name: "", email: "", subject: "", message: "" });
+    try {
+      const emailRes = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: ["bark@everypetmatters.org", "erin@everypetmatters.org"],
+          subject: `[contact form] ${form.subject}`,
+          body: `from: ${form.name} (${form.email})\n\n${form.message}`,
+          html
+        }),
+      });
+      if (!emailRes.ok) throw new Error(await emailRes.text());
+      toast.success("message sent! we'll get back to you soon.");
+      setForm({ name: "", email: "", subject: "", message: "" });
+    } catch (err) {
+      console.error('send-email failed:', err);
+      toast.error("something went wrong sending your message. please email us directly at bark@everypetmatters.org");
+    }
     setSending(false);
   };
 
