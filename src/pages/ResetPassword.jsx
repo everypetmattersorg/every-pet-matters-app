@@ -4,9 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-// Capture hash before Supabase clears it
-const _initialHash = window.location.hash;
-
 export default function ResetPassword() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,18 +13,31 @@ export default function ResetPassword() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // If hash contains type=recovery, Supabase will fire PASSWORD_RECOVERY
-    if (_initialHash.includes('type=recovery')) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-        if (event === 'PASSWORD_RECOVERY') {
-          setReady(true);
-        }
+    // Check if there's already an active recovery session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setReady(true);
+    });
+
+    // Also listen for the PASSWORD_RECOVERY event (fires after Supabase
+    // exchanges the code from the reset link URL)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY' || (event === 'SIGNED_IN' && session)) {
+        setReady(true);
+      }
+    });
+
+    // If nothing triggers after 3s, show an error
+    const timeout = setTimeout(() => {
+      setReady((r) => {
+        if (!r) setError('Invalid or expired reset link. Please request a new one from the login page.');
+        return r;
       });
-      return () => subscription.unsubscribe();
-    } else {
-      // No recovery token — maybe they navigated here directly
-      setError('Invalid or expired reset link. Please request a new one.');
-    }
+    }, 3000);
+
+    return () => {
+      subscription.unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   const handleSubmit = async (e) => {
@@ -72,12 +82,14 @@ export default function ResetPassword() {
         {error && (
           <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg text-sm">
             {error}
-            {!ready && (
-              <a href="/Login" className="block mt-2 text-violet-600 hover:underline">
-                Back to login
-              </a>
-            )}
+            <a href="/Login" className="block mt-2 text-violet-600 hover:underline">
+              Back to login
+            </a>
           </div>
+        )}
+
+        {!ready && !error && (
+          <p className="text-sm text-slate-400 text-center py-4">verifying reset link...</p>
         )}
 
         {ready && !message && (
