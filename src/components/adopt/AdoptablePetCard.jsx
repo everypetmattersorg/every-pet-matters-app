@@ -41,7 +41,7 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
 
   return (
     <div onClick={onSelect}>
-      <Card className={`overflow-hidden bg-white border-0 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col cursor-pointer ${isComparing ? "ring-2 ring-violet-400" : ""}`}>
+      <Card className={`bg-white border-0 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col cursor-pointer ${isComparing ? "ring-2 ring-violet-400" : ""}`}>
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
           {pet.photo_url ? (
@@ -198,7 +198,7 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
             </button>
 
             {showShareMenu && (
-              <div className="absolute bottom-10 right-0 bg-white border border-slate-200 rounded-lg shadow-lg p-2 z-20 w-40">
+              <div className="absolute bottom-10 right-0 bg-white border border-slate-200 rounded-lg shadow-lg p-2 z-50 w-40">
                 <button onClick={() => handleShare("facebook")} className="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded">Facebook</button>
                 <button onClick={() => handleShare("twitter")} className="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded">Twitter</button>
                 <button onClick={() => handleShare("whatsapp")} className="w-full text-left px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 rounded">WhatsApp</button>
