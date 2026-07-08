@@ -3,11 +3,19 @@ import PetPillTags from "@/components/pets/PetPillTags";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPageUrl } from "@/utils";
 
 export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleCompare }) {
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const shareRef = useRef(null);
+
+  useEffect(() => {
+    if (!showShareMenu) return;
+    const handler = (e) => { if (shareRef.current && !shareRef.current.contains(e.target)) setShowShareMenu(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showShareMenu]);
 
   const handleShare = (platform) => {
     const url = `${window.location.origin}${createPageUrl(`Adopt?pet=${pet.id}`)}`;
@@ -40,7 +48,7 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
       : pet.rescue_city || pet.rescue_state || pet.location || null;
 
   return (
-    <div onClick={onSelect} className="relative">
+    <div onClick={onSelect} className={`relative ${showShareMenu ? 'z-[100]' : ''}`}>
       <Card className={`bg-white border-0 shadow-md hover:shadow-lg transition-shadow h-full flex flex-col cursor-pointer ${isComparing ? "ring-2 ring-violet-400" : ""}`}>
         {/* Image */}
         <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
@@ -203,6 +211,7 @@ export default function AdoptablePetCard({ pet, onSelect, isComparing, onToggleC
 
       {showShareMenu && (
         <div
+          ref={shareRef}
           className="absolute bottom-14 right-2 bg-white border border-slate-200 rounded-lg shadow-xl p-2 z-50 w-40"
           onClick={(e) => e.stopPropagation()}
         >
