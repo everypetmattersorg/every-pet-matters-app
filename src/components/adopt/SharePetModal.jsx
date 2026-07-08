@@ -60,7 +60,7 @@ export default function SharePetModal({ pet, open, onClose }) {
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-full sm:max-w-lg flex flex-col p-0">
+      <SheetContent side="right" className="w-full sm:max-w-lg flex flex-col p-0 z-[10003]">
         <SheetHeader className="px-6 py-4 border-b shrink-0">
           <SheetTitle className="flex items-center gap-2">
             <Share2 className="w-4 h-4" /> Share {pet.name}
