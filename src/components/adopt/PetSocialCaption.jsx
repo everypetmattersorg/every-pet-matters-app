@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
 import { Sparkles, Copy, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -18,8 +17,20 @@ export default function PetSocialCaption({ pet }) {
     setLoading(true);
     setCaption("");
     try {
-      const res = await base44.functions.invoke("generatePetCaption", { pet, captionType });
-      setCaption(res.data.caption);
+      const typeLabel = captionType === "rescue" ? "urgently needs rescue" : "is available for adoption or fostering";
+      const prompt = `Write an engaging social media caption for a pet named ${pet.name} who ${typeLabel}.
+Pet details: species: ${pet.species || "unknown"}, breed: ${pet.breed || "unknown"}, age: ${pet.age_years ? `${pet.age_years} years` : pet.age || "unknown"}, gender: ${pet.gender || "unknown"}, location: ${pet.rescue_city ? `${pet.rescue_city}, ${pet.rescue_state}` : "Arizona"}.${pet.description ? ` About them: ${pet.description.slice(0, 200)}` : ""}
+Write a warm, shareable caption under 280 characters with 2-3 relevant emojis and a call to action. Return only the caption text, nothing else.`;
+
+      const res = await fetch('/api/invoke-llm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await res.json();
+      setCaption(data.result || "Could not generate caption. Please try again.");
+    } catch {
+      setCaption("Could not generate caption. Please try again.");
     } finally {
       setLoading(false);
     }
