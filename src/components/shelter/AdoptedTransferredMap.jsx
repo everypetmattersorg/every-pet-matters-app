@@ -5,9 +5,7 @@ export default function AdoptedTransferredMap({ pets = [] }) {
   const stats = useMemo(() => {
     const byState = {};
     for (const pet of pets) {
-      if (!pet.location) continue;
-      const parts = pet.location.split(',');
-      const state = parts[parts.length - 1].trim();
+      const state = pet.rescue_state || (pet.location ? pet.location.split(',').pop().trim() : null);
       if (!state) continue;
       if (!byState[state]) byState[state] = { state, adopted: 0, transferred: 0, total: 0 };
       byState[state].total += 1;

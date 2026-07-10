@@ -37,9 +37,7 @@ export default function AdminAnalytics() {
   const stateData = useMemo(() => {
     const counts = {};
     for (const pet of pets) {
-      if (!pet.location) continue;
-      const parts = pet.location.split(',');
-      const state = parts[parts.length - 1].trim();
+      const state = pet.rescue_state || (pet.location ? pet.location.split(',').pop().trim() : null);
       if (state) counts[state] = (counts[state] || 0) + 1;
     }
     return Object.entries(counts)
