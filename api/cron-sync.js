@@ -41,6 +41,7 @@ export default async function handler(req, res) {
       let endpoint = null;
       if (platform === 'shelterluv') endpoint = '/api/sync-shelterluv';
       else if (platform === 'adopt-a-pet') endpoint = '/api/sync-adoptapet';
+      else if (platform === 'petfinder') endpoint = '/api/sync-petfinder';
 
       if (!endpoint) {
         results.push({ shelter_name: conn.shelter_name, skipped: true, reason: `Unsupported platform: ${conn.software_platform}` });

@@ -316,7 +316,25 @@ export default function ShelterConnectionsManager() {
               </>
             )}
 
-            {!['ShelterLuv', 'Adopt-a-Pet', 'ShelterManager'].includes(formData.software_platform) && (
+            {formData.software_platform === 'Petfinder' && (
+              <>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold">Client ID (API Key)</label>
+                  <Input value={formData.api_key || ''} onChange={e => set('api_key', e.target.value)} placeholder="Petfinder client ID" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold">Client Secret</label>
+                  <Input value={formData.api_secret || ''} onChange={e => set('api_secret', e.target.value)} placeholder="Petfinder client secret" />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-semibold">Organization ID</label>
+                  <Input value={formData.organization_id || ''} onChange={e => set('organization_id', e.target.value)} placeholder="e.g. AZ333 (from Petfinder org URL)" />
+                  <p className="text-xs text-muted-foreground">Find this in your Petfinder account URL or under Account Settings</p>
+                </div>
+              </>
+            )}
+
+            {!['ShelterLuv', 'Adopt-a-Pet', 'ShelterManager', 'Petfinder'].includes(formData.software_platform) && (
               <>
                 <div className="space-y-1">
                   <label className="text-xs font-semibold">API Key</label>
