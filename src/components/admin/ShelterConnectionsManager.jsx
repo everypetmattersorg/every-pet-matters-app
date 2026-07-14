@@ -100,7 +100,15 @@ export default function ShelterConnectionsManager() {
       if (editing) {
         const { error } = await supabase.from('shelter_connections').update(row).eq('id', editing.id);
         if (error) throw error;
-        toast.success('Connection updated');
+        // If status changed to disconnected, remove all pets from this shelter
+        const wasActive = editing.status !== 'disconnected';
+        const nowDisconnected = row.status === 'disconnected';
+        if (wasActive && nowDisconnected) {
+          const deleted = await deletePetsForConnection(row.shelter_name);
+          toast.success(`Connection disabled · ${deleted} pets removed`);
+        } else {
+          toast.success('Connection updated');
+        }
       } else {
         const { error } = await supabase.from('shelter_connections').insert(row);
         if (error) throw error;
@@ -115,12 +123,19 @@ export default function ShelterConnectionsManager() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this connection?')) return;
-    const { error } = await supabase.from('shelter_connections').delete().eq('id', id);
+  const deletePetsForConnection = async (shelterName) => {
+    if (!shelterName) return 0;
+    const { count } = await supabase.from('pets').delete({ count: 'exact' }).ilike('source', shelterName);
+    return count ?? 0;
+  };
+
+  const handleDelete = async (conn) => {
+    if (!confirm(`Delete this connection and remove all ${conn.shelter_name} pets from the database?`)) return;
+    const deleted = await deletePetsForConnection(conn.shelter_name);
+    const { error } = await supabase.from('shelter_connections').delete().eq('id', conn.id);
     if (error) { toast.error('Delete failed: ' + error.message); return; }
     qc.invalidateQueries({ queryKey: ['shelter-connections-admin'] });
-    toast.success('Connection deleted');
+    toast.success(`Connection deleted · ${deleted} pets removed`);
   };
 
   const handleSync = async (conn) => {
@@ -202,7 +217,7 @@ export default function ShelterConnectionsManager() {
                         {syncing === conn.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />} Sync
                       </Button>
                       <Button size="sm" variant="ghost" onClick={() => openEdit(conn)}><Pencil className="w-4 h-4" /></Button>
-                      <Button size="sm" variant="ghost" className="text-red-600" onClick={() => handleDelete(conn.id)}><Trash2 className="w-4 h-4" /></Button>
+                      <Button size="sm" variant="ghost" className="text-red-600" onClick={() => handleDelete(conn)}><Trash2 className="w-4 h-4" /></Button>
                     </div>
                   </div>
                 </CardContent>
