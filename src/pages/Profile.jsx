@@ -180,7 +180,7 @@ export default function Profile() {
                     ) : (
                       <div className="text-center">
                         <Camera className="w-8 h-8 text-slate-400 mx-auto mb-1" />
-                        <p className="text-xs text-slate-500">Recommended: 1200x300px</p>
+                        <p className="text-xs text-slate-500">Recommended: 1584x396px</p>
                       </div>
                     )}
                     <label className="absolute bottom-2 right-2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors" style={{ backgroundColor: '#b1511d' }} onMouseEnter={(e) => e.target.style.opacity = '0.9'} onMouseLeave={(e) => e.target.style.opacity = '1'}>
