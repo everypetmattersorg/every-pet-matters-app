@@ -74,8 +74,8 @@ export default function ShelterConnectionsManager() {
   const openEdit = (conn) => { setEditing(conn); setFormData({ ...conn }); setOpen(true); };
 
   const handleSave = async () => {
-    if (!formData.shelter_name?.trim() || !formData.contact_email?.trim() || !formData.software_platform) {
-      toast.error('Shelter name, email, and platform are required');
+    if (!formData.shelter_name?.trim() || !formData.software_platform) {
+      toast.error('Shelter name and platform are required');
       return;
     }
     setSaving(true);
@@ -83,7 +83,7 @@ export default function ShelterConnectionsManager() {
       const row = {
         shelter_name: formData.shelter_name.trim(),
         contact_name: formData.contact_name || null,
-        contact_email: formData.contact_email.trim(),
+        contact_email: formData.contact_email?.trim() || '',
         contact_phone: formData.contact_phone || null,
         software_platform: formData.software_platform,
         api_key: formData.api_key || null,
@@ -91,12 +91,13 @@ export default function ShelterConnectionsManager() {
         organization_id: formData.organization_id || null,
         status: formData.status || 'pending',
         notes: formData.notes || null,
-        shelter_details_id: formData.shelter_details_id || null,
-        user_profile_id: formData.user_profile_id || null,
         shelterluv_adoptable_statuses: formData.software_platform === 'ShelterLuv'
           ? (formData.shelterluv_adoptable_statuses || ['Adoption Available', 'Available Foster'])
           : null,
       };
+      // Only include FK columns if the migration has been run
+      if (formData.shelter_details_id) row.shelter_details_id = formData.shelter_details_id;
+      if (formData.user_profile_id) row.user_profile_id = formData.user_profile_id;
       if (editing) {
         const { error } = await supabase.from('shelter_connections').update(row).eq('id', editing.id);
         if (error) throw error;
