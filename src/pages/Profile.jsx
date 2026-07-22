@@ -27,7 +27,7 @@ export default function Profile() {
     base44.auth.me().then(async (u) => {
       setUser(u);
       setFormData(u || {});
-      if (u?.user_type) setStep('details');
+      if (u?.user_types?.length || u?.user_type) setStep('details');
       if (u?.email) {
         const pets = await base44.entities.OwnedPet.filter({ owner_email: u.email }).catch(() => []);
         setOwnedPets(pets);
@@ -91,7 +91,8 @@ export default function Profile() {
     }
   };
 
-  const currentType = USER_TYPES.find((t) => t.value === formData.user_type);
+  const userTypes = formData.user_types?.length ? formData.user_types : (formData.user_type ? [formData.user_type] : []);
+  const currentType = USER_TYPES.find((t) => userTypes.includes(t.value));
 
   if (!user) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -128,7 +129,7 @@ export default function Profile() {
             {['type', 'details'].map((s, i) =>
                 <button
                   key={s}
-                  onClick={() => formData.user_type && setStep(s)}
+                  onClick={() => userTypes.length > 0 && setStep(s)}
                   className={`flex-1 py-4 text-sm font-medium transition-colors ${
                   step === s ? "border-b-2" : 'text-slate-400 hover:text-slate-600'}`
                   }
@@ -145,11 +146,11 @@ export default function Profile() {
                 <div>
                   <h2 className="text-lg font-semibold text-slate-800 mb-1">What best describes you?</h2>
                   <p className="text-sm text-slate-500 mb-5">Choose the account type that fits your role in the pet community. You can change your account type at any time.</p>
-                  <UserTypeSelector value={formData.user_type} onChange={(v) => set('user_type', v)} />
+                  <UserTypeSelector values={userTypes} onChange={(v) => set('user_types', v)} />
                 </div>
                 <Button
                     onClick={() => setStep('details')}
-                    disabled={!formData.user_type}
+                    disabled={userTypes.length === 0}
                     className="w-full h-12 rounded-xl text-base font-semibold">
                     
                   Continue →
@@ -324,21 +325,21 @@ export default function Profile() {
                  )}
 
                  {/* Type-specific fields */}
-                {(formData.user_type === 'adopter' || formData.user_type === 'pet_owner') &&
+                {userTypes.some(t => ['adopter', 'pet_owner'].includes(t)) &&
                   <div className="pt-2 border-t border-slate-100">
                     <h3 className="text-sm font-semibold text-slate-700 mb-4">additional information</h3>
                     <AdopterFields data={formData} onChange={set} />
                   </div>
                   }
 
-                {(formData.user_type === 'shelter' || formData.user_type === 'rescue') &&
+                {userTypes.some(t => ['shelter', 'rescue'].includes(t)) &&
                   <div className="pt-2 border-t border-slate-100">
                     <h3 className="text-sm font-semibold text-slate-700 mb-4">🏢 Organization Details</h3>
                     <ShelterRescueFields data={formData} onChange={set} />
                   </div>
                   }
 
-                {(formData.user_type === 'pet_trainer' || formData.user_type === 'veterinarian' || formData.user_type === 'pet_store') &&
+                {userTypes.some(t => ['pet_trainer', 'veterinarian', 'pet_store'].includes(t)) &&
                   <div className="pt-2 border-t border-slate-100">
                     <h3 className="text-sm font-semibold text-slate-700 mb-4">💼 Professional Details</h3>
                     <ProfessionalFields
