@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageCircle, CalendarDays, MapPin, Clock, ChevronDown, ChevronUp, UserCheck, MoreVertical, Edit2, Trash2 } from 'lucide-react';
@@ -19,11 +20,18 @@ export default function PostCard({ post, currentUser }) {
   const [editContent, setEditContent] = useState(post.content);
   const [saving, setSaving] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
+  const [authorAvatar, setAuthorAvatar] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
     base44.entities.User.list().then(setAllUsers).catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (!post.author_email) return;
+    supabase.from('profiles').select('avatar_url').eq('email', post.author_email).single()
+      .then(({ data }) => { if (data?.avatar_url) setAuthorAvatar(data.avatar_url); });
+  }, [post.author_email]);
 
   const { data: comments = [] } = useQuery({
     queryKey: ['comments', post.id],
@@ -76,8 +84,10 @@ export default function PostCard({ post, currentUser }) {
       {/* Header */}
       <div className="flex items-center gap-3 p-4 pb-3">
         <Link to={`/PublicProfile?email=${encodeURIComponent(post.author_email)}`} className="flex-shrink-0">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-violet-400 flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity">
-            {initials}
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-rose-400 to-violet-400 flex items-center justify-center text-white font-bold text-sm hover:opacity-80 transition-opacity">
+            {authorAvatar
+              ? <img src={authorAvatar} alt={post.author_name} className="w-full h-full object-cover" />
+              : initials}
           </div>
         </Link>
         <div className="flex-1 min-w-0">
