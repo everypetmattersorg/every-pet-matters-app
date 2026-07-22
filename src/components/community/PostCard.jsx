@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { supabase } from '@/api/supabaseClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageCircle, CalendarDays, MapPin, Clock, ChevronDown, ChevronUp, UserCheck, MoreVertical, Edit2, Trash2 } from 'lucide-react';
+import { Heart, MessageCircle, CalendarDays, MapPin, Clock, ChevronDown, ChevronUp, UserCheck, MoreVertical, Edit2, Trash2, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import CommentThread from './CommentThread';
@@ -21,6 +21,7 @@ export default function PostCard({ post, currentUser }) {
   const [saving, setSaving] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [authorAvatar, setAuthorAvatar] = useState(null);
+  const [lightboxIndex, setLightboxIndex] = useState(null);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -171,9 +172,10 @@ export default function PostCard({ post, currentUser }) {
       {(() => {
         const photos = post.photo_urls?.length ? post.photo_urls : post.photo_url ? [post.photo_url] : [];
         if (!photos.length) return null;
+        const open = (i) => setLightboxIndex(i);
         if (photos.length === 1) {
           return (
-            <div className="mx-4 mb-3 rounded-xl overflow-hidden">
+            <div className="mx-4 mb-3 rounded-xl overflow-hidden cursor-zoom-in" onClick={() => open(0)}>
               <img src={photos[0]} alt="Post" className="w-full object-cover max-h-80" />
             </div>
           );
@@ -182,13 +184,13 @@ export default function PostCard({ post, currentUser }) {
           <div className="mx-4 mb-3 grid gap-1.5 rounded-xl overflow-hidden" style={{ gridTemplateColumns: photos.length === 2 ? '1fr 1fr' : photos.length === 3 ? '2fr 1fr' : '1fr 1fr' }}>
             {photos.length === 3 ? (
               <>
-                <img src={photos[0]} alt="" className="w-full h-52 object-cover row-span-2" />
-                <img src={photos[1]} alt="" className="w-full h-[102px] object-cover" />
-                <img src={photos[2]} alt="" className="w-full h-[102px] object-cover" />
+                <img src={photos[0]} alt="" className="w-full h-52 object-cover row-span-2 cursor-zoom-in" onClick={() => open(0)} />
+                <img src={photos[1]} alt="" className="w-full h-[102px] object-cover cursor-zoom-in" onClick={() => open(1)} />
+                <img src={photos[2]} alt="" className="w-full h-[102px] object-cover cursor-zoom-in" onClick={() => open(2)} />
               </>
             ) : (
               photos.slice(0, 4).map((url, i) => (
-                <div key={i} className="relative">
+                <div key={i} className="relative cursor-zoom-in" onClick={() => open(i)}>
                   <img src={url} alt="" className="w-full h-40 object-cover" />
                   {i === 3 && photos.length > 4 && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
@@ -197,6 +199,51 @@ export default function PostCard({ post, currentUser }) {
                   )}
                 </div>
               ))
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (() => {
+        const photos = post.photo_urls?.length ? post.photo_urls : post.photo_url ? [post.photo_url] : [];
+        const prev = () => setLightboxIndex(i => (i - 1 + photos.length) % photos.length);
+        const next = () => setLightboxIndex(i => (i + 1) % photos.length);
+        const onKey = (e) => { if (e.key === 'ArrowLeft') prev(); if (e.key === 'ArrowRight') next(); if (e.key === 'Escape') setLightboxIndex(null); };
+        return (
+          <div
+            className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center"
+            onClick={() => setLightboxIndex(null)}
+            onKeyDown={onKey}
+            tabIndex={0}
+            ref={el => el?.focus()}
+          >
+            <button onClick={e => { e.stopPropagation(); setLightboxIndex(null); }} className="absolute top-4 right-4 text-white bg-black/40 rounded-full p-2 hover:bg-black/70">
+              <X className="w-5 h-5" />
+            </button>
+            {photos.length > 1 && (
+              <>
+                <button onClick={e => { e.stopPropagation(); prev(); }} className="absolute left-4 text-white bg-black/40 rounded-full p-2 hover:bg-black/70">
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button onClick={e => { e.stopPropagation(); next(); }} className="absolute right-4 text-white bg-black/40 rounded-full p-2 hover:bg-black/70">
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
+            )}
+            <img
+              src={photos[lightboxIndex]}
+              alt=""
+              className="max-h-[90vh] max-w-[90vw] object-contain rounded-lg shadow-2xl"
+              onClick={e => e.stopPropagation()}
+            />
+            {photos.length > 1 && (
+              <div className="absolute bottom-4 flex gap-1.5">
+                {photos.map((_, i) => (
+                  <button key={i} onClick={e => { e.stopPropagation(); setLightboxIndex(i); }}
+                    className={`w-2 h-2 rounded-full transition-all ${i === lightboxIndex ? 'bg-white' : 'bg-white/40'}`} />
+                ))}
+              </div>
             )}
           </div>
         );
