@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { supabase } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -9,14 +9,24 @@ export default function UserDirectory() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) {
+        supabase.from('profiles').select('*').eq('user_id', data.user.id).single()
+          .then(({ data: profile }) => setUser(profile));
+      }
+    });
   }, []);
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['public-users'],
     queryFn: async () => {
-      const allUsers = await base44.entities.User.list();
-      return allUsers.filter(u => u.share_profile);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('share_profile', true)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data ?? [];
     }
   });
 
@@ -54,7 +64,7 @@ export default function UserDirectory() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {users.map((profile) => {
-              const isCurrentUser = user && profile.id === user.id;
+              const isCurrentUser = user && profile.user_id === user.user_id;
               return (
                 <Link key={profile.id} to={`/PublicProfile?userId=${profile.id}`}>
                   <div className={`bg-white rounded-xl border overflow-hidden hover:shadow-lg transition-all cursor-pointer h-full flex flex-col ${isCurrentUser ? 'border-amber-400 shadow-md' : 'border-slate-200'}`}>
@@ -78,7 +88,7 @@ export default function UserDirectory() {
                         )}
                         <div className="flex-1 pb-1">
                           <h3 className="font-bold text-lg leading-tight">{profile.full_name}</h3>
-                          <p className="text-xs text-slate-500 mt-0.5">since {new Date(profile.created_date).getFullYear()}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">since {new Date(profile.created_at).getFullYear()}</p>
                         </div>
                       </div>
                       {profile.bio && <p className="text-sm text-slate-600 mb-4 line-clamp-2">{profile.bio}</p>}

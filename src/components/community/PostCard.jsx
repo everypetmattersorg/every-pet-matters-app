@@ -157,10 +157,45 @@ export default function PostCard({ post, currentUser }) {
         post.content && <p className="px-4 pb-3 text-slate-700 text-sm leading-relaxed">{post.content}</p>
       )}
 
-      {/* Photo */}
-      {post.photo_url && (
-        <div className="mx-4 mb-3 rounded-xl overflow-hidden">
-          <img src={post.photo_url} alt="Post" className="w-full object-cover max-h-80" />
+      {/* Photos */}
+      {(() => {
+        const photos = post.photo_urls?.length ? post.photo_urls : post.photo_url ? [post.photo_url] : [];
+        if (!photos.length) return null;
+        if (photos.length === 1) {
+          return (
+            <div className="mx-4 mb-3 rounded-xl overflow-hidden">
+              <img src={photos[0]} alt="Post" className="w-full object-cover max-h-80" />
+            </div>
+          );
+        }
+        return (
+          <div className="mx-4 mb-3 grid gap-1.5 rounded-xl overflow-hidden" style={{ gridTemplateColumns: photos.length === 2 ? '1fr 1fr' : photos.length === 3 ? '2fr 1fr' : '1fr 1fr' }}>
+            {photos.length === 3 ? (
+              <>
+                <img src={photos[0]} alt="" className="w-full h-52 object-cover row-span-2" />
+                <img src={photos[1]} alt="" className="w-full h-[102px] object-cover" />
+                <img src={photos[2]} alt="" className="w-full h-[102px] object-cover" />
+              </>
+            ) : (
+              photos.slice(0, 4).map((url, i) => (
+                <div key={i} className="relative">
+                  <img src={url} alt="" className="w-full h-40 object-cover" />
+                  {i === 3 && photos.length > 4 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white font-bold text-xl">
+                      +{photos.length - 4}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Video */}
+      {post.video_url && (
+        <div className="mx-4 mb-3 rounded-xl overflow-hidden bg-black">
+          <video src={post.video_url} controls className="w-full max-h-80 object-contain" />
         </div>
       )}
 
