@@ -24,7 +24,7 @@ export default function UserDirectory() {
         .from('profiles')
         .select('*')
         .eq('share_profile', true)
-        .order('created_at', { ascending: false });
+        .order('created_date', { ascending: false });
       if (error) throw error;
       return data ?? [];
     }
@@ -88,7 +88,7 @@ export default function UserDirectory() {
                         )}
                         <div className="flex-1 pb-1">
                           <h3 className="font-bold text-lg leading-tight">{profile.full_name}</h3>
-                          <p className="text-xs text-slate-500 mt-0.5">since {new Date(profile.created_at).getFullYear()}</p>
+                          <p className="text-xs text-slate-500 mt-0.5">since {new Date(profile.created_date).getFullYear()}</p>
                         </div>
                       </div>
                       {profile.bio && <p className="text-sm text-slate-600 mb-4 line-clamp-2">{profile.bio}</p>}
