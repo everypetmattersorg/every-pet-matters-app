@@ -77,35 +77,44 @@ export default function PetForm({ initialData, onSubmit, isSubmitting, formType 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    
     setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setFormData(prev => ({ ...prev, photo_urls: [...prev.photo_urls, file_url] }));
-    setUploading(false);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setFormData(prev => ({ ...prev, photo_urls: [...prev.photo_urls, file_url] }));
 
-    // Only auto-identify on first photo
-    if (formData.photo_urls.length === 0) {
-      setIdentifying(true);
-      const result = await base44.integrations.Core.InvokeLLM({
-        prompt: `Look at this pet photo and identify the breed. Return only a JSON object with fields: pet_type (one of: dog, cat, bird, rabbit, other), breed (specific breed name or mix, e.g. "Golden Retriever", "Labrador Mix"), color (primary color/markings description). Be concise.`,
-        file_urls: [file_url],
-        response_json_schema: {
-          type: 'object',
-          properties: {
-            pet_type: { type: 'string' },
-            breed: { type: 'string' },
-            color: { type: 'string' }
+      // Only auto-identify on first photo
+      if (formData.photo_urls.length === 0) {
+        setIdentifying(true);
+        try {
+          const res = await fetch('/api/invoke-llm', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              prompt: `Look at this pet photo and identify the breed. Return only a JSON object with fields: pet_type (one of: dog, cat, bird, rabbit, other), breed (specific breed name or mix), color (primary color/markings). Be concise.`,
+              file_urls: [file_url],
+              response_json_schema: { type: 'object', properties: { pet_type: { type: 'string' }, breed: { type: 'string' }, color: { type: 'string' } } }
+            })
+          });
+          const data = await res.json();
+          const result = typeof data.result === 'string' ? JSON.parse(data.result) : data.result;
+          if (result) {
+            setFormData(prev => ({
+              ...prev,
+              pet_type: result.pet_type || prev.pet_type,
+              breed: result.breed || prev.breed,
+              color: result.color || prev.color
+            }));
           }
+        } catch {
+          // auto-identify failed silently, user can fill in manually
         }
-      });
-      setFormData(prev => ({
-        ...prev,
-        pet_type: result.pet_type || prev.pet_type,
-        breed: result.breed || prev.breed,
-        color: result.color || prev.color
-      }));
-      setIdentifying(false);
+        setIdentifying(false);
+      }
+    } catch (err) {
+      console.error('Photo upload failed:', err);
+      alert('Photo upload failed. Please try again.');
     }
+    setUploading(false);
   };
 
   const removePhoto = (index) => {
