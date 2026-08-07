@@ -199,7 +199,10 @@ const integrations = {
       const ext = file.name?.split('.').pop() || 'bin';
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error } = await supabase.storage.from('uploads').upload(path, file, { upsert: false });
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase storage upload error:', error);
+        throw new Error(error.message || JSON.stringify(error));
+      }
       const { data: { publicUrl } } = supabase.storage.from('uploads').getPublicUrl(path);
       return { file_url: publicUrl };
     },

@@ -112,7 +112,7 @@ export default function PetForm({ initialData, onSubmit, isSubmitting, formType 
       }
     } catch (err) {
       console.error('Photo upload failed:', err);
-      alert('Photo upload failed. Please try again.');
+      alert('Photo upload failed: ' + (err?.message || JSON.stringify(err)));
     }
     setUploading(false);
   };
