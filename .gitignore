@@ -28,3 +28,9 @@ dist-ssr
 *.sw?
 
 .env
+.vercel
+.env*
+
+# Data exports/backups from scripts/ — not source, may contain shelter/animal data
+scripts/*.csv
+scripts/output/
