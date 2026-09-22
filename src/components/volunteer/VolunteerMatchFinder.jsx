@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -41,10 +41,14 @@ export default function VolunteerMatchFinder({ rescueEmail }) {
   const handleContactVolunteer = async (volunteer) => {
     setSendingEmail(volunteer.id);
     try {
-      await base44.functions.invoke('sendVolunteerContactEmail', {
-        volunteer_email: volunteer.email,
-        volunteer_name: volunteer.name,
-        rescue_email: rescueEmail
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: volunteer.email,
+          subject: 'Volunteer Opportunity',
+          message: `Hi ${volunteer.name}, a rescue organization (${rescueEmail}) is interested in connecting with you about volunteering opportunities on Every Pet Matters.`
+        })
       });
       toast.success(`Email sent to ${volunteer.name}!`);
     } catch (err) {

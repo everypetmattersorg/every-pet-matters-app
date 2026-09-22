@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -120,13 +120,15 @@ export default function PartnershipManagement() {
       completed: `Partnership with ${partnership.initiator_email === user?.email ? partnership.partner_shelter_name : partnership.initiator_shelter_name} has been completed.`,
     };
 
-    await base44.functions.invoke('handlePartnershipNotification', {
-      partnership_id: partnership.id,
-      event_type: newStatus === 'active' ? 'partnership_active' : newStatus === 'declined' ? 'request_declined' : 'partnership_completed',
-      recipient_email: partnerEmail,
-      sender_name: user?.affiliated_organization || user?.full_name,
-      message: statusMessages[newStatus],
-    });
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: partnerEmail,
+          subject: 'Partnership Update on Every Pet Matters',
+          message: statusMessages[newStatus]
+        })
+      });
 
     toast.success('Partnership status updated!');
     refetch();

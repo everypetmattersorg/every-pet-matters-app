@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,10 +82,8 @@ export default function APIIntegrationSettings({ rescueEmail }) {
 
   const syncMutation = useMutation({
     mutationFn: async () => {
-      const { data } = await base44.functions.invoke("syncPetfinderPets", {
-        rescue_email: rescueEmail,
-      });
-      return data;
+      const res = await fetch('/api/cron-sync', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ rescue_email: rescueEmail }) });
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["apiIntegration", rescueEmail] });

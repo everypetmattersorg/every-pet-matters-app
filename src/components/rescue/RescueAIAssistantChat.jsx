@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Send } from 'lucide-react';
@@ -30,7 +30,8 @@ export default function RescueAIAssistantChat({ rescueEmail }) {
     try {
       const history = updated.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n\n');
       const prompt = `${SYSTEM_PROMPT}\n\n${history}\n\nAssistant:`;
-      const result = await base44.integrations.Core.InvokeLLM({ prompt });
+      const res = await fetch('/api/invoke-llm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+      const result = (await res.json()).result || '';
       setMessages(prev => [...prev, { role: 'assistant', content: result }]);
     } catch (err) {
       console.error('AI assistant error:', err);

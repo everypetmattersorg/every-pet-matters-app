@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -95,12 +95,14 @@ export default function ShelterDirectory() {
         notes: partnershipForm.notes
       });
 
-      await base44.functions.invoke('handlePartnershipNotification', {
-        partnership_id: partnership.id,
-        event_type: 'request_sent',
-        recipient_email: selectedShelter.contact_email || 'info@shelter.com',
-        sender_name: initiatorInfo.initiator_shelter_name,
-        message: `${initiatorInfo.initiator_shelter_name} has sent you a partnership request${partnershipForm.notes ? ':\n\n' + partnershipForm.notes : '.'}`
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: selectedShelter.contact_email || 'info@shelter.com',
+          subject: 'New Partnership Request on Every Pet Matters',
+          message: `${initiatorInfo.initiator_shelter_name} has sent you a partnership request${partnershipForm.notes ? ':\n\n' + partnershipForm.notes : '.'}`
+        })
       });
 
       toast.success('Partnership request sent and notification delivered!');

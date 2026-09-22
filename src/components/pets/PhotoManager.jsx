@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Loader2, X, Plus } from 'lucide-react';
 
 export default function PhotoManager({ photoUrls = [], onChange }) {

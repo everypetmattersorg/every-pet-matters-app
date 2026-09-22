@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import FosterApplicationCard from "@/components/foster/FosterApplicationCard";
 import { Loader2, Users, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";

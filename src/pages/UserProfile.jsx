@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -73,15 +73,15 @@ export default function UserProfile() {
     if (!inviteEmail) return;
     setInviting(true);
     try {
-      await base44.users.inviteUser(inviteEmail, 'user');
       await base44.entities.Invite.create({
         inviter_email: user.email,
         invitee_email: inviteEmail,
         signup_status: 'pending'
       });
-      await base44.functions.invoke('sendInviteEmail', {
-        invitee_email: inviteEmail,
-        invitee_name: ''
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: inviteEmail, subject: 'You\'ve been invited to Every Pet Matters!', message: `You've been invited to join Every Pet Matters — the community for pet lovers. Sign up at https://everypetmatters.org` })
       });
       toast.success(`Invitation sent to ${inviteEmail}!`);
       setInviteEmail('');
@@ -130,8 +130,15 @@ export default function UserProfile() {
     }
     setUpdatingPassword(true);
     try {
-      await base44.auth.changePassword(currentPassword, newPassword);
-      await base44.functions.invoke('sendPasswordChangeEmail', {});
+      const { createClient } = await import('@supabase/supabase-js');
+      const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
+      const { error: pwError } = await supabase.auth.updateUser({ password: newPassword });
+      if (pwError) throw pwError;
+      await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ to: user.email, subject: 'Your Every Pet Matters password was changed', message: 'Your password was successfully updated. If you did not make this change, please contact support immediately.' })
+      });
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');

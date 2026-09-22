@@ -3,7 +3,7 @@ import { format } from "date-fns";
 import { Calendar, MapPin, Users, Bell, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 
 export default function EventDetail({ event, onClose, user, onRSVPUpdated }) {
   const [loading, setLoading] = useState(false);

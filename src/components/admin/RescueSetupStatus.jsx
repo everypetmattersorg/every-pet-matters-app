@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -56,10 +56,14 @@ export default function RescueSetupStatus() {
 
   const handleSendSetupEmail = async (user) => {
     setSendingEmail(user.id);
-    await base44.integrations.Core.SendEmail({
-      to: user.email,
-      subject: 'Complete your every pet rescue profile',
-      body: `Hi ${user.full_name || 'there'},\n\nYour every pet rescue account is ready! Please complete your profile setup here:\n\nhttps://everypetmatters.base44.app/RescueOnboarding\n\nThis only takes a few minutes and will help adopters find your animals.\n\nThanks,\nThe every pet team`,
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: user.email,
+        subject: 'Complete your every pet rescue profile',
+        message: `Hi ${user.full_name || 'there'},\n\nYour every pet rescue account is ready! Please complete your profile setup here:\n\nhttps://everypetmatters.org/RescueOnboarding\n\nThis only takes a few minutes and will help adopters find your animals.\n\nThanks,\nThe every pet team`,
+      })
     });
     toast.success(`Setup email sent to ${user.email}`);
     setSendingEmail(null);

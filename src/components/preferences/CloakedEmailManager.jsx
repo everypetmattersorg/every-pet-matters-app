@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44, supabase } from '@/api/supabaseClient';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,11 +42,11 @@ export default function CloakedEmailManager({ userEmail }) {
   const handleGenerateEmail = async () => {
     try {
       setGenerating(true);
-      const response = await base44.functions.invoke('generateCloakedEmail', {});
-      setCloakedEmail({
-        ...response.data,
-        email_count: 0
-      });
+      // Generate a random cloaked email alias and save it
+      const alias = `epm-${Math.random().toString(36).slice(2, 10)}@everypetmatters.org`;
+      const { data: newRow, error } = await supabase.from('cloaked_emails').insert({ cloaked_email: alias, is_active: true }).select().single();
+      if (error) throw error;
+      setCloakedEmail({ ...newRow, email_count: 0 });
       await fetchCloakedEmails();
       toast.success('New cloaked email generated!');
     } catch (error) {

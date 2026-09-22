@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, Mail, MapPin, Users, Target, Sparkles, Upload, Facebook, Instagram, Linkedin } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import PhotoCropModal from "@/components/PhotoCropModal";
 
 const DEFAULT_TEAM = [

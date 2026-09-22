@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { HERO_COLORS } from '@/lib/heroConfig';
 import { ArrowLeft, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';

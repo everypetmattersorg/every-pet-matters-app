@@ -1,4 +1,4 @@
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, MapPin, Clock, CheckCircle2, Zap, AlertCircle } from "lucide-react";
 import { format } from "date-fns";

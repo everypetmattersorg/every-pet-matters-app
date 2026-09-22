@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { HERO_COLORS } from "@/lib/heroConfig";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Search, Calendar } from "lucide-react";

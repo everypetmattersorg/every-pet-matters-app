@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MessageCircle, X, Send, Loader2, Bot, PawPrint } from 'lucide-react';
@@ -166,7 +166,8 @@ export default function ChatBot() {
     const history = newMessages.map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`).join('\n');
     const prompt = `${SYSTEM_CONTEXT}\n\nConversation so far:\n${history}\n\nAssistant:`;
 
-    const rawReply = await base44.integrations.Core.InvokeLLM({ prompt });
+    const res = await fetch('/api/invoke-llm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+    const rawReply = (await res.json()).result || '';
     const petSuggestion = parsePetSuggestion(rawReply);
     const cleanedReply = cleanReply(rawReply);
 

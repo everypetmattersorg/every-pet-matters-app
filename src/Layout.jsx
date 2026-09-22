@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { Heart, Home, Settings, PawPrint, Users, Store, ChevronDown, ScanSearch, Tag, BookOpen, Heart as HeartIcon, AlertCircle, Sparkles, Calendar, BarChart3, Zap, User, Menu, X } from "lucide-react";
 import Footer from "./components/Footer";
 import ChatBot from "./components/chatbot/ChatBot";

@@ -1,5 +1,5 @@
 import React from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { useQuery } from '@tanstack/react-query';
 import { Heart, Calendar, DollarSign, User, Loader2, Gift } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';

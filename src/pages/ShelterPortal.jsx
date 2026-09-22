@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -250,7 +250,11 @@ export default function ShelterPortal() {
     e.preventDefault();
     if (!inviteEmail) return;
     setInviting(true);
-    await base44.users.inviteUser(inviteEmail, 'user');
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: inviteEmail, subject: 'You\'ve been invited to Every Pet Matters!', message: `You've been invited to join Every Pet Matters. Sign up at https://everypetmatters.org` })
+    });
     toast.success(`Invitation sent to ${inviteEmail}!`);
     setInviteEmail('');
     setInviting(false);

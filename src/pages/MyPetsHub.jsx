@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Loader2, Heart, AlertCircle, Bell } from 'lucide-react';
 import OwnedPetsTab from '@/components/mypets/OwnedPetsTab';

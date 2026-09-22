@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Upload, X, Plus } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 
 export default function RescueGalleryManager({ photos = [], videos = [], onPhotosChange, onVideosChange }) {
   const [uploading, setUploading] = useState(false);

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Loader2, Sparkles, AlertCircle } from "lucide-react";
@@ -70,23 +70,9 @@ Description: ${p.description}
 
 Return a JSON object with an array called "ranked_pet_ids" containing pet IDs ordered from best to worst match. Also include a "match_reason" field explaining the overall reasoning.`;
 
-        const result = await base44.integrations.Core.InvokeLLM({
-          prompt,
-          response_json_schema: {
-            type: "object",
-            properties: {
-              ranked_pet_ids: {
-                type: "array",
-                items: { type: "string" },
-                description: "Pet IDs ranked from best to worst match"
-              },
-              match_reason: {
-                type: "string",
-                description: "Explanation of the matching logic"
-              }
-            }
-          }
-        });
+        const llmRes = await fetch('/api/invoke-llm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+        const llmData = await llmRes.json();
+        const result = typeof llmData.result === 'string' ? JSON.parse(llmData.result) : (llmData.result || {});
 
         if (result.ranked_pet_ids && Array.isArray(result.ranked_pet_ids)) {
           const ranked = result.ranked_pet_ids

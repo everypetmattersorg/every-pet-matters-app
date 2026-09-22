@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { HERO_COLORS } from "@/lib/heroConfig";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, BookOpen, Building2, MapPin, Loader2, LayoutGrid, Map, Users, ExternalLink, CheckCircle2 } from "lucide-react";

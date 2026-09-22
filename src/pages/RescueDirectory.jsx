@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { HERO_COLORS } from "@/lib/heroConfig";
 import { createPageUrl } from "@/utils";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

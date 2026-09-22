@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
@@ -187,11 +187,13 @@ export default function ShelterSyncDashboard() {
     setSyncStartTime(Date.now());
     setElapsedTime(0);
     try {
-      if (conn.software_platform === 'ShelterLuv') {
-        await base44.functions.invoke('syncShelterLuvAnimals', { connection_id: conn.id }, { timeout: 20 * 60 * 1000 });
-      } else {
-        await base44.functions.invoke('syncAllPetPhotos', {});
-      }
+      const platformMap = { ShelterLuv: 'shelterluv', Petfinder: 'petfinder', 'Adopt-a-Pet': 'adoptapet' };
+      const platform = platformMap[conn.software_platform] || conn.software_platform?.toLowerCase();
+      await fetch('/api/cron-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ connection_id: conn.id, platform })
+      });
       toast.success(`Sync triggered for ${conn.shelter_name}!`);
       queryClient.invalidateQueries({ queryKey: ['shelter-connections'] });
       queryClient.invalidateQueries({ queryKey: ['pets-sync-dashboard'] });

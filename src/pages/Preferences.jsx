@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { base44 } from '@/api/supabaseClient';
 import { Button } from "@/components/ui/button";
 import { Loader2, Heart } from "lucide-react";
 import PreferencesForm from "@/components/preferences/PreferencesForm";

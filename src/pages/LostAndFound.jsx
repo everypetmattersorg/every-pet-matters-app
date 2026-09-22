@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { HERO_COLORS } from '@/lib/heroConfig';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -143,8 +143,11 @@ export default function LostAndFound() {
     `ID:${p.id} | ${p.status.toUpperCase()} | ${p.pet_type} | ${p.breed || 'unknown breed'} | ${p.color || 'unknown color'} | ${p.location} | ${p.name || 'unnamed'} | desc: ${p.description}`
     ).join('\n');
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a pet identification expert helping reunite lost pets with their owners.
+    const llmRes = await fetch('/api/invoke-llm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        prompt: `You are a pet identification expert helping reunite lost pets with their owners.
 
 Analyze the uploaded photo and identify the pet's key visual characteristics (species, breed, coat color/pattern, size, distinctive markings).
 
@@ -161,28 +164,11 @@ Return a JSON object with:
 - "matches": array of objects with { "id": pet_id, "reason": "brief reason why it matches", "confidence": "high/medium/low" }
 
 Only return matches with at least low confidence. If no matches, return empty array.`,
-      file_urls: [file_url],
-      response_json_schema: {
-        type: 'object',
-        properties: {
-          pet_description: { type: 'string' },
-          species: { type: 'string' },
-          breed_guess: { type: 'string' },
-          color: { type: 'string' },
-          matches: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                id: { type: 'string' },
-                reason: { type: 'string' },
-                confidence: { type: 'string' }
-              }
-            }
-          }
-        }
-      }
+        file_urls: [file_url],
+      })
     });
+    const llmData = await llmRes.json();
+    const result = typeof llmData.result === 'string' ? JSON.parse(llmData.result) : (llmData.result || {});
 
     const matchedPets = (result.matches || []).
     map((m) => {

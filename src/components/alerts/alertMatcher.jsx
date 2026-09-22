@@ -1,4 +1,4 @@
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const R = 3958.8;
@@ -47,10 +47,14 @@ export async function fireMatchingAlerts(pet) {
   const matching = alerts.filter(a => petMatchesAlert(pet, a));
 
   await Promise.all(matching.map(alert =>
-    base44.integrations.Core.SendEmail({
-      to: alert.email,
-      subject: `🐾 Pet Alert: ${pet.status === 'lost' ? 'Lost' : 'Found'} ${pet.pet_type}${pet.name ? ` (${pet.name})` : ''} near you`,
-      body: buildEmailBody(pet)
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: alert.email,
+        subject: `🐾 Pet Alert: ${pet.status === 'lost' ? 'Lost' : 'Found'} ${pet.pet_type}${pet.name ? ` (${pet.name})` : ''} near you`,
+        message: buildEmailBody(pet)
+      })
     })
   ));
 }

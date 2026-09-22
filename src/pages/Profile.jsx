@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { base44 } from '@/api/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -69,12 +69,12 @@ export default function Profile() {
       // Handle volunteer shelter notification if provided
       if (formData.volunteer_shelter) {
         try {
-          const result = await base44.functions.invoke('handleVolunteerNotification', {
-            volunteer_shelter: formData.volunteer_shelter
+          // Volunteer shelter notification — sent via email API
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ to: formData.volunteer_shelter, subject: 'New Volunteer Interest', message: `A user has expressed interest in volunteering at your shelter on Every Pet Matters.` })
           });
-          if (result.data.success && result.data.rescue_name) {
-            toast.success(`Notification sent to ${result.data.rescue_name}`);
-          }
         } catch (err) {
           console.error('Error sending volunteer notification:', err);
         }
