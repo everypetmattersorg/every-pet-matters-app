@@ -82,6 +82,7 @@ import Urgent from './pages/Urgent';
 import UserProfile from './pages/UserProfile';
 import Volunteer from './pages/Volunteer';
 import FosterNetwork from './pages/FosterNetwork';
+import SavedPets from './pages/SavedPets';
 import __Layout from './Layout.jsx';
 
 
@@ -121,6 +122,7 @@ export const PAGES = {
     "UserProfile": UserProfile,
     "Volunteer": Volunteer,
     "FosterNetwork": FosterNetwork,
+    "SavedPets": SavedPets,
 }
 
 export const pagesConfig = {
