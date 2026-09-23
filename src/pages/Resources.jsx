@@ -49,15 +49,6 @@ export default function Resources() {
 
   }
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 text-center px-4">
-        <div className="text-6xl">🔒</div>
-        <h2 className="text-2xl font-bold text-slate-800">Admin Only</h2>
-        <p className="text-slate-500 max-w-sm">This page is reserved for administrators. Please contact an admin if you need access.</p>
-      </div>);
-
-  }
 
   const applyLocationFilter = (resources) => {
     if (locationFilter === "everywhere") {
@@ -179,9 +170,11 @@ export default function Resources() {
 
             })}
           </div>
-          <Button onClick={() => setShowForm(true)} className="rounded-xl gap-2" style={{ backgroundColor: '#b1511d' }}>
-            <PlusCircle className="w-4 h-4" /> Add Resource
-          </Button>
+          {user && (
+            <Button onClick={() => setShowForm(true)} className="rounded-xl gap-2" style={{ backgroundColor: '#b1511d' }}>
+              <PlusCircle className="w-4 h-4" /> Add Resource
+            </Button>
+          )}
         </div>
 
         {isLoading ?
