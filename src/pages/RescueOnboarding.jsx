@@ -135,7 +135,7 @@ export default function RescueOnboarding() {
       <div className="w-full max-w-xl">
         {/* Logo */}
         <div className="flex justify-center mb-8">
-          <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet" className="w-20 h-20" />
+          <img src="/images/e47a94797_every_pet_logos__1_.png" alt="every pet" className="w-20 h-20" />
         </div>
 
         <h1 className="text-2xl font-black text-center mb-1">Welcome to every pet</h1>

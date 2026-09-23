@@ -127,7 +127,7 @@ Return a JSON object with an array called "ranked_pet_ids" containing pet IDs or
         <div className="max-w-7xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '320px' }}>
           {/* Left: Image */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/15444bd73_IMG_3036.JPG" alt="Happy pet" className="w-full h-full object-cover" style={{ display: 'block' }} />
+            <img src="/images/15444bd73_IMG_3036.JPG" alt="Happy pet" className="w-full h-full object-cover" style={{ display: 'block' }} />
           </div>
           {/* Right: Content Panel */}
           <div className="md:w-1/2 w-full flex flex-col justify-center px-10 py-10" style={{ background: '#d4916e' }}>

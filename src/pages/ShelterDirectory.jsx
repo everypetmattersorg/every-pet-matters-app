@@ -144,7 +144,7 @@ export default function ShelterDirectory() {
     <div className="min-h-screen bg-slate-50">
       <div className="relative border-b overflow-hidden" style={{ height: '400px' }}>
         <img
-          src="https://media.base44.com/images/public/69b8651cb1058d2b7fcf68e5/898f608d2_wade-austin-ellis-FtuJIuBbUhI-unsplash.jpg"
+          src="/images/898f608d2_wade-austin-ellis-FtuJIuBbUhI-unsplash.jpg"
           alt="Shelter Directory Banner"
           className="w-full h-full object-cover"
         />

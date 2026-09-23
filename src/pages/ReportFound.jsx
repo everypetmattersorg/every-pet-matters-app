@@ -29,7 +29,7 @@ export default function ReportFound() {
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '340px' }}>
           {/* Left: photo */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e0c2c1aca_pexels-zakaria-boumliha-11865104.jpg"
+            <img src="/images/2a2c5cb58_havasupai-325.JPG"
             alt="Report found pet"
             className="w-full h-full object-cover"
             style={{ display: 'block' }} />

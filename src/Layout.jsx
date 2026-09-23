@@ -82,7 +82,7 @@ export default function Layout({ children, currentPageName }) {
       <nav className="backdrop-blur-md border-b border-stone-100 sticky top-0 z-[10000] shadow-sm bg-[#2c5443]">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between bg-[#2c5443]">
           <Link to={createPageUrl("Home")} className="flex items-center gap-2">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-20 h-20" />
+            <img src="/images/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-20 h-20" />
             <span className="font-black text-lg text-[hsl(var(--background))]">every pet matters</span>
           </Link>
 

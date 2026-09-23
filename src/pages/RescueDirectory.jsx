@@ -104,7 +104,7 @@ export default function RescueDirectory() {
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '340px' }}>
           {/* Left: photo */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/ee8f5f691_IMG_2258.JPG"
+            <img src="/images/ee8f5f691_IMG_2258.JPG"
 
             alt="Rescues and Shelters"
             className="w-full h-full object-cover"

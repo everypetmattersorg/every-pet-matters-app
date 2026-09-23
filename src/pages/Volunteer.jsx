@@ -58,7 +58,7 @@ export default function VolunteerPage() {
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '300px' }}>
           {/* Left: photo */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0 h-full relative">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/3a9ecd385_21684543_10104231194808784_1214169954_o.jpg"
+            <img src="/images/3a9ecd385_21684543_10104231194808784_1214169954_o.jpg"
 
             alt="Volunteer with pets"
             className="w-full h-full object-cover"

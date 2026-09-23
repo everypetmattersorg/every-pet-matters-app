@@ -283,7 +283,7 @@ export default function About() {
           <p className="text-lg md:text-xl text-white/90 font-medium">because every pet deserves love, safety, kindness, and a chance at life.</p>
         </div>
         <div className="hidden md:block relative overflow-hidden">
-          <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/0de8e2fe2_coronaarchtobadlands-116.jpg" alt="hero" className="w-full h-full object-cover" />
+          <img src="/images/0de8e2fe2_coronaarchtobadlands-116.jpg" alt="hero" className="w-full h-full object-cover" />
         </div>
       </div>
 

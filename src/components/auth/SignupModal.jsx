@@ -21,7 +21,7 @@ export default function SignupModal({ onClose }) {
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
         <div className="flex items-center justify-between p-6 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-10 h-10" />
+            <img src="/images/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-10 h-10" />
             <h2 className="text-2xl font-bold text-slate-800">join every pet</h2>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg transition">

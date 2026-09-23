@@ -80,7 +80,7 @@ export default function Resources() {
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '300px' }}>
           {/* Left: photo */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0 h-full">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/64dabc83b_halo1210-139.JPG"
+            <img src="/images/64dabc83b_halo1210-139.JPG"
             alt="Pet resources"
             className="w-full h-full object-cover"
             style={{ display: 'block', minHeight: '340px' }} />

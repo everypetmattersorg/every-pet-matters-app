@@ -28,7 +28,7 @@ export default function ReportLost() {
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '340px' }}>
           {/* Left: photo */}
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/5dca1f7ec_IMG_9641.JPG"
+            <img src="/images/5dca1f7ec_IMG_9641.JPG"
             alt="Report lost pet"
             className="w-full h-full object-cover"
             style={{ display: 'block' }} />

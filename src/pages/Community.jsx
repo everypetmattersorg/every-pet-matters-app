@@ -34,7 +34,7 @@ export default function Community() {
       <div className="px-4 py-6" style={{ background: HERO_COLORS.background }}>
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '300px' }}>
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0 h-full relative">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/a28693130_Olle___Echo-05.JPG"
+            <img src="/images/a28693130_Olle___Echo-05.JPG"
             alt="Pet community"
             className="w-full h-full object-cover"
             style={{ display: 'block', minHeight: '340px' }} />

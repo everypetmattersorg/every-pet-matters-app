@@ -17,7 +17,7 @@ export default function Contact() {
     const html = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; background: #FAF5F0;">
         <div style="background: #0F3D1F; padding: 28px 32px; text-align: center;">
-          <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet matters" width="48" height="48" style="display: block; margin: 0 auto 12px;" />
+          <img src="/images/e47a94797_every_pet_logos__1_.png" alt="every pet matters" width="48" height="48" style="display: block; margin: 0 auto 12px;" />
           <h1 style="color: #DEC0AA; font-size: 20px; margin: 0; font-weight: 700;">new contact form submission</h1>
         </div>
         <div style="background: #ffffff; padding: 32px; border: 1px solid #DEC0AA; border-top: none;">

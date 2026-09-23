@@ -10,7 +10,7 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-3 text-[#faf5f0]">
-              <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-20 h-20" />
+              <img src="/images/e47a94797_every_pet_logos__1_.png" alt="every pet logo" className="w-20 h-20" />
               <span className="font-black text-lg text-[hsl(var(--background))]">every pet matters</span>
             </div>
             <p className="text-sm leading-relaxed text-[#faf5f0]">connecting pets, rescues, and communities — because every pet deserves a loving home.

@@ -44,7 +44,7 @@ export default function DonationsPage() {
       <div className="px-4 py-6" style={{ background: HERO_COLORS.background }}>
         <div className="max-w-6xl mx-auto rounded-2xl overflow-hidden flex flex-col md:flex-row" style={{ minHeight: '300px' }}>
           <div className="md:w-1/2 w-full min-h-48 md:min-h-0 h-full">
-            <img src="https://media.base44.com/images/public/69a0f10efc1058c9e80d1210/1c28f5bd4_IMG_5177.jpg"
+            <img src="/images/1c28f5bd4_IMG_5177.jpg"
             alt="Donate to pet rescues"
             className="w-full h-full object-cover"
             style={{ display: 'block', minHeight: '340px' }} />
