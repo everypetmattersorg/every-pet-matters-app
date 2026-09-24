@@ -1,36 +1,47 @@
-import Anthropic from '@anthropic-ai/sdk';
-
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end('Method not allowed');
 
   const { prompt, response_json_schema, file_urls } = req.body;
   if (!prompt) return res.status(400).json({ error: 'prompt is required' });
 
-  try {
-    // Build message content — support image URLs if provided
-    const contentParts = [];
-    if (file_urls?.length) {
-      for (const url of file_urls) {
-        contentParts.push({ type: 'image', source: { type: 'url', url } });
-      }
+  const systemPrompt = response_json_schema
+    ? 'You are a helpful assistant. Respond with valid JSON only — no markdown, no explanation, just the JSON object.'
+    : 'You are a helpful assistant.';
+
+  // Build message content — support image URLs if provided
+  const userContent = [];
+  if (file_urls?.length) {
+    for (const url of file_urls) {
+      userContent.push({ type: 'image_url', image_url: { url } });
     }
-    contentParts.push({ type: 'text', text: prompt });
+  }
+  userContent.push({ type: 'text', text: prompt });
 
-    // If caller wants structured JSON, instruct the model to return only JSON
-    const systemPrompt = response_json_schema
-      ? 'You are a helpful assistant. Respond with valid JSON only — no markdown, no explanation, just the JSON object.'
-      : 'You are a helpful assistant.';
-
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: contentParts }],
+  try {
+    const response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o-mini',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userContent },
+        ],
+        max_tokens: 1024,
+      }),
     });
 
-    const text = message.content[0]?.text ?? '';
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('invoke-llm error:', err);
+      return res.status(500).json({ error: err });
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content ?? '';
 
     if (response_json_schema) {
       try {
