@@ -44,7 +44,7 @@ export default function CloakedEmailManager({ userEmail }) {
       setGenerating(true);
       // Generate a random cloaked email alias and save it
       const alias = `epm-${Math.random().toString(36).slice(2, 10)}@everypetmatters.org`;
-      const { data: newRow, error } = await supabase.from('cloaked_emails').insert({ cloaked_email: alias, is_active: true }).select().single();
+      const { data: newRow, error } = await supabase.from('cloaked_emails').insert({ cloaked_email: alias, is_active: true, user_email: userEmail }).select().single();
       if (error) throw error;
       setCloakedEmail({ ...newRow, email_count: 0 });
       await fetchCloakedEmails();
