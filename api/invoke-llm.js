@@ -34,13 +34,20 @@ export default async function handler(req, res) {
       }),
     });
 
+    const rawText = await response.text();
+    console.log('invoke-llm response status:', response.status, 'body:', rawText.slice(0, 200));
+
     if (!response.ok) {
-      const err = await response.text();
-      console.error('invoke-llm error:', err);
-      return res.status(500).json({ error: err });
+      return res.status(500).json({ error: rawText });
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = JSON.parse(rawText);
+    } catch (parseErr) {
+      console.error('invoke-llm JSON parse error, raw:', rawText.slice(0, 500));
+      return res.status(500).json({ error: 'Invalid JSON from upstream', raw: rawText.slice(0, 200) });
+    }
     const text = data.choices?.[0]?.message?.content ?? '';
 
     if (response_json_schema) {
