@@ -17,8 +17,9 @@ export default async function handler(req, res) {
   userContent.push({ type: 'text', text: prompt });
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  const allKeys = Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('KEY') && !k.includes('TOKEN') && !k.includes('PASSWORD'));
-  console.log('ANTHROPIC_API_KEY present:', !!apiKey, 'length:', apiKey?.length ?? 0, 'safe env keys:', allKeys.join(','));
+  if (!apiKey) {
+    return res.status(500).json({ error: 'ANTHROPIC_API_KEY not configured', env_keys: Object.keys(process.env).filter(k => !k.includes('SECRET') && !k.includes('KEY') && !k.includes('TOKEN') && !k.includes('PASSWORD') && !k.includes('PASS')).join(',') });
+  }
 
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
