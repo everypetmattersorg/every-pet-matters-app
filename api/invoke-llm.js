@@ -8,48 +8,38 @@ export default async function handler(req, res) {
     ? 'You are a helpful assistant. Respond with valid JSON only — no markdown, no explanation, just the JSON object.'
     : 'You are a helpful assistant.';
 
-  // Build message content — support image URLs if provided
   const userContent = [];
   if (file_urls?.length) {
     for (const url of file_urls) {
-      userContent.push({ type: 'image_url', image_url: { url } });
+      userContent.push({ type: 'image', source: { type: 'url', url } });
     }
   }
   userContent.push({ type: 'text', text: prompt });
 
   try {
-    const response = await fetch('https://models.github.ai/inference/chat/completions', {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
+        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userContent },
-        ],
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userContent }],
       }),
     });
 
-    const rawText = await response.text();
-    const headers = Object.fromEntries(response.headers.entries());
-    console.log('invoke-llm response status:', response.status, 'headers:', JSON.stringify(headers), 'body:', rawText.slice(0, 500));
-
     if (!response.ok) {
-      return res.status(500).json({ error: rawText });
+      const err = await response.text();
+      console.error('invoke-llm error:', err);
+      return res.status(500).json({ error: err });
     }
 
-    let data;
-    try {
-      data = JSON.parse(rawText);
-    } catch (parseErr) {
-      console.error('invoke-llm JSON parse error, raw:', rawText.slice(0, 500));
-      return res.status(500).json({ error: 'Invalid JSON from upstream', raw: rawText.slice(0, 200) });
-    }
-    const text = data.choices?.[0]?.message?.content ?? '';
+    const data = await response.json();
+    const text = data.content?.[0]?.text ?? '';
 
     if (response_json_schema) {
       try {
