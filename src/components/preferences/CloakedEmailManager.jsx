@@ -24,7 +24,7 @@ export default function CloakedEmailManager({ userEmail }) {
       setLoading(true);
       const allEmails = await base44.entities.CloakedEmail.filter(
         { user_email: userEmail },
-        '-created_at',
+        '-created_date',
         100
       );
       const active = allEmails.find(e => e.is_active);
