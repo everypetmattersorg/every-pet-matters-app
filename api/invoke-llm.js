@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ result: text });
   } catch (err) {
-    console.error('invoke-llm error:', err);
-    return res.status(500).json({ error: err.message });
+    console.error('invoke-llm error:', err.message, err.cause ?? '');
+    return res.status(500).json({ error: err.message, cause: String(err.cause ?? '') });
   }
 }
