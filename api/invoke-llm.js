@@ -35,7 +35,8 @@ export default async function handler(req, res) {
     });
 
     const rawText = await response.text();
-    console.log('invoke-llm response status:', response.status, 'body:', rawText.slice(0, 200));
+    const headers = Object.fromEntries(response.headers.entries());
+    console.log('invoke-llm response status:', response.status, 'headers:', JSON.stringify(headers), 'body:', rawText.slice(0, 500));
 
     if (!response.ok) {
       return res.status(500).json({ error: rawText });
