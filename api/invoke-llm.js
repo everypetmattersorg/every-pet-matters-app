@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   userContent.push({ type: 'text', text: prompt });
 
   try {
-    const response = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+    const response = await fetch('https://models.github.ai/inference/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
