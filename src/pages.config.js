@@ -83,6 +83,8 @@ import UserProfile from './pages/UserProfile';
 import Volunteer from './pages/Volunteer';
 import FosterNetwork from './pages/FosterNetwork';
 import SavedPets from './pages/SavedPets';
+import ShelterDiscovery from './pages/ShelterDiscovery';
+import ShelterPets from './pages/ShelterPets';
 import __Layout from './Layout.jsx';
 
 
@@ -123,6 +125,8 @@ export const PAGES = {
     "Volunteer": Volunteer,
     "FosterNetwork": FosterNetwork,
     "SavedPets": SavedPets,
+    "ShelterDiscovery": ShelterDiscovery,
+    "ShelterPets": ShelterPets,
 }
 
 export const pagesConfig = {
