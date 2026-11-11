@@ -23,7 +23,7 @@ export default function AdminUsers() {
 
   const { data: users = [], isLoading: loadingUsers } = useQuery({
     queryKey: ['all-users'],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => base44.entities.UserWithAuth.list(),
     enabled: currentUser?.role === 'admin',
   });
 
@@ -149,6 +149,9 @@ export default function AdminUsers() {
                           )}
                           <div className="text-right text-xs text-muted-foreground">
                             <p>Joined {new Date(user.created_date).toLocaleDateString()}</p>
+                            {user.last_sign_in_at && (
+                              <p>Last sign-in: {new Date(user.last_sign_in_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} at {new Date(user.last_sign_in_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</p>
+                            )}
                           </div>
                           {user.id !== currentUser?.id && (
                             user.role === 'admin' ? (
