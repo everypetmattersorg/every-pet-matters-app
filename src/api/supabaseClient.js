@@ -42,6 +42,8 @@ const TABLE_MAP = {
   ShelterConnection:       'shelter_connections',
   ShelterDetails:          'shelter_details',
   SyncLog:                 'sync_logs',
+  TransportRun:            'transport_runs',
+  TransportAnimal:         'transport_animals',
   User:                    'profiles',
   VolunteerApplication:    'volunteer_applications',
   VolunteerInterest:       'volunteer_interests',

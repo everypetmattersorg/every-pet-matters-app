@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { ArrowLeft, Pencil, Loader2, PawPrint, Eye, EyeOff, Plus, Binoculars, Trash2, X, Upload } from 'lucide-react';
+import { ArrowLeft, Pencil, Loader2, PawPrint, Eye, EyeOff, Plus, Binoculars, Trash2, X, Upload, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import TransportLogistics from '@/components/shelter/TransportLogistics';
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Unknown'];
 const SIZE_OPTIONS = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -483,6 +484,7 @@ function ShelterPetCard({ pet, onEdit, onToggleVisibility, onStatusChange, onDel
 }
 
 export default function ShelterDashboard() {
+  const [activeTab, setActiveTab] = useState('pets');
   const [editingPet, setEditingPet] = useState(null);
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -526,6 +528,8 @@ export default function ShelterDashboard() {
     </div>
   );
 
+  const shelterSource = connections[0]?.shelter_name || user?.affiliated_organization || '';
+
   return (
     <div className="min-h-screen bg-slate-50">
       <div className="bg-white border-b px-4 py-3 sticky top-0 z-10">
@@ -537,25 +541,42 @@ export default function ShelterDashboard() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-xl font-bold">🐾 My Shelter Pets</h1>
-              <p className="text-xs text-muted-foreground">Manage pets synced from your connected shelters</p>
+              <h1 className="text-xl font-bold">🐾 Shelter Dashboard</h1>
+              <p className="text-xs text-muted-foreground">Manage pets and transports</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {myPets.length > 0 &&
+            {activeTab === 'pets' && myPets.length > 0 &&
               <Badge variant="secondary" className="text-sm px-3 py-1">
                 {myPets.length} pet{myPets.length !== 1 ? 's' : ''}
               </Badge>
             }
-            <Button size="sm" className="gap-1.5" onClick={() => setCreateOpen(true)}>
-              <Plus className="w-4 h-4" /> Add Pet
-            </Button>
+            {activeTab === 'pets' && (
+              <Button size="sm" className="gap-1.5" onClick={() => setCreateOpen(true)}>
+                <Plus className="w-4 h-4" /> Add Pet
+              </Button>
+            )}
           </div>
+        </div>
+        {/* Tab bar */}
+        <div className="max-w-6xl mx-auto mt-2 flex gap-1 border-b -mb-px">
+          <button
+            onClick={() => setActiveTab('pets')}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === 'pets' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+            <PawPrint className="w-4 h-4" /> My Pets
+          </button>
+          <button
+            onClick={() => setActiveTab('transport')}
+            className={`flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 transition-colors ${activeTab === 'transport' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+            <Truck className="w-4 h-4" /> Transport Logistics
+          </button>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6">
-        {isLoading ?
+        {activeTab === 'transport' ? (
+          <TransportLogistics user={user} shelterPets={myPets} shelterSource={shelterSource} />
+        ) : isLoading ?
           <div className="flex justify-center py-24">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div> :
@@ -618,7 +639,7 @@ export default function ShelterDashboard() {
                 );
               })()}
             </>
-        }
+        : null}
       </div>
 
       {editingPet &&
