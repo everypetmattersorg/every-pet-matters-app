@@ -44,6 +44,7 @@ const TABLE_MAP = {
   SyncLog:                 'sync_logs',
   TransportRun:            'transport_runs',
   TransportAnimal:         'transport_animals',
+  UserWithAuth:            'profiles_with_auth',
   User:                    'profiles',
   VolunteerApplication:    'volunteer_applications',
   VolunteerInterest:       'volunteer_interests',

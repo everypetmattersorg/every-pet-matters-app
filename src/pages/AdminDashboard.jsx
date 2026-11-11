@@ -48,7 +48,7 @@ function UsersTab({ currentUser }) {
 
   const { data: users = [], isLoading } = useQuery({
     queryKey: ['all-users'],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => base44.entities.UserWithAuth.list(),
   });
 
   const handleRoleChange = async (user, newRole) => {
@@ -92,6 +92,12 @@ function UsersTab({ currentUser }) {
                   {user.title && <p className="text-xs text-muted-foreground mt-0.5">{user.title}</p>}
                   {user.affiliated_organization && <p className="text-xs text-muted-foreground mt-0.5">🏠 {user.affiliated_organization}</p>}
                   <p className="text-xs text-muted-foreground mt-0.5">Joined {new Date(user.created_date).toLocaleDateString()}</p>
+                  {user.last_sign_in_at && (
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Last sign-in: {new Date(user.last_sign_in_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {' '}at {new Date(user.last_sign_in_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}
+                    </p>
+                  )}
                 </div>
                 {user.id !== currentUser?.id && (
                   <div className="flex flex-col items-end gap-2 shrink-0">
