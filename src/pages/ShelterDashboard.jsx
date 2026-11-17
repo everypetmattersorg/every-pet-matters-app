@@ -698,7 +698,7 @@ export default function ShelterDashboard() {
                 );
               })()}
             </>
-        : null}
+        }
       </div>
 
       {editingPet &&
