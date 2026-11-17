@@ -8,15 +8,15 @@ import AddAdoptablePetForm from "./AddAdoptablePetForm";
 import PetSocialCaption from "./PetSocialCaption";
 import SharePetModal from "./SharePetModal";
 
-// ── Photo carousel ────────────────────────────────────────────────────────────
-function PhotoCarousel({ photos, petName }) {
-  const [idx, setIdx] = useState(0);
-  const total = photos.length;
+// ── Media gallery ─────────────────────────────────────────────────────────────
+// media items: { type: 'photo'|'video', src }
+function MediaGallery({ media, petName }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const total = media.length;
 
-  const prev = useCallback(() => setIdx((i) => (i - 1 + total) % total), [total]);
-  const next = useCallback(() => setIdx((i) => (i + 1) % total), [total]);
+  const prev = useCallback(() => setActiveIdx((i) => (i - 1 + total) % total), [total]);
+  const next = useCallback(() => setActiveIdx((i) => (i + 1) % total), [total]);
 
-  // Keyboard left/right for the carousel
   useEffect(() => {
     if (total <= 1) return;
     const handler = (e) => {
@@ -29,56 +29,73 @@ function PhotoCarousel({ photos, petName }) {
 
   if (total === 0) {
     return (
-      <div className="w-full h-72 sm:h-96 bg-slate-100 flex items-center justify-center text-7xl">🐾</div>
+      <div className="w-full bg-slate-100 flex items-center justify-center text-7xl" style={{ height: 'clamp(220px, 40vw, 420px)' }}>🐾</div>
     );
   }
 
+  const active = media[activeIdx];
+
   return (
-    <div className="relative w-full overflow-hidden bg-black" style={{ height: 'clamp(260px, 45vw, 480px)' }}>
-      {/* Images */}
-      <div
-        className="flex h-full transition-transform duration-300 ease-in-out"
-        style={{ transform: `translateX(-${idx * 100}%)`, width: `${total * 100}%` }}>
-        {photos.map((src, i) => (
-          <div key={i} className="h-full shrink-0" style={{ width: `${100 / total}%` }}>
-            <img src={src} alt={`${petName} ${i + 1}`} className="w-full h-full object-cover" />
-          </div>
-        ))}
+    <div>
+      {/* Main viewer */}
+      <div className="relative w-full bg-black overflow-hidden" style={{ height: 'clamp(220px, 40vw, 420px)' }}>
+        {active.type === 'video' ? (
+          <video
+            key={active.src}
+            src={active.src}
+            controls
+            className="w-full h-full object-contain"
+          />
+        ) : (
+          <img
+            src={active.src}
+            alt={`${petName} ${activeIdx + 1}`}
+            className="w-full h-full object-contain"
+          />
+        )}
+
+        {total > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition backdrop-blur-sm"
+              aria-label="Previous">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition backdrop-blur-sm"
+              aria-label="Next">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+            <div className="absolute top-3 right-3 bg-black/50 text-white text-xs font-medium px-2 py-1 rounded-full backdrop-blur-sm">
+              {activeIdx + 1} / {total}
+            </div>
+          </>
+        )}
       </div>
 
-      {/* Prev/Next arrows — only when multiple photos */}
+      {/* Thumbnail strip */}
       {total > 1 && (
-        <>
-          <button
-            onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition backdrop-blur-sm"
-            aria-label="Previous photo">
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <button
-            onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white rounded-full p-2 transition backdrop-blur-sm"
-            aria-label="Next photo">
-            <ChevronRight className="w-5 h-5" />
-          </button>
-
-          {/* Dot indicators */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
-            {photos.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setIdx(i)}
-                className={`w-2 h-2 rounded-full transition-all ${i === idx ? 'bg-white scale-125' : 'bg-white/50'}`}
-                aria-label={`Photo ${i + 1}`}
-              />
-            ))}
-          </div>
-
-          {/* Counter */}
-          <div className="absolute top-3 right-3 bg-black/50 text-white text-xs font-medium px-2 py-1 rounded-full backdrop-blur-sm">
-            {idx + 1} / {total}
-          </div>
-        </>
+        <div className="flex gap-2 overflow-x-auto px-3 py-2 bg-slate-900 scrollbar-thin" style={{ scrollbarWidth: 'none' }}>
+          {media.map((item, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveIdx(i)}
+              className={`relative shrink-0 rounded overflow-hidden border-2 transition-all ${i === activeIdx ? 'border-white opacity-100' : 'border-transparent opacity-50 hover:opacity-80'}`}
+              style={{ width: 72, height: 54 }}>
+              {item.type === 'video' ? (
+                <div className="w-full h-full bg-slate-700 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                  </svg>
+                </div>
+              ) : (
+                <img src={item.src} alt={`thumb ${i + 1}`} className="w-full h-full object-cover" />
+              )}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );
@@ -100,10 +117,14 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
   const shelterLocation = [pet.rescue_city, pet.rescue_state].filter(Boolean).join(', ');
   const petType = pet.pet_type || pet.species;
 
-  // Build ordered photo array
+  // Build combined media array: photos first, then video
   const mainPhoto = pet.photo_url || pet.photo_urls?.[0];
   const extraPhotos = pet.extra_photos || pet.photo_urls?.slice(1) || [];
   const allPhotos = [mainPhoto, ...extraPhotos].filter(Boolean);
+  const allMedia = [
+    ...allPhotos.map(src => ({ type: 'photo', src })),
+    ...(pet.video_url ? [{ type: 'video', src: pet.video_url }] : []),
+  ];
 
   const currentIdx = allPets.findIndex((p) => p.id === pet.id);
   const prevPet = currentIdx > 0 ? allPets[currentIdx - 1] : null;
@@ -207,15 +228,8 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
       {/* ── Scrollable body ── */}
       <div className="flex-1 overflow-y-auto">
 
-        {/* Photo carousel */}
-        <PhotoCarousel photos={allPhotos} petName={pet.name} />
-
-        {/* Video */}
-        {pet.video_url && (
-          <div className="px-4 pt-3">
-            <video src={pet.video_url} controls className="w-full rounded-xl max-h-64 bg-black" />
-          </div>
-        )}
+        {/* Media gallery (photos + video) */}
+        <MediaGallery media={allMedia} petName={pet.name} />
 
         {/* Content */}
         <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
