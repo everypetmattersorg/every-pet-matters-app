@@ -7,13 +7,25 @@ import { geocodeAll } from '@/lib/geocode';
 export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
   const [coordsMap, setCoordsMap] = useState({});
 
+  // Parse location string "City, ST" into { city, state }
+  const getLocation = (pet) => {
+    if (pet.rescue_city || pet.rescue_state) {
+      return { city: pet.rescue_city || '', state: pet.rescue_state || '' };
+    }
+    const loc = pet.location || '';
+    if (!loc) return { city: '', state: '' };
+    const parts = loc.split(',').map(s => s.trim());
+    return parts.length >= 2
+      ? { city: parts[0], state: parts[parts.length - 1] }
+      : { city: loc, state: '' };
+  };
+
   // Collect unique city/state pairs that need geocoding
   const pairs = useMemo(() => {
     const seen = new Set();
     const result = [];
     for (const pet of pets) {
-      const city = pet.rescue_city || pet.location || '';
-      const state = pet.rescue_state || '';
+      const { city, state } = getLocation(pet);
       const key = [city, state].filter(Boolean).join(', ').toLowerCase();
       if (key && !seen.has(key)) { seen.add(key); result.push({ city, state }); }
     }
@@ -28,8 +40,7 @@ export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
   const markers = useMemo(() => {
     const groups = {};
     for (const pet of pets) {
-      const city = pet.rescue_city || pet.location || '';
-      const state = pet.rescue_state || '';
+      const { city, state } = getLocation(pet);
       const key = [city, state].filter(Boolean).join(', ').toLowerCase();
       const coords = (pet._lat && pet._lng)
         ? { lat: pet._lat, lng: pet._lng }
