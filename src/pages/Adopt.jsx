@@ -82,10 +82,19 @@ export default function Adopt() {
       pet.description?.toLowerCase().includes(q)
     )) return false;
 
-    if (filters.species && pet.pet_type !== filters.species) return false;
+    if (filters.species) {
+      const species = (pet.pet_type || pet.species || '').toLowerCase();
+      if (!species.includes(filters.species)) return false;
+    }
     if (filters.breed && !pet.breed?.toLowerCase().includes(filters.breed.toLowerCase())) return false;
-    if (filters.gender && pet.gender !== filters.gender) return false;
-    if (filters.size && pet.size?.toLowerCase() !== filters.size) return false;
+    if (filters.gender) {
+      const gender = (pet.gender || '').toLowerCase();
+      if (gender !== filters.gender) return false;
+    }
+    if (filters.size) {
+      const size = (pet.size || '').toLowerCase();
+      if (!size.includes(filters.size)) return false;
+    }
     if (filters.energy_level && pet.energy_level !== filters.energy_level) return false;
 
     // Age bucket
