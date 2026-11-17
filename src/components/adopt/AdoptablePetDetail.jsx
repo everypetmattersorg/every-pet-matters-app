@@ -102,19 +102,26 @@ function MediaGallery({ media, petName }) {
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavigate, onStatusUpdate, currentUserEmail }) {
+export default function AdoptablePetDetail({ pet, allPets = [], shelterLocMap = {}, onClose, onNavigate, onStatusUpdate, currentUserEmail }) {
   const [loading, setLoading] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(pet.status || "available");
   const [isEditing, setIsEditing] = useState(false);
   const [showShare, setShowShare] = useState(false);
 
+  // Look up shelter info from the map, falling back to fields on the pet record
+  const shelterKey = (pet.rescue_name || pet.source || '').toLowerCase();
+  const shelterInfo = shelterLocMap[shelterKey] || {};
+
   const isOwnPet = currentUserEmail === pet.rescue_email;
-  const contact_name = pet.rescue_name || pet.contact_name;
-  const contact_phone = pet.rescue_phone || pet.contact_phone;
-  const contact_email = pet.rescue_email || pet.contact_email;
-  const contact_website = pet.rescue_website || pet.url;
-  const shelterName = pet.rescue_name || pet.source;
-  const shelterLocation = [pet.rescue_city, pet.rescue_state].filter(Boolean).join(', ');
+  const contact_name = pet.rescue_name || pet.contact_name || shelterInfo.name;
+  const contact_phone = pet.rescue_phone || pet.contact_phone || shelterInfo.phone;
+  const contact_email = pet.rescue_email || pet.contact_email || shelterInfo.email;
+  const contact_website = pet.rescue_website || pet.url || shelterInfo.website;
+  const shelterName = pet.rescue_name || pet.source || shelterInfo.name;
+  const shelterLocation = [
+    pet.rescue_city || shelterInfo.city,
+    pet.rescue_state || shelterInfo.state,
+  ].filter(Boolean).join(', ');
   const petType = pet.pet_type || pet.species;
 
   // Build combined media array: photos first, then video

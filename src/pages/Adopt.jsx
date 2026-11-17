@@ -73,20 +73,25 @@ export default function Adopt() {
     staleTime: 10 * 60 * 1000,
   });
 
-  // Build name → { city, state } lookup from all shelter sources
+  // Build name → shelter info lookup (location + contact) from all shelter sources
   const shelterLocMap = useMemo(() => {
     const map = {};
-    // From shelter_details directly
     for (const s of shelterDetails) {
-      if (s.shelter_name && (s.city || s.state)) {
-        map[s.shelter_name.toLowerCase()] = { city: s.city || '', state: s.state || '' };
-      }
+      if (!s.shelter_name) continue;
+      map[s.shelter_name.toLowerCase()] = {
+        city: s.city || '', state: s.state || '',
+        email: s.email || '', phone: s.phone || '', website: s.website || '',
+        name: s.shelter_name,
+      };
     }
-    // From shelter_connections that have city/state embedded
     for (const c of shelterConnections) {
       const key = (c.shelter_name || '').toLowerCase();
-      if (key && !map[key] && (c.city || c.state)) {
-        map[key] = { city: c.city || '', state: c.state || '' };
+      if (key && !map[key]) {
+        map[key] = {
+          city: c.city || '', state: c.state || '',
+          email: c.email || '', phone: c.phone || '', website: c.website || '',
+          name: c.shelter_name,
+        };
       }
     }
     return map;
@@ -301,6 +306,7 @@ export default function Adopt() {
       <AdoptablePetDetail
         pet={selectedPet}
         allPets={filteredPets}
+        shelterLocMap={shelterLocMap}
         currentUserEmail={user?.email}
         onClose={() => setSelectedPet(null)}
         onNavigate={(pet) => setSelectedPet(pet)}
