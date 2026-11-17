@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { HERO_COLORS } from "@/lib/heroConfig";
 import { base44 } from '@/api/supabaseClient';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -67,6 +67,31 @@ export default function Adopt() {
     staleTime: 10 * 60 * 1000,
   });
 
+  const { data: shelterConnections = [] } = useQuery({
+    queryKey: ["shelter-connections-map"],
+    queryFn: () => base44.entities.ShelterConnection.list(),
+    staleTime: 10 * 60 * 1000,
+  });
+
+  // Build name → { city, state } lookup from all shelter sources
+  const shelterLocMap = useMemo(() => {
+    const map = {};
+    // From shelter_details directly
+    for (const s of shelterDetails) {
+      if (s.shelter_name && (s.city || s.state)) {
+        map[s.shelter_name.toLowerCase()] = { city: s.city || '', state: s.state || '' };
+      }
+    }
+    // From shelter_connections that have city/state embedded
+    for (const c of shelterConnections) {
+      const key = (c.shelter_name || '').toLowerCase();
+      if (key && !map[key] && (c.city || c.state)) {
+        map[key] = { city: c.city || '', state: c.state || '' };
+      }
+    }
+    return map;
+  }, [shelterDetails, shelterConnections]);
+
   const isLoading = adoptableLoading || syncedLoading;
   const pets = [...adoptablePets, ...syncedPets].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
@@ -106,11 +131,21 @@ export default function Adopt() {
       if (filters.age === "senior" && yrs < 7) return false;
     }
 
-    if (filters.location && !(
-      pet.rescue_city?.toLowerCase().includes(filters.location.toLowerCase()) ||
-      pet.rescue_state?.toLowerCase().includes(filters.location.toLowerCase()) ||
-      pet.rescue_name?.toLowerCase().includes(filters.location.toLowerCase())
-    )) return false;
+    if (filters.location) {
+      const loc = filters.location.toLowerCase();
+      // Check shelter location from lookup
+      const shelterKey = (pet.rescue_name || pet.source || '').toLowerCase();
+      const shelterLoc = shelterLocMap[shelterKey];
+      const matches =
+        shelterLoc?.city?.toLowerCase().includes(loc) ||
+        shelterLoc?.state?.toLowerCase().includes(loc) ||
+        pet.rescue_city?.toLowerCase().includes(loc) ||
+        pet.rescue_state?.toLowerCase().includes(loc) ||
+        pet.rescue_name?.toLowerCase().includes(loc) ||
+        pet.location?.toLowerCase().includes(loc) ||
+        pet.source?.toLowerCase().includes(loc);
+      if (!matches) return false;
+    }
 
     if (filters.good_with_kids === "yes" && pet.kid_friendly !== "yes") return false;
     if (filters.good_with_kids === "no" && pet.kid_friendly !== "no") return false;
@@ -257,7 +292,7 @@ export default function Adopt() {
           )}
           </div> :
 
-        <AdoptablePetsMap pets={filteredPets} shelterDetails={shelterDetails} onPetSelect={setSelectedPet} />
+        <AdoptablePetsMap pets={filteredPets} shelterLocMap={shelterLocMap} onPetSelect={setSelectedPet} />
         }
       </div>
 

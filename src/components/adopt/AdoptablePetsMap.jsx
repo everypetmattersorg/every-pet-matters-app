@@ -4,23 +4,12 @@ import 'leaflet/dist/leaflet.css';
 import { MapPin } from 'lucide-react';
 import { geocodeAll } from '@/lib/geocode';
 
-export default function AdoptablePetsMap({ pets = [], shelterDetails = [], onPetSelect }) {
+export default function AdoptablePetsMap({ pets = [], shelterLocMap = {}, onPetSelect }) {
   const [coordsMap, setCoordsMap] = useState({});
-
-  // Build a lookup from shelter/rescue name -> { city, state }
-  const shelterLocMap = useMemo(() => {
-    const map = {};
-    for (const s of shelterDetails) {
-      if (s.shelter_name && (s.city || s.state)) {
-        map[s.shelter_name.toLowerCase()] = { city: s.city || '', state: s.state || '' };
-      }
-    }
-    return map;
-  }, [shelterDetails]);
 
   // Parse location string "City, ST" into { city, state }
   const getLocation = (pet) => {
-    // 1. Try shelter_details lookup by rescue_name or source
+    // 1. Try shelter lookup by rescue_name or source
     const shelterKey = (pet.rescue_name || pet.source || '').toLowerCase();
     if (shelterKey && shelterLocMap[shelterKey]) return shelterLocMap[shelterKey];
 
@@ -48,7 +37,7 @@ export default function AdoptablePetsMap({ pets = [], shelterDetails = [], onPet
       if (key && !seen.has(key)) { seen.add(key); result.push({ city, state }); }
     }
     return result;
-  }, [pets]);
+  }, [pets, shelterLocMap]);
 
   useEffect(() => {
     if (pairs.length === 0) return;
@@ -75,7 +64,7 @@ export default function AdoptablePetsMap({ pets = [], shelterDetails = [], onPet
       groups[key].pets.push(pet);
     }
     return Object.values(groups);
-  }, [pets, coordsMap]);
+  }, [pets, coordsMap, shelterLocMap]);
 
   const maxCount = useMemo(() => Math.max(...markers.map((m) => m.pets.length), 1), [markers]);
 
