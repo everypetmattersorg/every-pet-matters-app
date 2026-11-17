@@ -240,9 +240,9 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
               <h2 className="text-3xl font-bold text-slate-900">{pet.name}</h2>
               {shelterLocation && <p className="text-sm text-slate-500 mt-0.5">{shelterLocation}</p>}
             </div>
-            <Badge className={`text-sm px-3 py-1 ${statusColors[currentStatus]}`}>
+            <span className={`text-sm px-3 py-1 rounded-full font-medium pointer-events-none ${statusColors[currentStatus]}`}>
               {statusLabels[currentStatus]}
-            </Badge>
+            </span>
           </div>
 
           {/* Shelter */}
@@ -365,7 +365,7 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-slate-500 font-medium">Listing Status</p>
-                <Badge className={statusColors[currentStatus]}>{statusLabels[currentStatus]}</Badge>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-medium pointer-events-none ${statusColors[currentStatus]}`}>{statusLabels[currentStatus]}</span>
               </div>
               <Select value={currentStatus} onValueChange={handleStatusChange} disabled={loading}>
                 <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
@@ -413,7 +413,11 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
 
       {/* ── Sticky action bar ── */}
       <div className="shrink-0 flex gap-2 px-4 py-3 border-t border-slate-100 bg-white/90 backdrop-blur-sm">
-        {!isOwnPet && contact_email && (
+        {isOwnPet ? (
+          <Button onClick={() => setIsEditing(true)} className="flex-1 rounded-xl gap-1.5 text-white font-semibold" style={{ background: '#A33407' }}>
+            <Edit className="w-4 h-4" /> Edit Listing
+          </Button>
+        ) : contact_email ? (
           <a
             href={`mailto:${contact_email}?subject=${encodeURIComponent(`Interested in adopting ${pet.name}`)}&body=${encodeURIComponent(`Hi,\n\nI'm interested in adopting ${pet.name}. Could you please share more information about the adoption process?\n\nThank you!`)}`}
             className="flex-1">
@@ -421,10 +425,15 @@ export default function AdoptablePetDetail({ pet, allPets = [], onClose, onNavig
               <Mail className="w-4 h-4" /> Adopt {pet.name}
             </Button>
           </a>
-        )}
-        {isOwnPet && (
-          <Button onClick={() => setIsEditing(true)} className="flex-1 rounded-xl gap-1.5 text-white font-semibold" style={{ background: '#A33407' }}>
-            <Edit className="w-4 h-4" /> Edit Listing
+        ) : contact_website ? (
+          <a href={contact_website} target="_blank" rel="noopener noreferrer" className="flex-1">
+            <Button className="w-full rounded-xl gap-1.5 text-white font-semibold" style={{ background: '#A33407' }}>
+              <Globe className="w-4 h-4" /> Contact Shelter
+            </Button>
+          </a>
+        ) : (
+          <Button disabled className="flex-1 rounded-xl gap-1.5 font-semibold" variant="outline">
+            <Mail className="w-4 h-4" /> Contact info unavailable
           </Button>
         )}
         <Button onClick={() => setShowShare(true)} variant="outline" className="rounded-xl gap-1.5 font-semibold px-5">
