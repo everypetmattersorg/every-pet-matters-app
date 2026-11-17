@@ -61,6 +61,12 @@ export default function Adopt() {
     }
   });
 
+  const { data: shelterDetails = [] } = useQuery({
+    queryKey: ["shelter-details-map"],
+    queryFn: () => base44.entities.ShelterDetails.list(),
+    staleTime: 10 * 60 * 1000,
+  });
+
   const isLoading = adoptableLoading || syncedLoading;
   const pets = [...adoptablePets, ...syncedPets].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
@@ -242,7 +248,7 @@ export default function Adopt() {
           )}
           </div> :
 
-        <AdoptablePetsMap pets={filteredPets} onPetSelect={setSelectedPet} />
+        <AdoptablePetsMap pets={filteredPets} shelterDetails={shelterDetails} onPetSelect={setSelectedPet} />
         }
       </div>
 

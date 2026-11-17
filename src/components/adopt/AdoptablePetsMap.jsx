@@ -4,14 +4,32 @@ import 'leaflet/dist/leaflet.css';
 import { MapPin } from 'lucide-react';
 import { geocodeAll } from '@/lib/geocode';
 
-export default function AdoptablePetsMap({ pets = [], onPetSelect }) {
+export default function AdoptablePetsMap({ pets = [], shelterDetails = [], onPetSelect }) {
   const [coordsMap, setCoordsMap] = useState({});
+
+  // Build a lookup from shelter/rescue name -> { city, state }
+  const shelterLocMap = useMemo(() => {
+    const map = {};
+    for (const s of shelterDetails) {
+      if (s.shelter_name && (s.city || s.state)) {
+        map[s.shelter_name.toLowerCase()] = { city: s.city || '', state: s.state || '' };
+      }
+    }
+    return map;
+  }, [shelterDetails]);
 
   // Parse location string "City, ST" into { city, state }
   const getLocation = (pet) => {
+    // 1. Try shelter_details lookup by rescue_name or source
+    const shelterKey = (pet.rescue_name || pet.source || '').toLowerCase();
+    if (shelterKey && shelterLocMap[shelterKey]) return shelterLocMap[shelterKey];
+
+    // 2. Fall back to explicit rescue_city/rescue_state fields
     if (pet.rescue_city || pet.rescue_state) {
       return { city: pet.rescue_city || '', state: pet.rescue_state || '' };
     }
+
+    // 3. Parse "City, State" location string
     const loc = pet.location || '';
     if (!loc) return { city: '', state: '' };
     const parts = loc.split(',').map(s => s.trim());
