@@ -100,6 +100,33 @@ function EditPetModal({ pet, open, onClose, onSaved }) {
             <div className="space-y-1.5"><Label>Location</Label><Input value={form.location || ''} onChange={(e) => set('location', e.target.value)} /></div>
           </div>
           <div className="space-y-1.5"><Label>Description</Label><Textarea rows={3} value={form.description || ''} onChange={(e) => set('description', e.target.value)} /></div>
+          <div className="space-y-1.5">
+            <Label>Video (optional)</Label>
+            {form.video_url ? (
+              <div className="relative group">
+                <video src={form.video_url} controls className="w-full rounded-lg max-h-40 bg-black" />
+                <button type="button" onClick={() => set('video_url', '')}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center gap-3 border-2 border-dashed border-slate-300 rounded-lg p-3 cursor-pointer hover:border-slate-400 bg-slate-50">
+                <input type="file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/avi" className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      set('video_url', file_url);
+                    } catch { toast.error('Video upload failed'); }
+                    e.target.value = '';
+                  }} />
+                <Upload className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-sm text-slate-600">Upload a video (MP4, MOV, WebM)</span>
+              </label>
+            )}
+          </div>
           <div className="grid grid-cols-2 gap-3">
             {[{ key: 'vaccinated', label: 'Vaccinated' }, { key: 'spayed_neutered', label: 'Spayed/Neutered' }, { key: 'dewormed', label: 'Dewormed' }, { key: 'transfer_needed', label: 'Transfer Needed' }, { key: 'rescue_needed', label: 'Rescue Needed' }, { key: 'urgent', label: 'Urgent' }, { key: 'stipend_available', label: 'Stipend Available' }].map(({ key, label }) =>
               <div key={key} className="flex items-center gap-2">
@@ -120,7 +147,7 @@ function EditPetModal({ pet, open, onClose, onSaved }) {
   );
 }
 
-const EMPTY_PET = { name: '', species: '', breed: '', age: '', gender: '', size: '', weight: '', location: '', photo_urls: [], description: '', bio: '', medical_notes: '', urgent_deadline: '', vaccinated: false, spayed_neutered: false, dewormed: false, transfer_needed: false, rescue_needed: false, urgent: false, stipend_available: false };
+const EMPTY_PET = { name: '', species: '', breed: '', age: '', gender: '', size: '', weight: '', location: '', photo_urls: [], video_url: '', description: '', bio: '', medical_notes: '', urgent_deadline: '', vaccinated: false, spayed_neutered: false, dewormed: false, transfer_needed: false, rescue_needed: false, urgent: false, stipend_available: false };
 
 function CreatePetModal({ open, onClose, onSaved, userAffiliatedOrg }) {
   const [form, setForm] = useState({ ...EMPTY_PET });
@@ -291,6 +318,35 @@ function CreatePetModal({ open, onClose, onSaved, userAffiliatedOrg }) {
               )}
             </div>
           </div>
+          {/* Video upload */}
+          <div className="space-y-1.5">
+            <Label>Video (optional)</Label>
+            {form.video_url ? (
+              <div className="relative group w-full">
+                <video src={form.video_url} controls className="w-full rounded-lg max-h-48 bg-black" />
+                <button type="button" onClick={() => set('video_url', '')}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center gap-3 border-2 border-dashed border-slate-300 rounded-lg p-3 cursor-pointer hover:border-slate-400 bg-slate-50">
+                <input type="file" accept="video/mp4,video/mov,video/quicktime,video/webm,video/avi" className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    try {
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      set('video_url', file_url);
+                    } catch { toast.error('Video upload failed'); }
+                    e.target.value = '';
+                  }} />
+                <Upload className="w-4 h-4 text-slate-400 shrink-0" />
+                <span className="text-sm text-slate-600">Upload a video (MP4, MOV, WebM)</span>
+              </label>
+            )}
+          </div>
+
           <div className="space-y-1.5">
             <Label>Bio</Label>
             <Textarea rows={3} value={form.description} onChange={(e) => set('description', e.target.value)} placeholder="A short story about this pet..." />
@@ -448,6 +504,9 @@ function ShelterPetCard({ pet, onEdit, onToggleVisibility, onStatusChange, onDel
                 <img src={pet.photo_urls?.[0] || pet.photo_url} alt={pet.name} className="w-full h-48 object-cover rounded-lg" referrerPolicy="no-referrer" /> :
                 <div className="w-full h-48 bg-muted rounded-lg flex items-center justify-center text-4xl">🐾</div>
               }
+              {pet.video_url && (
+                <video src={pet.video_url} controls className="w-full rounded-lg mt-3 max-h-48 bg-black" />
+              )}
               <div className="space-y-3 mt-4">
                 <div>
                   <h2 className="text-xl font-semibold">{pet.name}</h2>

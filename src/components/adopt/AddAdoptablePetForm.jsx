@@ -25,6 +25,7 @@ export default function AddAdoptablePetForm({ onSaved, onClose, user, petToEdit 
   }, [currentUser]);
   const [loading, setLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(false);
   
   const initialFormData = {
     name: "",
@@ -38,6 +39,7 @@ export default function AddAdoptablePetForm({ onSaved, onClose, user, petToEdit 
     description: "",
     photo_url: "",
     extra_photos: [],
+    video_url: "",
     rescue_name: user?.profile_data?.rescue_shelter_name || "",
     rescue_email: user?.email || "",
     rescue_phone: user?.profile_data?.phone || "",
@@ -72,6 +74,7 @@ export default function AddAdoptablePetForm({ onSaved, onClose, user, petToEdit 
         description: petToEdit.description || "",
         photo_url: petToEdit.photo_url || "",
         extra_photos: petToEdit.extra_photos || [],
+        video_url: petToEdit.video_url || "",
         rescue_name: petToEdit.rescue_name || user?.profile_data?.rescue_shelter_name || "",
         rescue_email: petToEdit.rescue_email || user?.email || "",
         rescue_phone: petToEdit.rescue_phone || user?.profile_data?.phone || "",
@@ -128,6 +131,20 @@ export default function AddAdoptablePetForm({ onSaved, onClose, user, petToEdit 
     } else {
       const newExtraPhotos = formData.extra_photos.filter((_, i) => i !== index - 1);
       handleInputChange("extra_photos", newExtraPhotos);
+    }
+  };
+
+  const handleVideoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setVideoLoading(true);
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      handleInputChange("video_url", file_url);
+    } catch {
+      alert("Video upload failed. Please try again.");
+    } finally {
+      setVideoLoading(false);
     }
   };
 
@@ -347,6 +364,42 @@ export default function AddAdoptablePetForm({ onSaved, onClose, user, petToEdit 
                 );
               })}
             </div>
+          </div>
+
+          {/* Video */}
+          <div>
+            <h3 className="font-semibold text-slate-800 mb-2">Video (optional)</h3>
+            <p className="text-xs text-slate-500 mb-3">Upload a short video to help this animal stand out to adopters.</p>
+            {formData.video_url ? (
+              <div className="relative group w-full max-w-sm">
+                <video src={formData.video_url} controls className="w-full rounded-lg max-h-48 bg-black" />
+                <button
+                  type="button"
+                  onClick={() => handleInputChange("video_url", "")}
+                  className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex items-center gap-3 w-full max-w-sm border-2 border-dashed border-slate-300 rounded-lg p-4 cursor-pointer hover:border-slate-400 transition bg-slate-50">
+                <input
+                  type="file"
+                  accept="video/mp4,video/mov,video/quicktime,video/webm,video/avi"
+                  onChange={handleVideoUpload}
+                  className="hidden"
+                  disabled={videoLoading}
+                />
+                {videoLoading ? (
+                  <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
+                ) : (
+                  <Upload className="w-5 h-5 text-slate-400" />
+                )}
+                <span className="text-sm text-slate-600">
+                  {videoLoading ? "Uploading…" : "Click to upload a video (MP4, MOV, WebM)"}
+                </span>
+              </label>
+            )}
           </div>
 
           {/* Temperament */}

@@ -188,9 +188,9 @@ export default function PetDetails() {
             <Card className="overflow-hidden border-0 shadow-xl">
               <div className="aspect-square bg-slate-100 relative">
                 {pet.photo_url ? (
-                  <img 
-                    src={pet.photo_url} 
-                    alt={pet.name || 'Pet'} 
+                  <img
+                    src={pet.photo_url}
+                    alt={pet.name || 'Pet'}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -206,6 +206,13 @@ export default function PetDetails() {
                 </div>
               </div>
             </Card>
+
+            {/* Video */}
+            {pet.video_url && (
+              <Card className="overflow-hidden border-0 shadow-xl">
+                <video src={pet.video_url} controls className="w-full max-h-72 bg-black" />
+              </Card>
+            )}
 
             {/* Details */}
             <Card className="border-0 shadow-lg">

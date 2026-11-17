@@ -96,6 +96,13 @@ export default function AdoptablePetDetail({ pet, onClose, onStatusUpdate, curre
             </div>
           )}
 
+          {/* Video */}
+          {pet.video_url && (
+            <div className="px-1 pt-1">
+              <video src={pet.video_url} controls className="w-full rounded-lg max-h-56 bg-black" />
+            </div>
+          )}
+
           {/* All info */}
           <div className="p-5 space-y-5">
 
