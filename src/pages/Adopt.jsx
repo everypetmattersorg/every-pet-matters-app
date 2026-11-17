@@ -45,7 +45,7 @@ export default function Adopt() {
   const { data: adoptablePets = [], isLoading: adoptableLoading } = useQuery({
     queryKey: ["adoptable-pets"],
     queryFn: async () => {
-      const all = await base44.entities.AdoptablePet.filter({ status: "available" }, "-created_date", 100);
+      const all = await base44.entities.AdoptablePet.filter({ status: "available" }, "-created_date", 10000);
       return all.filter(p => p.status === "available");
     }
   });
@@ -53,7 +53,7 @@ export default function Adopt() {
   const { data: syncedPets = [], isLoading: syncedLoading } = useQuery({
     queryKey: ["synced-adoption-pets"],
     queryFn: async () => {
-      const allPets = await base44.entities.Pet.list("-created_date", 500);
+      const allPets = await base44.entities.Pet.list("-created_date", 10000);
       return allPets.filter(p =>
         p.adoption_status === "Available" &&
         (p.url || p.source_id)
