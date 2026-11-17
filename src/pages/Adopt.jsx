@@ -246,17 +246,18 @@ export default function Adopt() {
         }
       </div>
 
-      {/* Detail Modal */}
+      {/* Detail — full page overlay */}
       {selectedPet &&
       <AdoptablePetDetail
         pet={selectedPet}
+        allPets={filteredPets}
         currentUserEmail={user?.email}
         onClose={() => setSelectedPet(null)}
+        onNavigate={(pet) => setSelectedPet(pet)}
         onStatusUpdate={(newStatus) => {
           setSelectedPet({ ...selectedPet, status: newStatus });
           queryClient.invalidateQueries({ queryKey: ["adoptable-pets"] });
         }} />
-
       }
 
       {/* Compare Modal */}
